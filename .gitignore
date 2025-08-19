@@ -1,1 +1,9 @@
-.git/ pycache/ .gitattributes *.pyc
+__pycache__/
+*.pyc
+source/fruits/
+venv/
+env/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
