@@ -1,7 +1,7 @@
 # grow_calculator_ui.py
 import tkinter as tk
 from tkinter import ttk, messagebox
-from grow_calculator_logic import PlantCalculator
+from core_logic.plant_calculator import PlantCalculator
 
 
 class GrowCalculatorUI:

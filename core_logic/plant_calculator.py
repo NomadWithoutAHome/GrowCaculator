@@ -6,13 +6,13 @@ from typing import List
 class PlantCalculator:
     def __init__(self):
         # Load plant data
-        with open('plants.json', 'r', encoding='utf-8') as f:
+        with open('data/plants.json', 'r', encoding='utf-8') as f:
             self.plants = json.load(f)
             print(f"✅ Loaded {len(self.plants)} plants from plants.json")
-        with open('variants.json', 'r', encoding='utf-8') as f:
+        with open('data/variants.json', 'r', encoding='utf-8') as f:
             self.variants = json.load(f)
             print(f"✅ Loaded {len(self.variants)} variants from variants.json")
-        with open('mutations.json', 'r', encoding='utf-8') as f:
+        with open('data/mutations.json', 'r', encoding='utf-8') as f:
             self.mutations = json.load(f)
             print(f"✅ Loaded {len(self.mutations)} mutations from mutations.json")
 
