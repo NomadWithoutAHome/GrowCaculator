@@ -1,0 +1,11 @@
+# GrowCalculator Python UI Requirements
+# No external dependencies required - uses only Python standard library
+
+# The application uses:
+# - tkinter (built into Python)
+# - random (built into Python)
+# - math (built into Python)
+# - typing (built into Python 3.5+)
+
+# Python version: 3.6 or higher recommended
+# Tested with Python 3.8+

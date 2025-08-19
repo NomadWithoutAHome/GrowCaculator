@@ -1,0 +1,128 @@
+{
+  "Shocked": {
+    "value_multi": 100.0
+  },
+  "Windstruck": {
+    "value_multi": 2.0
+  },
+  "Dawnbound": {
+    "value_multi": 150.0
+  },
+  "Twisted": {
+    "value_multi": 5.0
+  },
+  "Cloudtouched": {
+    "value_multi": 5.0
+  },
+  "Voidtouched": {
+    "value_multi": 135.0
+  },
+  "Wet": {
+    "value_multi": 2.0
+  },
+  "Fried": {
+    "value_multi": 8.0
+  },
+  "Molten": {
+    "value_multi": 25.0
+  },
+  "Sliced": {
+    "value_multi": 50.0
+  },
+  "Alienlike": {
+    "value_multi": 100.0
+  },
+  "Galactic": {
+    "value_multi": 120.0
+  },
+  "Aurora": {
+    "value_multi": 90.0
+  },
+  "Chilled": {
+    "value_multi": 2.0
+  },
+  "Sundried": {
+    "value_multi": 85.0
+  },
+  "Wiltproof": {
+    "value_multi": 4.0
+  },
+  "Drenched": {
+    "value_multi": 5.0
+  },
+  "Verdant": {
+    "value_multi": 4.0
+  },
+  "Paradisal": {
+    "value_multi": 100.0
+  },
+  "Enchanted": {
+    "value_multi": 50.0
+  },
+  "Frozen": {
+    "value_multi": 10.0
+  },
+  "Disco": {
+    "value_multi": 125.0
+  },
+  "Choc": {
+    "value_multi": 2.0
+  },
+  "Plasma": {
+    "value_multi": 5.0
+  },
+  "Heavenly": {
+    "value_multi": 5.0
+  },
+  "Burnt": {
+    "value_multi": 4.0
+  },
+  "Cooked": {
+    "value_multi": 10.0
+  },
+  "Moonlit": {
+    "value_multi": 2.0
+  },
+  "Bloodlit": {
+    "value_multi": 4.0
+  },
+  "Zombified": {
+    "value_multi": 25.0
+  },
+  "Celestial": {
+    "value_multi": 120.0
+  },
+  "Meteoric": {
+    "value_multi": 125.0
+  },
+  "HoneyGlazed": {
+    "value_multi": 5.0
+  },
+  "Pollinated": {
+    "value_multi": 3.0
+  },
+  "Rotten": {
+    "value_multi": 0
+  },
+  "Ghostly": {
+    "value_multi": 0
+  },
+  "Giant": {
+    "value_multi": 2
+  },
+  "Tiny": {
+    "value_multi": 0.5
+  },
+  "Shiny": {
+    "value_multi": 50
+  },
+  "Golden": {
+    "value_multi": 20
+  },
+  "Rainbow": {
+    "value_multi": 100
+  },
+  "Albino": {
+    "value_multi": 3
+  }
+}
