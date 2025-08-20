@@ -32,7 +32,16 @@ class GrowCalculatorUI:
         style = ttk.Style()
         style.theme_use("clam")
         style.configure("TLabel", background="#2b2b2b", foreground="white", font=("Segoe UI", 10))
-        style.configure("TCombobox", fieldbackground="#3c3c3c", background="#3c3c3c", foreground="white")
+        style.configure("TCombobox", fieldbackground="#3c3c3c", background="#3c3c3c", foreground="#FF9800", 
+                        selectbackground="#3c3c3c", selectforeground="#FF9800", bordercolor="#3c3c3c",
+                        arrowcolor="white", insertcolor="white")
+        style.configure("Plant.TCombobox", fieldbackground="#3c3c3c", background="#3c3c3c", foreground="#4CAF50",
+                        selectbackground="#3c3c3c", selectforeground="#4CAF50", bordercolor="#3c3c3c",
+                        arrowcolor="white", insertcolor="white")
+        
+        # Additional styling for dropdown menu
+        style.map("TCombobox", fieldbackground=[("readonly", "#3c3c3c")], background=[("readonly", "#3c3c3c")])
+        style.map("Plant.TCombobox", fieldbackground=[("readonly", "#3c3c3c")], background=[("readonly", "#3c3c3c")])
         style.configure("TButton", background="#4CAF50", foreground="white", font=("Segoe UI", 10, "bold"))
         style.configure("TFrame", background="#2b2b2b")
 
@@ -53,7 +62,7 @@ class GrowCalculatorUI:
         self.plant_var = tk.StringVar(value="Carrot")
         plant_combo = ttk.Combobox(self.main, textvariable=self.plant_var,
                                    values=self._safe_get_plant_names(),
-                                   state="readonly", width=18)
+                                   state="readonly", width=18, style="Plant.TCombobox")
         plant_combo.grid(row=1, column=1, sticky="w", pady=5)
         plant_combo.bind("<<ComboboxSelected>>", self._on_plant_changed)
 
