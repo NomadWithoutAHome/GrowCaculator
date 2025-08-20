@@ -15,7 +15,7 @@ class GrowCalculatorUI:
         self.selected_mutations = []
         self.mutation_vars_popup = {}
         self.collapsed_height = 360
-        self.fixed_entry_width = 21
+
 
         self._build_ui()
 
@@ -23,8 +23,8 @@ class GrowCalculatorUI:
         self.root = tk.Tk()
         self.root.title("Grow Calculator - Plant Value Calculator")
         self.root.configure(bg="#2b2b2b")
-        self.root.geometry(f"586x{self.collapsed_height}")
-        self.root.minsize(586, 360)
+        self.root.geometry(f"480x{self.collapsed_height}")
+        self.root.minsize(480, 360)
 
         self.root.grid_rowconfigure(0, weight=1)
         self.root.grid_columnconfigure(0, weight=1)
@@ -45,7 +45,7 @@ class GrowCalculatorUI:
         style.configure("TButton", background="#4CAF50", foreground="white", font=("Segoe UI", 10, "bold"))
         style.configure("TFrame", background="#2b2b2b")
 
-        self.main = ttk.Frame(self.root, padding="15")
+        self.main = ttk.Frame(self.root, padding="10")
         self.main.grid(row=0, column=0, sticky="nsew")
 
         title = tk.Label(self.main, text="🌱 Grow Calculator",
@@ -53,44 +53,44 @@ class GrowCalculatorUI:
         title.grid(row=0, column=0, columnspan=3, pady=(0, 10), sticky="n")
 
         rules = tk.Button(self.main, text="ℹ️  Rules", command=self._show_rules,
-                          bg="#2196F3", fg="white", font=("Segoe UI", 9, "bold"),
-                          relief=tk.FLAT, padx=10, pady=2)
-        rules.place(relx=1.0, x=-20, y=10, anchor="ne")
+                          bg="#2196F3", fg="white", font=("Segoe UI", 8, "bold"),
+                          relief=tk.FLAT, padx=8, pady=1)
+        rules.place(relx=1.0, x=-15, y=10, anchor="ne")
 
-        tk.Label(self.main, text="Plant:", font=("Segoe UI", 11, "bold"),
-                 bg="#2b2b2b", fg="white").grid(row=1, column=0, sticky="w", pady=5)
+        tk.Label(self.main, text="Plant:", font=("Segoe UI", 10, "bold"),
+                 bg="#2b2b2b", fg="white").grid(row=1, column=0, sticky="w", pady=0, padx=(0,5))
         self.plant_var = tk.StringVar(value="Carrot")
         plant_combo = ttk.Combobox(self.main, textvariable=self.plant_var,
                                    values=self._safe_get_plant_names(),
-                                   state="readonly", width=18, style="Plant.TCombobox")
-        plant_combo.grid(row=1, column=1, sticky="w", pady=5)
+                                   state="readonly", width=20, style="Plant.TCombobox")
+        plant_combo.grid(row=1, column=1, sticky="w", pady=0)
         plant_combo.bind("<<ComboboxSelected>>", self._on_plant_changed)
 
-        tk.Label(self.main, text="Variant:", font=("Segoe UI", 11, "bold"),
-                 bg="#2b2b2b", fg="white").grid(row=2, column=0, sticky="w", pady=5)
+        tk.Label(self.main, text="Variant:", font=("Segoe UI", 10, "bold"),
+                 bg="#2b2b2b", fg="white").grid(row=2, column=0, sticky="w", pady=0, padx=(0,2))
         self.variant_var = tk.StringVar(value="Normal")
         self.variant_combo = ttk.Combobox(self.main, textvariable=self.variant_var,
                                          values=self._safe_get_variant_names(),
-                                         state="readonly", width=18)
-        self.variant_combo.grid(row=2, column=1, sticky="w", pady=5)
+                                         state="readonly", width=20)
+        self.variant_combo.grid(row=2, column=1, sticky="w", pady=0)
 
-        tk.Label(self.main, text="Mutations:", font=("Segoe UI", 11, "bold"),
-                 bg="#2b2b2b", fg="white").grid(row=3, column=0, sticky="w", pady=5)
+        tk.Label(self.main, text="Mutations:", font=("Segoe UI", 10, "bold"),
+                 bg="#2b2b2b", fg="white").grid(row=3, column=0, sticky="w", pady=0, padx=(0,2))
         self.mutation_summary = tk.Label(self.main, text="None",
                                         font=("Segoe UI", 9, "italic"),
                                         bg="#2b2b2b", fg="#FF9800")
-        self.mutation_summary.grid(row=3, column=1, sticky="w", pady=5)
+        self.mutation_summary.grid(row=3, column=1, sticky="w", pady=0)
         tk.Button(self.main, text="⚙️ Select Mutations", command=self._open_mutations_popup,
-                  bg="#4CAF50", fg="white", font=("Segoe UI", 9, "bold"),
-                  relief=tk.FLAT, padx=8, pady=2).grid(row=3, column=2, sticky="w", pady=5)
+                  bg="#4CAF50", fg="white", font=("Segoe UI", 8, "bold"),
+                  relief=tk.FLAT, padx=6, pady=1).grid(row=3, column=2, sticky="w", pady=0)
 
-        tk.Label(self.main, text="Weight (kg):", font=("Segoe UI", 11, "bold"),
-                 bg="#2b2b2b", fg="white").grid(row=4, column=0, sticky="w", pady=5)
+        tk.Label(self.main, text="Weight (kg):", font=("Segoe UI", 10, "bold"),
+                 bg="#2b2b2b", fg="white").grid(row=4, column=0, sticky="w", pady=0, padx=(0,2))
         self.weight_var = tk.StringVar(value="0.5")
         self.weight_entry = tk.Entry(self.main, textvariable=self.weight_var,
                                      font=("Segoe UI", 10), bg="#3c3c3c", fg="white",
-                                     insertbackground="white", width=self.fixed_entry_width)
-        self.weight_entry.grid(row=4, column=1, sticky="w", pady=5)
+                                     insertbackground="white", width=24)
+        self.weight_entry.grid(row=4, column=1, sticky="w", pady=0)
         self.weight_var.trace("w", self._validate_weight)
 
         self.range_label = tk.Label(self.main, text="",
@@ -98,23 +98,23 @@ class GrowCalculatorUI:
         self.range_label.grid(row=5, column=1, sticky="w")
 
         self.mult_label = tk.Label(self.main, text="Total Multiplier: 1.0x",
-                                   bg="#2b2b2b", fg="#4CAF50", font=("Segoe UI", 10, "bold"))
-        self.mult_label.grid(row=6, column=0, columnspan=2, sticky="w", pady=(6, 2))
+                                   bg="#2b2b2b", fg="#4CAF50", font=("Segoe UI", 9, "bold"))
+        self.mult_label.grid(row=6, column=0, columnspan=2, sticky="w", pady=(1, 0))
 
-        note = ("Note: Value = Base Price × Mutation Multi × Variant Multi × (Weight/Base Weight)² • Click Rules for details")
-        self.note_label = tk.Label(self.main, text=note,
-                                   bg="#2b2b2b", fg="#FF9800", font=("Segoe UI", 8, "italic"))
-        self.note_label.grid(row=7, column=0, columnspan=3, sticky="w", pady=(0, 10))
+        note = ("Value = Base Price × Mutation Multi × Variant Multi × (Weight/Base Weight)²\nClick Rules for complete calculation details")
+        self.note_label = tk.Label(self.main, text=note, justify="left",
+                                   bg="#2b2b2b", fg="#FF9800", font=("Segoe UI", 7, "italic"))
+        self.note_label.grid(row=7, column=0, columnspan=3, sticky="w", pady=(0, 4))
 
         btns = tk.Frame(self.main, bg="#2b2b2b")
-        btns.grid(row=8, column=0, columnspan=3, pady=(2, 10))
+        btns.grid(row=8, column=0, columnspan=3, pady=(0, 4))
         self.calc_btn = tk.Button(btns, text="🧮  Calculate Value", command=self._calculate,
-                                  bg="#4CAF50", fg="white", font=("Segoe UI", 11, "bold"),
-                                  relief=tk.FLAT, padx=15, pady=5, width=18)
-        self.calc_btn.pack(side="left", padx=(0, 10))
+                                  bg="#4CAF50", fg="white", font=("Segoe UI", 9, "bold"),
+                                  relief=tk.FLAT, padx=8, pady=3, width=14)
+        self.calc_btn.pack(side="left", padx=(0, 6))
         self.clear_btn = tk.Button(btns, text="🗑️  Clear All", command=self._clear_all,
-                                   bg="#f44336", fg="white", font=("Segoe UI", 11, "bold"),
-                                   relief=tk.FLAT, padx=15, pady=5, width=18)
+                                   bg="#f44336", fg="white", font=("Segoe UI", 9, "bold"),
+                                   relief=tk.FLAT, padx=8, pady=3, width=14)
         self.clear_btn.pack(side="left")
 
         self.results = tk.Frame(self.main, bg="#3c3c3c", relief=tk.RAISED, bd=2)
@@ -124,10 +124,10 @@ class GrowCalculatorUI:
         tk.Label(self.results, text="📊  Calculation Results",
                  font=("Segoe UI", 13, "bold"), bg="#3c3c3c", fg="#4CAF50").pack(pady=(8, 5))
 
-        self.results_text = tk.Text(self.results, height=13, width=66,
+        self.results_text = tk.Text(self.results, height=13, width=56,
                                     bg="#2b2b2b", fg="white", font=("Consolas", 9),
-                                    relief=tk.FLAT, padx=10, pady=10, wrap="word")
-        self.results_text.pack(padx=10, pady=(0, 10))
+                                    relief=tk.FLAT, padx=8, pady=8, wrap="word")
+        self.results_text.pack(padx=8, pady=(0, 8))
         self.results_text.config(state="disabled")
 
         self._on_plant_changed()
@@ -213,7 +213,7 @@ class GrowCalculatorUI:
         if name in self.calculator.plants:
             base_w = self.calculator.plants[name]["base_weight"]
             self.weight_var.set(str(base_w))
-            self.weight_entry.config(width=self.fixed_entry_width)
+            self.weight_entry.config(width=24)
             mn = round(base_w * 0.7, 4)
             mx = round(base_w * 1.4, 4)
             self.range_label.config(text=f"Expected: {mn} – {mx} kg")
