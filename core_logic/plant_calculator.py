@@ -18,64 +18,66 @@ class PlantCalculator:
 
 
     def calculate_mutation_multiplier(self, selected_mutations: list[str]) -> float:
+        """
+        Calculate mutation multiplier using the CORRECT game formula from MutationHandler.lua
+        Formula: total = 1 + (mut1-1) + (mut2-1) + (mut3-1) + ...
+        This is ADDITIVE, not multiplicative!
+        """
         if not selected_mutations:
             return 1.0
 
-        zero_value = {"Rotten", "Ghostly"}
-        if any(m in zero_value for m in selected_mutations):
-            return 0.0
-
+        # From MutationHandler.lua line 3903: v982 = v982 + (v983.ValueMulti - 1)
         total = 1.0
-        exclusive_groups = {
-            "size": ["Giant", "Tiny"],
-            "element": ["Shocked", "Wet", "Burnt"],
-            "growth": ["Twisted", "Verdant", "Albino"],
-        }
-        group_best = {group: 1.0 for group in exclusive_groups}
-        specials = {"Shiny": 50, "Golden": 20, "Rainbow": 100}
-
-        for m in selected_mutations:
-            data = self.mutations.get(m)
-            if not data:
+        for mutation_name in selected_mutations:
+            mutation_data = self.mutations.get(mutation_name)
+            if not mutation_data:
                 continue
-            val = data["value_multi"]
-
-            if m in specials:
-                total *= specials[m]
-                continue
-
-            placed = False
-            for group, members in exclusive_groups.items():
-                if m in members:
-                    group_best[group] = max(group_best[group], val)
-                    placed = True
-                    break
-
-            if not placed:
-                total *= val
-
-        for v in group_best.values():
-            total *= v
-
-        return total
+            
+            value_multi = mutation_data["value_multi"]
+            # Add (ValueMulti - 1) to total, as per game source code
+            total = total + (value_multi - 1)
+        
+        # Ensure minimum value is 1
+        return max(1.0, total)
 
     def calculate_plant_value(self, plant_name: str, variant: str,
                               weight: float, mutation_multi: float,
                               fruit_version: int = 0) -> int:
+        """
+        Calculate plant value using the EXACT formula from CalculatePlantValue.lua
+        Lines 17-27 of the source code
+        """
         plant_data = self.plants[plant_name]
         variant_data = self.variants[variant]
 
-        base_price = plant_data["base_price"]
-        base_weight = plant_data["base_weight"]
-        variant_multiplier = variant_data["multiplier"]
-
-        growth_factor = weight / base_weight
-        clamped_growth_factor = max(0.95, min(growth_factor, 1e8))
-        growth_multiplier = clamped_growth_factor ** 2
-
-        final_value = base_price * growth_multiplier * variant_multiplier * mutation_multi
+        # From CalculatePlantValue.lua:
+        # v11 = v10[3] (base price)
+        # v12 = v10[2] (base weight) 
+        # v13 = variant multiplier
+        # v14 = v11 * p8 * v13 (base price * mutation_multi * variant_multi)
+        # v15 = p7 / v12 (weight / base_weight)
+        # v16 = math.clamp(v15, 0.95, 100000000)
+        # v17 = v14 * (v16 * v16)
+        
+        base_price = plant_data["base_price"]  # v11
+        base_weight = plant_data["base_weight"]  # v12
+        variant_multiplier = variant_data["multiplier"]  # v13
+        
+        # v14 = base_price * mutation_multi * variant_multi
+        base_value = base_price * mutation_multi * variant_multiplier
+        
+        # v15 = weight / base_weight
+        weight_ratio = weight / base_weight
+        
+        # v16 = math.clamp(weight_ratio, 0.95, 100000000)
+        clamped_ratio = max(0.95, min(weight_ratio, 100000000))
+        
+        # v17 = base_value * (clamped_ratio * clamped_ratio)
+        final_value = base_value * (clamped_ratio * clamped_ratio)
+        
+        # Apply fruit version cap if applicable
         if fruit_version >= 1:
-            final_value = min(final_value, 1_000_000_000_000)
+            final_value = min(final_value, 1000000000000)
 
         return round(final_value)
 

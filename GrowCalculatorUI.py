@@ -92,7 +92,7 @@ class GrowCalculatorUI:
                                    bg="#2b2b2b", fg="#4CAF50", font=("Segoe UI", 10, "bold"))
         self.mult_label.grid(row=6, column=0, columnspan=2, sticky="w", pady=(6, 2))
 
-        note = ("Note: Rotten/Ghostly = 0 • Groups don’t stack • Specials fixed")
+        note = ("Note: Mutations are ADDITIVE: 1 + (mut1-1) + (mut2-1) + ... (from game source)")
         self.note_label = tk.Label(self.main, text=note,
                                    bg="#2b2b2b", fg="#FF9800", font=("Segoe UI", 8, "italic"))
         self.note_label.grid(row=7, column=0, columnspan=3, sticky="w", pady=(0, 10))
@@ -331,11 +331,14 @@ class GrowCalculatorUI:
 
     def _show_rules(self):
         rules = (
-            "📘 Mutation Rules\n\n"
-            "1) Rotten / Ghostly → value = 0.\n"
-            "2) Exclusive groups: only the strongest applies.\n"
-            "3) Specials are fixed multipliers (e.g., Shiny ×50).\n"
-            "4) Others multiply together."
+            "📘 Mutation Rules (From Game Source Code)\n\n"
+            "✅ ADDITIVE SYSTEM:\n"
+            "• Formula: total = 1 + (mut1-1) + (mut2-1) + (mut3-1) + ...\n"
+            "• Example: Shocked(100) + Frozen(10) + Sandy(3)\n"
+            "  = 1 + (100-1) + (10-1) + (3-1) = 112x\n\n"
+            "📜 Source: MutationHandler.lua line 3903\n"
+            "   v982 = v982 + (v983.ValueMulti - 1)\n\n"
+            "💡 This prevents exponential value explosion!"
         )
         messagebox.showinfo("Mutation Rules", rules)
 
