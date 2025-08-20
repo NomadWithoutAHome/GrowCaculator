@@ -8,3 +8,8 @@ Thumbs.db
 .vscode/
 .idea/
 tools
+source/Fruit/Calculate_Weight.lua
+source/Fruit/CalculatePlantValue.lua
+source/Fruit/InventoryServiceEnums.lua
+source/Fruit/Item_Module.lua
+source/Fruit/MutationHandler.lua
