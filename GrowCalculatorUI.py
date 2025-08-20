@@ -2,291 +2,351 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from core_logic.plant_calculator import PlantCalculator
-
+import re
+import time
 
 class GrowCalculatorUI:
     def __init__(self):
-        self.calculator = PlantCalculator()
-        self.results_frame = None  # results container
-        self.setup_ui()
+        try:
+            self.calculator = PlantCalculator()
+        except Exception as e:
+            messagebox.showerror("Initialization Error", f"Failed to initialize calculator: {e}")
+            raise SystemExit
+        self.selected_mutations = []
+        self.mutation_vars_popup = {}
+        self.collapsed_height = 360
+        self.fixed_entry_width = 21
 
-    def setup_ui(self):
+        self._build_ui()
+
+    def _build_ui(self):
         self.root = tk.Tk()
-        self.root.title("GrowCalculator - Plant Value Calculator")
-        self.root.geometry("800x700")
-        self.root.configure(bg='#2b2b2b')
+        self.root.title("Grow Calculator - Plant Value Calculator")
+        self.root.configure(bg="#2b2b2b")
+        self.root.geometry(f"586x{self.collapsed_height}")
+        self.root.minsize(586, 360)
+
+        self.root.grid_rowconfigure(0, weight=1)
+        self.root.grid_columnconfigure(0, weight=1)
 
         style = ttk.Style()
-        style.theme_use('clam')
-        style.configure('TLabel', background='#2b2b2b', foreground='white', font=('Segoe UI', 10))
-        style.configure('TCombobox', fieldbackground='#3c3c3c', background='#3c3c3c',
-                        foreground='white')
-        style.configure('TButton', background='#4CAF50', foreground='white',
-                        font=('Segoe UI', 10, 'bold'))
-        style.configure('TFrame', background='#2b2b2b')
+        style.theme_use("clam")
+        style.configure("TLabel", background="#2b2b2b", foreground="white", font=("Segoe UI", 10))
+        style.configure("TCombobox", fieldbackground="#3c3c3c", background="#3c3c3c", foreground="white")
+        style.configure("TButton", background="#4CAF50", foreground="white", font=("Segoe UI", 10, "bold"))
+        style.configure("TFrame", background="#2b2b2b")
 
-        main_frame = ttk.Frame(self.root, padding="20")
-        main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        self.main = ttk.Frame(self.root, padding="15")
+        self.main.grid(row=0, column=0, sticky="nsew")
 
-        # Centered title
-        title_label = tk.Label(main_frame, text="🌱 GrowCalculator",
-                               font=('Segoe UI', 28, 'bold'),
-                               bg='#2b2b2b', fg='#4CAF50')
-        title_label.grid(row=0, column=0, columnspan=2, pady=(0, 20), sticky="n")
+        title = tk.Label(self.main, text="🌱 Grow Calculator",
+                         font=("Segoe UI", 20, "bold"), bg="#2b2b2b", fg="#4CAF50")
+        title.grid(row=0, column=0, columnspan=3, pady=(0, 10), sticky="n")
 
-        # Info button (top-right)
-        info_btn = tk.Button(main_frame, text="ℹ️ Rules",
-                             command=self.show_rules,
-                             bg='#2196F3', fg='white',
-                             font=('Segoe UI', 9, 'bold'),
-                             relief=tk.FLAT, padx=10, pady=2)
-        info_btn.grid(row=0, column=1, sticky=tk.E, pady=(0, 20))
+        rules = tk.Button(self.main, text="ℹ️  Rules", command=self._show_rules,
+                          bg="#2196F3", fg="white", font=("Segoe UI", 9, "bold"),
+                          relief=tk.FLAT, padx=10, pady=2)
+        rules.place(relx=1.0, x=-20, y=10, anchor="ne")
 
-        self.setup_plant_selection(main_frame)
-        self.setup_variant_mutation_selection(main_frame)
-        self.setup_weight_input(main_frame)
-        self.setup_calculate_button(main_frame)
-
-        # Results box initially hidden
-        self.results_frame = tk.Frame(main_frame, bg='#3c3c3c', relief=tk.RAISED, bd=2)
-        self.results_frame.grid(row=7, column=0, columnspan=2,
-                                sticky=(tk.W, tk.E), pady=(20, 0))
-        self.results_frame.grid_remove()  # hide at start
-
-        title = tk.Label(self.results_frame, text="📊 Calculation Results",
-                         font=('Segoe UI', 16, 'bold'),
-                         bg='#3c3c3c', fg='#4CAF50')
-        title.pack(pady=(15, 10))
-
-        self.results_text = tk.Text(self.results_frame, height=12, width=70,
-                                    bg='#2b2b2b', fg='white', font=('Consolas', 10),
-                                    relief=tk.FLAT, padx=15, pady=15)
-        self.results_text.pack(padx=15, pady=(0, 15))
-
-        scrollbar = tk.Scrollbar(self.results_frame, orient=tk.VERTICAL,
-                                 command=self.results_text.yview)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        self.results_text.configure(yscrollcommand=scrollbar.set)
-
-    # ------- Plant / Variant / Mutation UI -------
-    def setup_plant_selection(self, parent):
-        tk.Label(parent, text="Plant:", font=('Segoe UI', 12, 'bold'),
-                 bg='#2b2b2b', fg='white').grid(row=1, column=0, sticky=tk.W, pady=(0, 10))
-
+        tk.Label(self.main, text="Plant:", font=("Segoe UI", 11, "bold"),
+                 bg="#2b2b2b", fg="white").grid(row=1, column=0, sticky="w", pady=5)
         self.plant_var = tk.StringVar(value="Carrot")
-        plant_combo = ttk.Combobox(parent, textvariable=self.plant_var,
-                                   values=self.calculator.get_plant_names(),
-                                   state="readonly", width=30)
-        plant_combo.grid(row=1, column=1, sticky=(tk.W, tk.E), pady=(0, 10), padx=(10, 0))
-        plant_combo.bind('<<ComboboxSelected>>', self.on_plant_changed)
+        plant_combo = ttk.Combobox(self.main, textvariable=self.plant_var,
+                                   values=self._safe_get_plant_names(),
+                                   state="readonly", width=18)
+        plant_combo.grid(row=1, column=1, sticky="w", pady=5)
+        plant_combo.bind("<<ComboboxSelected>>", self._on_plant_changed)
 
-    def setup_variant_mutation_selection(self, parent):
-        tk.Label(parent, text="Variant:", font=('Segoe UI', 12, 'bold'),
-                 bg='#2b2b2b', fg='white').grid(row=2, column=0, sticky=tk.W, pady=(0, 10))
-
+        tk.Label(self.main, text="Variant:", font=("Segoe UI", 11, "bold"),
+                 bg="#2b2b2b", fg="white").grid(row=2, column=0, sticky="w", pady=5)
         self.variant_var = tk.StringVar(value="Normal")
-        variant_combo = ttk.Combobox(parent, textvariable=self.variant_var,
-                                     values=self.calculator.get_variant_names(),
-                                     state="readonly", width=30)
-        variant_combo.grid(row=2, column=1, sticky=(tk.W, tk.E), pady=(0, 10), padx=(10, 0))
+        self.variant_combo = ttk.Combobox(self.main, textvariable=self.variant_var,
+                                         values=self._safe_get_variant_names(),
+                                         state="readonly", width=18)
+        self.variant_combo.grid(row=2, column=1, sticky="w", pady=5)
 
-        tk.Label(parent, text="Mutations:", font=('Segoe UI', 12, 'bold'),
-                 bg='#2b2b2b', fg='white').grid(row=3, column=0, sticky=tk.W, pady=(0, 10))
+        tk.Label(self.main, text="Mutations:", font=("Segoe UI", 11, "bold"),
+                 bg="#2b2b2b", fg="white").grid(row=3, column=0, sticky="w", pady=5)
+        self.mutation_summary = tk.Label(self.main, text="None",
+                                        font=("Segoe UI", 9, "italic"),
+                                        bg="#2b2b2b", fg="#FF9800")
+        self.mutation_summary.grid(row=3, column=1, sticky="w", pady=5)
+        tk.Button(self.main, text="⚙️ Select Mutations", command=self._open_mutations_popup,
+                  bg="#4CAF50", fg="white", font=("Segoe UI", 9, "bold"),
+                  relief=tk.FLAT, padx=8, pady=2).grid(row=3, column=2, sticky="w", pady=5)
 
-        mutation_frame = tk.Frame(parent, bg='#2b2b2b')
-        mutation_frame.grid(row=3, column=1, sticky=(tk.W, tk.E), pady=(0, 10), padx=(10, 0))
-
-        canvas = tk.Canvas(mutation_frame, bg='#2b2b2b', height=80, highlightthickness=0)
-        scrollbar = tk.Scrollbar(mutation_frame, orient="vertical", command=canvas.yview)
-        scrollable_frame = tk.Frame(canvas, bg='#2b2b2b')
-        scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
-
-        self.mutation_vars = {}
-        for i, mutation_name in enumerate(self.calculator.get_mutation_names()):
-            row, col = divmod(i, 3)
-            var = tk.BooleanVar()
-            self.mutation_vars[mutation_name] = var
-            cb = tk.Checkbutton(scrollable_frame, text=mutation_name, variable=var,
-                                bg='#2b2b2b', fg='white', selectcolor='#4CAF50',
-                                activebackground='#2b2b2b', activeforeground='white',
-                                font=('Segoe UI', 9), command=self.update_total_multiplier)
-            cb.grid(row=row, column=col, sticky=tk.W, padx=(0, 15), pady=2)
-
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
-
-        # Footer section with total multiplier + clear button
-        footer_frame = tk.Frame(mutation_frame, bg='#2b2b2b')
-        footer_frame.pack(side="bottom", pady=(5, 0), fill="x")
-
-        self.total_multiplier_label = tk.Label(footer_frame, text="Total Multiplier: 1.0x",
-                                               bg='#2b2b2b', fg='#4CAF50',
-                                               font=('Segoe UI', 10, 'bold'))
-        self.total_multiplier_label.pack(side="left")
-
-        clear_btn = tk.Button(footer_frame, text="🗑️ Clear All",
-                              command=self.clear_all_mutations,
-                              bg='#f44336', fg='white', font=('Segoe UI', 9, 'bold'),
-                              relief=tk.FLAT, padx=10, pady=2)
-        clear_btn.pack(side="right", padx=(10, 0))
-
-        self.summary_label = tk.Label(mutation_frame,
-                                      text="Note: Rotten/Ghostly = 0 • Groups don’t stack • Specials fixed",
-                                      bg='#2b2b2b', fg='#FF9800',
-                                      font=('Segoe UI', 8, 'italic'))
-        self.summary_label.pack(side="bottom", pady=(3, 0))
-
-    def setup_weight_input(self, parent):
-        tk.Label(parent, text="Weight (kg):", font=('Segoe UI', 12, 'bold'),
-                 bg='#2b2b2b', fg='white').grid(row=4, column=0, sticky=tk.W, pady=(0, 10))
-
+        tk.Label(self.main, text="Weight (kg):", font=("Segoe UI", 11, "bold"),
+                 bg="#2b2b2b", fg="white").grid(row=4, column=0, sticky="w", pady=5)
         self.weight_var = tk.StringVar(value="0.5")
-        weight_entry = tk.Entry(parent, textvariable=self.weight_var,
-                                font=('Segoe UI', 10), bg='#3c3c3c', fg='white',
-                                insertbackground='white', width=32)
-        weight_entry.grid(row=4, column=1, sticky=(tk.W, tk.E), pady=(0, 10), padx=(10, 0))
+        self.weight_entry = tk.Entry(self.main, textvariable=self.weight_var,
+                                     font=("Segoe UI", 10), bg="#3c3c3c", fg="white",
+                                     insertbackground="white", width=self.fixed_entry_width)
+        self.weight_entry.grid(row=4, column=1, sticky="w", pady=5)
+        self.weight_var.trace("w", self._validate_weight)
 
-        self.range_label = tk.Label(parent, text="",
-                                    font=('Segoe UI', 9), bg='#2b2b2b', fg='#FF9800')
-        self.range_label.grid(row=5, column=1, sticky=tk.W, pady=(0, 10), padx=(10, 0))
+        self.range_label = tk.Label(self.main, text="",
+                                    font=("Segoe UI", 9), bg="#2b2b2b", fg="#FF9800")
+        self.range_label.grid(row=5, column=1, sticky="w")
 
-    def setup_calculate_button(self, parent):
-        self.calc_btn = tk.Button(parent, text="🧮 Calculate Value",
-                                  command=self.calculate_value,
-                                  bg='#4CAF50', fg='white', font=('Segoe UI', 14, 'bold'),
-                                  relief=tk.FLAT, padx=30, pady=10)
-        self.calc_btn.grid(row=6, column=0, columnspan=2, pady=20)
+        self.mult_label = tk.Label(self.main, text="Total Multiplier: 1.0x",
+                                   bg="#2b2b2b", fg="#4CAF50", font=("Segoe UI", 10, "bold"))
+        self.mult_label.grid(row=6, column=0, columnspan=2, sticky="w", pady=(6, 2))
 
-    # ------- Events -------
-    def on_plant_changed(self, event=None):
-        plant_name = self.plant_var.get()
-        if plant_name in self.calculator.plants:
-            plant_data = self.calculator.plants[plant_name]
-            self.weight_var.set(str(plant_data["base_weight"]))
-            min_w = round(plant_data["base_weight"] * 0.7, 4)
-            max_w = round(plant_data["base_weight"] * 1.4, 4)
-            self.range_label.config(
-                text=f"Expected Weight Range: {min_w} – {max_w} kg"
-            )
+        note = ("Note: Rotten/Ghostly = 0 • Groups don’t stack • Specials fixed")
+        self.note_label = tk.Label(self.main, text=note,
+                                   bg="#2b2b2b", fg="#FF9800", font=("Segoe UI", 8, "italic"))
+        self.note_label.grid(row=7, column=0, columnspan=3, sticky="w", pady=(0, 10))
 
-    def clear_all_mutations(self):
-        for var in self.mutation_vars.values():
-            var.set(False)
-        self.update_total_multiplier()
+        btns = tk.Frame(self.main, bg="#2b2b2b")
+        btns.grid(row=8, column=0, columnspan=3, pady=(2, 10))
+        self.calc_btn = tk.Button(btns, text="🧮  Calculate Value", command=self._calculate,
+                                  bg="#4CAF50", fg="white", font=("Segoe UI", 11, "bold"),
+                                  relief=tk.FLAT, padx=15, pady=5, width=18)
+        self.calc_btn.pack(side="left", padx=(0, 10))
+        self.clear_btn = tk.Button(btns, text="🗑️  Clear All", command=self._clear_all,
+                                   bg="#f44336", fg="white", font=("Segoe UI", 11, "bold"),
+                                   relief=tk.FLAT, padx=15, pady=5, width=18)
+        self.clear_btn.pack(side="left")
 
-    def update_total_multiplier(self):
-        selected_mutations = [m for m, var in self.mutation_vars.items() if var.get()]
-        total_multi = self.calculator.calculate_mutation_multiplier(selected_mutations)
-        if total_multi == 0:
-            text, color = "Total Multiplier: 0x (worthless)", "#f44336"
-        elif total_multi == 1.0:
-            text, color = "Total Multiplier: 1.0x", "#4CAF50"
+        self.results = tk.Frame(self.main, bg="#3c3c3c", relief=tk.RAISED, bd=2)
+        self.results.grid(row=9, column=0, columnspan=3, sticky="we", pady=(10, 0))
+        self.results.grid_remove()
+
+        tk.Label(self.results, text="📊  Calculation Results",
+                 font=("Segoe UI", 13, "bold"), bg="#3c3c3c", fg="#4CAF50").pack(pady=(8, 5))
+
+        self.results_text = tk.Text(self.results, height=13, width=66,
+                                    bg="#2b2b2b", fg="white", font=("Consolas", 9),
+                                    relief=tk.FLAT, padx=10, pady=10, wrap="word")
+        self.results_text.pack(padx=10, pady=(0, 10))
+        self.results_text.config(state="disabled")
+
+        self._on_plant_changed()
+
+    def _validate_weight(self, *args):
+        value = self.weight_var.get()
+        if value and not re.match(r"^\d*\.?\d*$", value):
+            self.weight_var.set(value[:-1] if len(value) > 1 else "0.5")
+        elif not value:
+            self.weight_var.set("0.5")
+
+    def _open_mutations_popup(self):
+        win = tk.Toplevel(self.root)
+        win.title("Select Mutations")
+        win.configure(bg="#2b2b2b")
+        win.geometry("410x410")
+        win.transient(self.root)
+        win.grab_set()
+
+        frm = tk.Frame(win, bg="#2b2b2b")
+        frm.pack(fill="both", expand=True, padx=10, pady=10)
+
+        self.mutation_vars_popup = {}
+        names = self._safe_get_mutation_names()
+        if not names:
+            messagebox.showwarning("Warning", "No mutations available.")
+            win.destroy()
+            return
+
+        for i, name in enumerate(names):
+            r, c = divmod(i, 3)
+            v = tk.BooleanVar(value=(name in self.selected_mutations))
+            self.mutation_vars_popup[name] = v
+            tk.Checkbutton(frm, text=name, variable=v, bg="#2b2b2b", fg="white",
+                           selectcolor="#4CAF50", activebackground="#2b2b2b",
+                           activeforeground="white", font=("Segoe UI", 9)
+                           ).grid(row=r, column=c, sticky="w", padx=10, pady=4)
+
+        tk.Button(win, text="✔ Apply", bg="#4CAF50", fg="white",
+                  font=("Segoe UI", 10, "bold"), relief=tk.FLAT,
+                  command=lambda: self._apply_mutations(win)).pack(pady=10)
+
+        self.root.wait_window(win)
+
+    def _apply_mutations(self, popup):
+        self.selected_mutations = [n for n, v in self.mutation_vars_popup.items() if v.get()]
+        self._update_mutation_summary()
+        self._update_multiplier()
+        popup.destroy()
+
+    def _update_mutation_summary(self):
+        if not self.selected_mutations:
+            self.mutation_summary.config(text="None", fg="#FF9800")
         else:
-            text, color = f"Total Multiplier: {total_multi:.1f}x", "#FF9800"
-        self.total_multiplier_label.config(text=text, fg=color)
+            text = ", ".join(self.selected_mutations[:3])
+            if len(self.selected_mutations) > 3:
+                text += f" +{len(self.selected_mutations)-3} more"
+            self.mutation_summary.config(text=text, fg="white")
 
-    def calculate_value(self):
+    def _safe_get_plant_names(self):
         try:
-            plant_name = self.plant_var.get()
+            return self.calculator.get_plant_names() or ["Carrot"]
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to get plant names: {e}")
+            return ["Carrot"]
+
+    def _safe_get_variant_names(self):
+        try:
+            return self.calculator.get_variant_names() or ["Normal"]
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to get variant names: {e}")
+            return ["Normal"]
+
+    def _safe_get_mutation_names(self):
+        try:
+            return self.calculator.get_mutation_names() or []
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to get mutation names: {e}")
+            return []
+
+    def _on_plant_changed(self, _=None):
+        name = self.plant_var.get()
+        if name in self.calculator.plants:
+            base_w = self.calculator.plants[name]["base_weight"]
+            self.weight_var.set(str(base_w))
+            self.weight_entry.config(width=self.fixed_entry_width)
+            mn = round(base_w * 0.7, 4)
+            mx = round(base_w * 1.4, 4)
+            self.range_label.config(text=f"Expected: {mn} – {mx} kg")
+            self.variant_combo.configure(values=self._safe_get_variant_names())
+            if self.variant_var.get() not in self._safe_get_variant_names():
+                self.variant_var.set("Normal")
+        self._update_multiplier()
+
+    def _clear_all(self):
+        self.plant_var.set("Carrot")
+        self.variant_var.set("Normal")
+        self.weight_var.set("0.5")
+        self.selected_mutations = []
+        self._update_mutation_summary()
+        self._update_multiplier()
+        self._hide_results()
+        self._on_plant_changed()
+
+    def _update_multiplier(self):
+        try:
+            mult = self.calculator.calculate_mutation_multiplier(self.selected_mutations)
+            if mult == 0:
+                txt, color = "Total Multiplier: 0x (worthless)", "#f44336"
+            elif mult == 1.0:
+                txt, color = "Total Multiplier: 1.0x", "#4CAF50"
+            else:
+                txt, color = f"Total Multiplier: {mult:.1f}x", "#FF9800"
+            self.mult_label.config(text=txt, fg=color)
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to calculate multiplier: {e}")
+            self.mult_label.config(text="Total Multiplier: Error", fg="#f44336")
+
+    def _calculate(self):
+        try:
+            plant = self.plant_var.get()
             variant = self.variant_var.get()
             weight = float(self.weight_var.get())
-
-            if not plant_name or not variant:
-                messagebox.showerror("Error", "Please select a plant and variant")
+            if not plant or not variant:
+                messagebox.showerror("Error", "Please select a plant and variant.")
                 return
             if weight <= 0:
-                messagebox.showerror("Error", "Weight must be greater than 0")
+                messagebox.showerror("Error", "Weight must be greater than 0.")
+                return
+            if plant not in self.calculator.plants or variant not in self.calculator.variants:
+                messagebox.showerror("Error", "Invalid plant or variant selected.")
                 return
 
-            selected_mutations = [m for m, var in self.mutation_vars.items() if var.get()]
-            mutation_multi = self.calculator.calculate_mutation_multiplier(selected_mutations)
+            m = self.calculator.calculate_mutation_multiplier(self.selected_mutations)
+            value = 0 if m == 0 else self.calculator.calculate_plant_value(plant, variant, weight, m)
 
-            if mutation_multi == 0:
-                value = 0
-            else:
-                value = self.calculator.calculate_plant_value(
-                    plant_name, variant, weight, mutation_multi
-                )
-
-            # Show results box only after calculation
-            self.results_frame.grid()
-            self.display_results(plant_name, variant, selected_mutations,
-                                 weight, value, mutation_multi)
+            self._show_results(plant, variant, weight, self.selected_mutations, m, value)
 
         except ValueError as e:
             messagebox.showerror("Error", f"Invalid input: {e}")
+        except Exception as e:
+            messagebox.showerror("Error", f"Calculation failed: {e}")
 
-    def display_results(self, plant_name, variant, selected_mutations,
-                        weight, value, mutation_multi):
-        self.results_text.delete(1.0, tk.END)
-        base_price = self.calculator.plants[plant_name]['base_price']
-        base_weight = self.calculator.plants[plant_name]['base_weight']
-        variant_multi = self.calculator.variants[variant]['multiplier']
+    def _show_results(self, plant, variant, weight, muts, m_mult, value):
+        try:
+            base_price = self.calculator.plants[plant]["base_price"]
+            base_weight = self.calculator.plants[plant]["base_weight"]
+            v_mult = self.calculator.variants[variant]["multiplier"]
+            growth = weight / base_weight
+            clamped = max(0.95, growth)
+            g_mult = clamped ** 2
 
-        growth_factor = weight / base_weight
-        clamped = max(0.95, growth_factor)
-        growth_multiplier = clamped ** 2
-
-        results = f"""🌱 PLANT CALCULATION RESULTS
-{'='*50}
+            txt = f"""🌱 PLANT CALCULATION RESULTS
+========================================
 
 📋 INPUT PARAMETERS:
-   Plant: {plant_name}
+   Plant: {plant}
    Variant: {variant}
-   Mutations: {', '.join(selected_mutations) if selected_mutations else 'None'}
+   Mutations: {", ".join(muts) if muts else "None"}
    Weight: {weight:.4f} kg
 
 🔢 CALCULATION DETAILS:
    Base Weight: {base_weight}
    Base Price: {base_price}
-   Growth Factor (Weight/Base): {growth_factor:.2f}
-   Clamped Growth Factor: {clamped:.2f}
-   Growth Multiplier: {growth_multiplier:.2f}
-   Variant Multiplier: {variant_multi}x
-   Mutation Multiplier: {mutation_multi}x
+   Growth Factor: {growth:.2f}
+   Growth Multiplier: {g_mult:.2f}
+   Variant Multiplier: {v_mult}x
+   Mutation Multiplier: {m_mult}x
 
-💰 FINAL VALUE: {value:,}
-
-📈 VALUE BREAKDOWN:
-   Base Price × Growth Multiplier × Variant Multiplier × Mutation Multiplier
-   {base_price} × {growth_multiplier:.2f} × {variant_multi} × {mutation_multi:.2f} = {value:,}
+💰 FINAL VALUE: {value:,.2f}
 """
-        self.results_text.insert(1.0, results)
+            self.results_text.config(state="normal")
+            self.results_text.delete("1.0", "end")
+            self.results_text.insert("1.0", txt)
+            self.results_text.config(state="disabled")
 
-    def show_rules(self):
-        rules = """📘 Mutation Rules
+            self.results.grid()
+            self._animate_expand_to_fit()
 
-1. Zero-Value Mutations (always override):
-   - Rotten, Ghostly → Plant value = 0 regardless of anything else.
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to display results: {e}")
 
-2. Exclusive Groups (only the strongest one applies):
-   • Size Group: Giant, Tiny
-   • Element Group: Shocked, Wet, Burnt
-   • Growth Group: Twisted, Verdant, Albino
+    def _hide_results(self):
+        if self.results.winfo_ismapped():
+            self.results.grid_remove()
+        self._animate_height(self.collapsed_height)
 
-3. Special Multipliers (fixed):
-   - Shiny = ×50
-   - Golden = ×20
-   - Rainbow = ×100
+    def _animate_expand_to_fit(self):
+        self.root.update_idletasks()
+        target = max(self.root.winfo_height(), self.main.winfo_reqheight() + 20)
+        self._animate_height(target)
 
-4. Normal Mutations:
-   - All other mutations stack multiplicatively.
-   - Example: Thorned (×1.5) + Glowing (×1.2) → ×1.8 total.
+    def _animate_height(self, target, duration_ms=220):
+        start = self.root.winfo_height()
+        delta = target - start
+        if delta == 0:
+            return
 
-Tip: If you select Rotten or Ghostly, final value will always be 0.
-"""
+        start_time = time.time()
+        def step():
+            elapsed = (time.time() - start_time) * 1000
+            t = min(elapsed / duration_ms, 1.0)
+            eased = 1 - (1 - t) ** 3
+            h = int(start + delta * eased)
+            self.root.geometry(f"586x{h}")
+            if t < 1.0:
+                self.root.after(16, step)
+
+        step()
+
+    def _show_rules(self):
+        rules = (
+            "📘 Mutation Rules\n\n"
+            "1) Rotten / Ghostly → value = 0.\n"
+            "2) Exclusive groups: only the strongest applies.\n"
+            "3) Specials are fixed multipliers (e.g., Shiny ×50).\n"
+            "4) Others multiply together."
+        )
         messagebox.showinfo("Mutation Rules", rules)
 
     def run(self):
         self.root.mainloop()
 
-
 def main():
-    app = GrowCalculatorUI()
-    app.run()
-
+    try:
+        GrowCalculatorUI().run()
+    except Exception as e:
+        messagebox.showerror("Fatal Error", f"Application failed to start: {e}")
 
 if __name__ == "__main__":
     main()
