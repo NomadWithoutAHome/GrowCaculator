@@ -92,7 +92,7 @@ class GrowCalculatorUI:
                                    bg="#2b2b2b", fg="#4CAF50", font=("Segoe UI", 10, "bold"))
         self.mult_label.grid(row=6, column=0, columnspan=2, sticky="w", pady=(6, 2))
 
-        note = ("Note: Mutations are ADDITIVE: 1 + (mut1-1) + (mut2-1) + ... (from game source)")
+        note = ("Note: Value = Base Price × Mutation Multi × Variant Multi × (Weight/Base Weight)² • Click Rules for details")
         self.note_label = tk.Label(self.main, text=note,
                                    bg="#2b2b2b", fg="#FF9800", font=("Segoe UI", 8, "italic"))
         self.note_label.grid(row=7, column=0, columnspan=3, sticky="w", pady=(0, 10))
@@ -331,16 +331,27 @@ class GrowCalculatorUI:
 
     def _show_rules(self):
         rules = (
-            "📘 Mutation Rules (From Game Source Code)\n\n"
-            "✅ ADDITIVE SYSTEM:\n"
+            "📘 Plant Value Calculation (From Game Source Code)\n\n"
+            "🔢 COMPLETE FORMULA:\n"
+            "Final Value = Base Price × Mutation Multi × Variant Multi × (Weight Ratio)²\n\n"
+            "📊 STEP-BY-STEP BREAKDOWN:\n"
+            "1️⃣ Weight Ratio = Current Weight ÷ Base Weight\n"
+            "2️⃣ Clamped Ratio = clamp(Weight Ratio, 0.95, 100,000,000)\n"
+            "3️⃣ Growth Factor = (Clamped Ratio)²\n"
+            "4️⃣ Final Value = Base Price × Mutation Multi × Variant Multi × Growth Factor\n\n"
+            "🧬 MUTATION MULTIPLIER (ADDITIVE):\n"
             "• Formula: total = 1 + (mut1-1) + (mut2-1) + (mut3-1) + ...\n"
             "• Example: Shocked(100) + Frozen(10) + Sandy(3)\n"
             "  = 1 + (100-1) + (10-1) + (3-1) = 112x\n\n"
-            "📜 Source: MutationHandler.lua line 3903\n"
-            "   v982 = v982 + (v983.ValueMulti - 1)\n\n"
-            "💡 This prevents exponential value explosion!"
+            "🎨 VARIANT MULTIPLIERS:\n"
+            "• Normal: 1x  • Silver: 5x  • Gold: 20x  • Rainbow: 50x\n\n"
+            "📜 SOURCE FILES:\n"
+            "• CalculatePlantValue.lua (lines 17-27)\n"
+            "• MutationHandler.lua (line 3903)\n"
+            "• Item_Module.lua (u3 table)\n\n"
+            "💡 The squared weight factor creates exponential growth for heavy plants!"
         )
-        messagebox.showinfo("Mutation Rules", rules)
+        messagebox.showinfo("Plant Value Calculation Rules", rules)
 
     def run(self):
         self.root.mainloop()
