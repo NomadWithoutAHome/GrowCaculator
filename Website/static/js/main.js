@@ -96,9 +96,16 @@ function initializePlantGrid() {
         currentPlant = plantButton.dataset.plant;
         console.log('Selected plant:', currentPlant);
         
-        // Update weight range and calculation
-        updateWeightRange();
-        updateCalculationIfReady();
+        // Update weight range first, then trigger calculation when complete
+        updateWeightRange().then(() => {
+            console.log('Weight range update complete, now triggering calculation...');
+            // Now that weight range is updated, trigger calculation
+            updateCalculationIfReady();
+        }).catch(error => {
+            console.error('Error updating weight range:', error);
+            // Still try to calculate even if weight range fails
+            updateCalculationIfReady();
+        });
     });
     
     // Search functionality
@@ -220,14 +227,45 @@ function initializeActionButtons() {
                 });
             }
             
-            // Reset weight
+            // Reset plant selection back to Carrot
+            currentPlant = 'Carrot';
+            const plantGrid = document.getElementById('plant-grid');
+            if (plantGrid) {
+                // Remove selection from all plants
+                const allPlantButtons = plantGrid.querySelectorAll('[data-plant]');
+                allPlantButtons.forEach(button => {
+                    button.classList.remove('bg-green-800', 'border-green-600', 'ring-2', 'ring-green-400');
+                    button.classList.add('bg-gray-700', 'border-gray-600');
+                    button.setAttribute('aria-pressed', 'false');
+                });
+                
+                // Select Carrot
+                const carrotButton = plantGrid.querySelector('[data-plant="Carrot"]');
+                if (carrotButton) {
+                    carrotButton.classList.remove('bg-gray-700', 'border-gray-600');
+                    carrotButton.classList.add('bg-green-800', 'border-green-600', 'ring-2', 'ring-green-400');
+                    carrotButton.setAttribute('aria-pressed', 'true');
+                }
+            }
+            
+            // Reset weight to Carrot's base weight
             const weightInput = document.getElementById('plant-weight');
             if (weightInput) {
                 weightInput.value = '0.24';
             }
             
-            console.log('Cleared all selections');
-            hideResults();
+            // Reset plant amount to 1
+            const amountInput = document.getElementById('plant-amount');
+            if (amountInput) {
+                amountInput.value = '1';
+            }
+            
+            console.log('Cleared all selections, reset to Carrot');
+            
+            // Update weight range and trigger calculation
+            updateWeightRange().then(() => {
+                updateCalculationIfReady();
+            });
         });
     } else {
         console.warn('Clear all button not found');
@@ -425,10 +463,8 @@ function displayResults(result) {
         { id: 'plant-name', text: result.plant_name },
         { id: 'weight-display', text: result.weight },
         { id: 'multiplier-display', text: `x${result.mutation_multiplier.toFixed(2)}` },
-        { id: 'final-sheckles', text: result.final_value.toFixed(2) },
         { id: 'plant-count', text: result.plant_amount },
-        { id: 'total-value', text: `💰 $${formatNumber(result.total_value)}` },
-        { id: 'total-sheckles', text: `(${result.total_value.toFixed(2)} Sheckles)` }
+        { id: 'total-value', text: `💰 $${formatNumber(result.total_value)}` }
     ];
     
     elementsToUpdate.forEach(({ id, text }) => {
@@ -438,7 +474,31 @@ function displayResults(result) {
     // Update result-sheckles separately since it's nested inside result-value
     const resultSheckles = document.getElementById('result-sheckles');
     if (resultSheckles) {
-        resultSheckles.textContent = `(${result.final_value.toFixed(2)})`;
+        // Format the integer part with commas, then add decimal places
+        const integerPart = Math.floor(result.final_value);
+        const decimalPart = (result.final_value % 1).toFixed(2).substring(1); // Get .00 part
+        const formattedInteger = formatNumber(integerPart);
+        resultSheckles.textContent = `(${formattedInteger}${decimalPart})`;
+    }
+    
+    // Update final-sheckles in the summary text
+    const finalSheckles = document.getElementById('final-sheckles');
+    if (finalSheckles) {
+        // Format the integer part with commas, then add decimal places
+        const integerPart = Math.floor(result.final_value);
+        const decimalPart = (result.final_value % 1).toFixed(2).substring(1); // Get .00 part
+        const formattedInteger = formatNumber(integerPart);
+        finalSheckles.textContent = `${formattedInteger}${decimalPart}`;
+    }
+    
+    // Update total-sheckles with proper formatting
+    const totalSheckles = document.getElementById('total-sheckles');
+    if (totalSheckles) {
+        // Format the integer part with commas, then add decimal places
+        const integerPart = Math.floor(result.total_value);
+        const decimalPart = (result.total_value % 1).toFixed(2).substring(1); // Get .00 part
+        const formattedInteger = formatNumber(integerPart);
+        totalSheckles.textContent = `(${formattedInteger}${decimalPart} Sheckles)`;
     }
     
     // Show/hide total value section based on plant amount
@@ -485,13 +545,15 @@ async function updateWeightRange() {
     const weightMinSpan = document.getElementById('weight-min');
     const weightMaxSpan = document.getElementById('weight-max');
     
-    if (!weightRangeDiv || !weightMinSpan || !weightMaxSpan) return;
+    if (!weightRangeDiv || !weightMinSpan || !weightMaxSpan) {
+        return Promise.resolve();
+    }
     
     const plantName = currentPlant;
     
     if (!plantName) {
         weightRangeDiv.classList.add('hidden');
-        return;
+        return Promise.resolve();
     }
     
     try {
@@ -514,10 +576,15 @@ async function updateWeightRange() {
             weightInput.value = weightRange.base;
         }
         
+        console.log('Weight range updated for', plantName, 'base weight:', weightRange.base);
+        
     } catch (error) {
         console.error('Weight range error:', error);
         weightRangeDiv.classList.add('hidden');
     }
+    
+    // Always return a resolved promise
+    return Promise.resolve();
 }
 
 /**
