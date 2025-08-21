@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block title %}GrowCalculator - Fruit Value Calculator for Roblox Grow a Garden{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="text-center mb-12">
+    <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-4">
+        Grow a Garden Calculator
+    </h1>
+    <p class="text-xl text-gray-600 mb-8">
+        Calculate fruit values for Roblox Grow a Garden!
+    </p>
+    <div class="bg-blue-100 border-l-4 border-blue-500 p-4 rounded-r-lg inline-block">
+        <p class="text-blue-700">
+            <span id="loading-crops">Loading crops...</span>
+        </p>
+    </div>
+</div>
+
+<!-- Main Calculator Section -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Left Column - Growth Mutations -->
+    <div class="bg-white rounded-lg shadow-lg p-6">
+        <h3 class="text-xl font-bold text-gray-900 mb-4">⭐ Growth Mutations</h3>
+        <div class="space-y-3">
+            {% for variant in variants %}
+            <label class="flex items-center space-x-3 cursor-pointer">
+                <input type="radio" name="variant" value="{{ variant.name }}" 
+                       class="form-radio text-purple-600" 
+                       {% if variant.name == "Normal" %}checked{% endif %}>
+                <span class="text-gray-700">{{ variant.name }}(x{{ variant.multiplier }})</span>
+            </label>
+            {% endfor %}
+        </div>
+
+        <h3 class="text-xl font-bold text-gray-900 mb-4 mt-8">❄️ Weather Mutations</h3>
+        <div class="grid grid-cols-2 gap-2">
+            <button class="mutation-chip" data-mutation="Wet">Wet(+1)</button>
+            <button class="mutation-chip" data-mutation="Chilled">Chilled(+1)</button>
+            <button class="mutation-chip" data-mutation="Frozen">Frozen(+9)</button>
+            <button class="mutation-chip" data-mutation="Drenched">Drenched(+4)</button>
+        </div>
+
+        <h3 class="text-xl font-bold text-gray-900 mb-4 mt-8">✨ Environmental Mutations</h3>
+        <div class="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto">
+            {% for mutation in mutations %}
+            {% if mutation.name not in ["Wet", "Chilled", "Frozen", "Drenched"] %}
+            <button class="mutation-chip" data-mutation="{{ mutation.name }}">
+                {{ mutation.name }}(+{{ mutation.value_multi - 1 }})
+            </button>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Middle Column - Calculator -->
+    <div class="bg-white rounded-lg shadow-lg p-6">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">🧮 Fruit Value Calculator</h2>
+        
+        <form id="calculator-form" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Amount of Plants</label>
+                <input type="number" id="plant-amount" value="1" min="1" 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Total Weight (kg)</label>
+                <input type="number" id="plant-weight" value="0.24" step="0.01" min="0.01" 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+                <div id="weight-range" class="text-xs text-gray-500 mt-1 hidden">
+                    Expected: <span id="weight-min">0.0</span> – <span id="weight-max">0.0</span> kg
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Select Plant</label>
+                <select id="plant-select" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <option value="">Choose a plant...</option>
+                    {% for plant in plants %}
+                    <option value="{{ plant }}" {% if plant == "Carrot" %}selected{% endif %}>{{ plant }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="w-full bg-purple-600 text-white py-3 px-4 rounded-md hover:bg-purple-700 transition-colors font-medium">
+                Calculate Value
+            </button>
+        </form>
+
+        <!-- Selected Mutations Display -->
+        <div id="selected-mutations" class="mt-6 hidden">
+            <h4 class="text-sm font-medium text-gray-700 mb-2">Selected Mutations:</h4>
+            <div id="mutation-list" class="flex flex-wrap gap-2"></div>
+            <button id="clear-mutations" class="text-sm text-red-600 hover:text-red-800 mt-2">Clear All</button>
+        </div>
+    </div>
+
+    <!-- Right Column - Results -->
+    <div class="bg-white rounded-lg shadow-lg p-6">
+        <h3 class="text-xl font-bold text-gray-900 mb-4">📊 Results</h3>
+        
+        <div id="calculation-results" class="hidden">
+            <div class="text-center mb-4">
+                <div class="text-3xl mb-2" id="plant-emoji">🥕</div>
+                <h4 class="text-lg font-semibold" id="result-title">Carrot | 0.240kg</h4>
+                <p class="text-sm text-gray-600">Per plant value:</p>
+                
+                <div class="text-2xl font-bold text-green-600 my-2" id="result-value">
+                    🌿 ≈$0
+                </div>
+                <div class="text-xs text-gray-500" id="result-sheckles">(0.00)</div>
+                
+                <!-- Total Value Display -->
+                <div id="total-value-section" class="mt-4 p-3 bg-purple-50 rounded-lg">
+                    <p class="text-sm text-purple-700 mb-1">Total Value (<span id="plant-count">1</span> plants):</p>
+                    <div class="text-3xl font-bold text-purple-600" id="total-value">
+                        💰 $0
+                    </div>
+                    <div class="text-xs text-purple-500" id="total-sheckles">(0.00 Sheckles)</div>
+                </div>
+            </div>
+
+            <div class="border-t pt-4">
+                <h5 class="font-medium text-gray-700 mb-2">Total Multiplier: <span id="total-multiplier">x1</span></h5>
+                <div id="mutation-breakdown" class="text-sm text-gray-600"></div>
+            </div>
+
+            <div class="mt-4 p-3 bg-green-50 rounded-lg">
+                <p class="text-sm text-green-800" id="result-summary">
+                    🌿 <span id="plant-name">Carrot</span> weighing <span id="weight-display">0.24</span> kg, 
+                    after <span id="multiplier-display">x1</span> mutation, worth <span id="final-sheckles">18.00</span> Sheckles.
+                </p>
+            </div>
+        </div>
+
+        <div id="no-results" class="text-center text-gray-500 py-8">
+            Select a plant and calculate to see results
+        </div>
+
+        <div class="mt-6 flex space-x-2">
+            <button id="max-mutations" class="flex-1 bg-yellow-500 text-white py-2 px-4 rounded-md hover:bg-yellow-600 transition-colors text-sm">
+                Max Mutations
+            </button>
+            <button id="clear-all" class="flex-1 bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition-colors text-sm">
+                Clear All
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Information Sections -->
+<div class="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- What is Grow A Garden -->
+    <div class="bg-white rounded-lg shadow-lg p-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">What is Grow A Garden?</h2>
+        <p class="text-gray-600 mb-4">
+            Grow A Garden is a massively popular farming simulation game on Roblox where players dive into the world of planting, growing, and harvesting crops to earn Sheckles, the game's virtual currency. At its peak, the game has attracted over 5 million concurrent players, thanks to its addictive and rewarding gameplay.
+        </p>
+        <p class="text-gray-600">
+            In Grow A Garden, your journey begins at Sam's Seed Shop, where you can buy seeds to start your garden. Using tools like sprinklers and taking advantage of weather events—such as the rare Blood Moon—you can increase the chances of growing mutated crops, which are key to maximizing your profits.
+        </p>
+    </div>
+
+    <!-- Calculator Features -->
+    <div class="bg-white rounded-lg shadow-lg p-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">What is GrowCalculator?</h2>
+        <p class="text-gray-600 mb-4">
+            The Roblox Grow A Garden Calculator is the most accurate and reliable tool available for players looking to calculate the value of over 130+ crops, including all known mutations and fruit weight calculations.
+        </p>
+        <div class="space-y-3">
+            <div class="flex items-start space-x-3">
+                <span class="text-green-500 font-bold">✓</span>
+                <span class="text-gray-600">Complete Plant Database - Explore all plants with real in-game values</span>
+            </div>
+            <div class="flex items-start space-x-3">
+                <span class="text-green-500 font-bold">✓</span>
+                <span class="text-gray-600">Mutation Estimation - Apply different mutations and see their impact instantly</span>
+            </div>
+            <div class="flex items-start space-x-3">
+                <span class="text-green-500 font-bold">✓</span>
+                <span class="text-gray-600">Accurate Results - Based on real game data for trustworthy calculations</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Formula Section -->
+<div class="mt-16 bg-white rounded-lg shadow-lg p-8">
+    <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">The Value Calculation Formula</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center">
+            <h3 class="text-xl font-semibold text-purple-600 mb-3">Step 1: Calculate Mutation Multiplier</h3>
+            <div class="bg-gray-100 p-4 rounded-lg font-mono text-sm">
+                Mutation Multiplier = 1 + Σ(mutation.ValueMulti - 1)
+            </div>
+            <p class="text-gray-600 mt-3 text-sm">
+                Calculate mutation effects additively. Each mutation contributes (ValueMulti - 1) to the total multiplier, starting from a base of 1.
+            </p>
+        </div>
+        
+        <div class="text-center">
+            <h3 class="text-xl font-semibold text-purple-600 mb-3">Step 2: Calculate Base Value</h3>
+            <div class="bg-gray-100 p-4 rounded-lg font-mono text-sm">
+                Base Value = Base Price × Mutation Multiplier × Variant Multiplier
+            </div>
+            <p class="text-gray-600 mt-3 text-sm">
+                Combine the plant's base price with mutation and variant multipliers (Normal=1x, Silver=5x, Gold=20x, Rainbow=50x).
+            </p>
+        </div>
+        
+        <div class="text-center">
+            <h3 class="text-xl font-semibold text-purple-600 mb-3">Step 3: Apply Weight & Round</h3>
+            <div class="bg-gray-100 p-4 rounded-lg font-mono text-sm">
+                Final Price = Round(Base Value × (Weight Ratio)²)
+            </div>
+            <p class="text-gray-600 mt-3 text-sm">
+                Apply weight effect quadratically with ratio clamped to minimum 0.95, then round to get final <strong>Sheckles</strong>.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ Section -->
+<div class="mt-16 bg-white rounded-lg shadow-lg p-8">
+    <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">Frequently Asked Questions</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+            <h4 class="text-lg font-semibold text-gray-900 mb-2">Is the calculator accurate?</h4>
+            <p class="text-gray-600">
+                <strong>Highly accurate!</strong> Based on exact game source code with 96-100% accuracy: 
+                Perfect for high-value plants (500k+), within ±1-2 Sheckles for low-value plants. 
+                Uses the same mathematical formulas as the game itself.
+            </p>
+        </div>
+        
+        <div>
+            <h4 class="text-lg font-semibold text-gray-900 mb-2">Can I test different mutations?</h4>
+            <p class="text-gray-600">Absolutely — just select a mutation and see how it changes your crop's value.</p>
+        </div>
+        
+        <div>
+            <h4 class="text-lg font-semibold text-gray-900 mb-2">Is this free to use?</h4>
+            <p class="text-gray-600">Yes. No login or signup needed—just open and use it anytime.</p>
+        </div>
+        
+        <div>
+            <h4 class="text-lg font-semibold text-gray-900 mb-2">How do you keep crop values up-to-date?</h4>
+            <p class="text-gray-600">We reference live data from the game files and update values regularly to reflect the latest changes.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Initialize calculator functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Hide loading message and show loaded state
+    document.getElementById('loading-crops').textContent = 'Ready to calculate!';
+    
+    // Initialize mutation selection
+    initializeMutationSelection();
+    
+    // Initialize form handling
+    initializeCalculatorForm();
+});
+</script>
+{% endblock %}

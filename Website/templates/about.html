@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}About - GrowCalculator{% endblock %}
+
+{% block description %}Learn about GrowCalculator, the most accurate plant value calculator for Roblox Grow a Garden. Built from game source code with 96-100% accuracy.{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="text-center mb-12">
+    <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-4">
+        About GrowCalculator
+    </h1>
+    <p class="text-xl text-gray-600 mb-8">
+        The most accurate plant value calculator for Roblox Grow a Garden
+    </p>
+</div>
+
+<!-- Main Content -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+    <!-- What is GrowCalculator -->
+    <div class="bg-white rounded-lg shadow-lg p-8">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6">🌱 What is GrowCalculator?</h2>
+        <div class="space-y-4 text-gray-600">
+            <p>
+                GrowCalculator is a precision tool designed specifically for Roblox's "Grow a Garden" players who want to maximize their farming profits. Built by reverse-engineering the actual game source code, our calculator provides unmatched accuracy in plant value calculations.
+            </p>
+            <p>
+                Whether you're a casual farmer or a serious trader, GrowCalculator helps you make informed decisions about mutations, variants, and plant investments by providing exact value calculations that match the game's internal formulas.
+            </p>
+        </div>
+    </div>
+
+    <!-- Why We Built This -->
+    <div class="bg-white rounded-lg shadow-lg p-8">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6">🔬 Why We Built This</h2>
+        <div class="space-y-4 text-gray-600">
+            <p>
+                Existing calculators relied on approximations and guesswork, leading to inaccurate pricing that could cost players thousands of Sheckles in missed opportunities or bad trades.
+            </p>
+            <p>
+                By analyzing the actual game's source code, we extracted the exact mathematical formulas used by "Grow a Garden" itself, ensuring our calculator provides the same results you see in-game.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Accuracy Section -->
+<div class="mt-16 bg-white rounded-lg shadow-lg p-8">
+    <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">📊 Accuracy & Reliability</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center">
+            <div class="text-4xl font-bold text-green-600 mb-2">96-100%</div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Overall Accuracy</h3>
+            <p class="text-gray-600 text-sm">
+                Tested across hundreds of plant combinations with real in-game values
+            </p>
+        </div>
+        
+        <div class="text-center">
+            <div class="text-4xl font-bold text-purple-600 mb-2">100%</div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">High-Value Plants</h3>
+            <p class="text-gray-600 text-sm">
+                Perfect accuracy for plants worth 100k+ Sheckles
+            </p>
+        </div>
+        
+        <div class="text-center">
+            <div class="text-4xl font-bold text-blue-600 mb-2">±1-2</div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Sheckle Precision</h3>
+            <p class="text-gray-600 text-sm">
+                Maximum deviation for low-value plants due to hidden game mechanics
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="mt-16 bg-white rounded-lg shadow-lg p-8">
+    <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">✨ Features</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="p-4 border border-gray-200 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">🧮 Bulk Calculations</h3>
+            <p class="text-gray-600 text-sm">Calculate values for multiple plants at once</p>
+        </div>
+        
+        <div class="p-4 border border-gray-200 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">⚖️ Weight Ranges</h3>
+            <p class="text-gray-600 text-sm">See expected weight ranges for each plant type</p>
+        </div>
+        
+        <div class="p-4 border border-gray-200 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">🧬 Mutation Calculator</h3>
+            <p class="text-gray-600 text-sm">Test different mutation combinations</p>
+        </div>
+        
+        <div class="p-4 border border-gray-200 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">📱 Mobile Friendly</h3>
+            <p class="text-gray-600 text-sm">Works perfectly on phones and tablets</p>
+        </div>
+        
+        <div class="p-4 border border-gray-200 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">⚡ Real-time Updates</h3>
+            <p class="text-gray-600 text-sm">Instant calculations as you change inputs</p>
+        </div>
+        
+        <div class="p-4 border border-gray-200 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">📊 Detailed Breakdown</h3>
+            <p class="text-gray-600 text-sm">See exactly how values are calculated</p>
+        </div>
+    </div>
+</div>
+
+<!-- Technical Details -->
+<div class="mt-16 bg-white rounded-lg shadow-lg p-8">
+    <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">🔧 Technical Details</h2>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-4">Data Source</h3>
+            <ul class="space-y-2 text-gray-600">
+                <li>• 176 plants with exact base weights and prices</li>
+                <li>• 72 mutations with precise value multipliers</li>
+                <li>• 4 variants (Normal, Silver, Gold, Rainbow)</li>
+                <li>• All data extracted from game source code</li>
+            </ul>
+        </div>
+        
+        <div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-4">Calculation Method</h3>
+            <ul class="space-y-2 text-gray-600">
+                <li>• Additive mutation formula: 1 + Σ(mutation.ValueMulti - 1)</li>
+                <li>• Quadratic weight scaling: (weight/base_weight)²</li>
+                <li>• Proper weight ratio clamping (minimum 0.95)</li>
+                <li>• Exact rounding to match game behavior</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Contact/Support -->
+<div class="mt-16 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg shadow-lg p-8">
+    <div class="text-center">
+        <h2 class="text-3xl font-bold mb-4">🚀 Ready to Optimize Your Garden?</h2>
+        <p class="text-lg mb-6 opacity-90">
+            Start using the most accurate plant calculator for Grow a Garden today!
+        </p>
+        <div class="space-x-4">
+            <a href="/" class="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                Start Calculating
+            </a>
+            <a href="/mutation-calculator" class="bg-purple-800 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+                Mutation Calculator
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Disclaimer -->
+<div class="mt-12 bg-gray-100 rounded-lg p-6">
+    <h3 class="text-lg font-semibold text-gray-900 mb-2">📄 Disclaimer</h3>
+    <p class="text-gray-600 text-sm">
+        GrowCalculator is an independent tool created by the community for educational and informational purposes. 
+        We are not affiliated with Gamer Robot Inc. or the official "Grow a Garden" game. 
+        All trademarks and game content belong to their respective owners.
+    </p>
+</div>
+{% endblock %}
