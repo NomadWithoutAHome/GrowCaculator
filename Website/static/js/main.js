@@ -5,6 +5,7 @@
 // Global state
 let selectedMutations = [];
 let currentVariant = 'Normal';
+let currentPlant = 'Carrot';
 let allMutations = [];
 let allPlants = [];
 let allVariants = [];
@@ -16,14 +17,8 @@ const API_BASE = '/api';
  * Initialize the calculator form
  */
 function initializeCalculatorForm() {
-    const form = document.getElementById('calculator-form');
-    if (!form) return;
-
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        await calculatePlantValue();
-    });
-
+    console.log('Initializing calculator form...');
+    
     // Initialize variant selection
     const variantRadios = document.querySelectorAll('input[name="variant"]');
     variantRadios.forEach(radio => {
@@ -35,7 +30,6 @@ function initializeCalculatorForm() {
 
     // Auto-calculate on input changes
     const weightInput = document.getElementById('plant-weight');
-    const plantSelect = document.getElementById('plant-select');
     const amountInput = document.getElementById('plant-amount');
     
     if (weightInput) {
@@ -46,64 +40,276 @@ function initializeCalculatorForm() {
         amountInput.addEventListener('input', debounce(updateCalculationIfReady, 500));
     }
     
-    if (plantSelect) {
-        plantSelect.addEventListener('change', function() {
-            updateWeightRange();
-            updateCalculationIfReady();
-        });
+    // Initialize plant grid functionality
+    initializePlantGrid();
+    
+    // Initialize weight range for default plant
+    updateWeightRange();
+    
+    // Initialize action buttons
+    initializeActionButtons();
+    
+    // Initialize mutation selection
+    initializeMutationSelection();
+    
+    // Trigger initial calculation
+    setTimeout(() => {
+        updateCalculationIfReady();
+    }, 100);
+}
+
+/**
+ * Initialize plant grid functionality
+ */
+function initializePlantGrid() {
+    const plantGrid = document.getElementById('plant-grid');
+    const searchInput = document.getElementById('plant-search');
+    
+    if (!plantGrid) {
+        console.warn('Plant grid not found');
+        return;
+    }
+    
+    console.log('Initializing plant grid...');
+    
+    // Add click handlers to plant buttons
+    plantGrid.addEventListener('click', function(e) {
+        const plantButton = e.target.closest('[data-plant]');
+        if (!plantButton) return;
         
-        // Initialize weight range for default plant
-        if (plantSelect.value) {
-            updateWeightRange();
+        console.log('Plant clicked:', plantButton.dataset.plant);
+        
+        // Remove previous selection - look for any selected plant
+        const previousSelected = plantGrid.querySelector('[aria-pressed="true"]');
+        if (previousSelected) {
+            previousSelected.classList.remove('bg-green-800', 'border-green-600', 'ring-2', 'ring-green-400');
+            previousSelected.classList.add('bg-gray-700', 'border-gray-600');
+            previousSelected.setAttribute('aria-pressed', 'false');
         }
+        
+        // Add selection to clicked plant
+        plantButton.classList.remove('bg-gray-700', 'border-gray-600');
+        plantButton.classList.add('bg-green-800', 'border-green-600', 'ring-2', 'ring-green-400');
+        plantButton.setAttribute('aria-pressed', 'true');
+        
+        // Update current plant
+        currentPlant = plantButton.dataset.plant;
+        console.log('Selected plant:', currentPlant);
+        
+        // Update weight range and calculation
+        updateWeightRange();
+        updateCalculationIfReady();
+    });
+    
+    // Search functionality
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            console.log('Searching for:', searchTerm);
+            
+            const plantButtons = plantGrid.querySelectorAll('[data-plant]');
+            
+            plantButtons.forEach(button => {
+                const plantName = button.dataset.plant.toLowerCase();
+                if (plantName.includes(searchTerm)) {
+                    button.style.display = '';
+                } else {
+                    button.style.display = 'none';
+                }
+            });
+        });
+    } else {
+        console.warn('Search input not found');
+    }
+    
+    // Select default plant (Carrot)
+    const defaultPlant = plantGrid.querySelector('[data-plant="Carrot"]');
+    if (defaultPlant) {
+        console.log('Setting default plant: Carrot');
+        defaultPlant.classList.remove('bg-gray-700', 'border-gray-600');
+        defaultPlant.classList.add('bg-green-800', 'border-green-600', 'ring-2', 'ring-green-400');
+        defaultPlant.setAttribute('aria-pressed', 'true');
+        currentPlant = 'Carrot';
+    } else {
+        console.warn('Default plant (Carrot) not found');
     }
 }
+
+/**
+ * Initialize action buttons
+ */
+function initializeActionButtons() {
+    console.log('Initializing action buttons...');
+    
+    // Max mutations button
+    const maxButton = document.getElementById('max-mutations');
+    if (maxButton) {
+        maxButton.addEventListener('click', function() {
+            console.log('Max mutations button clicked');
+            
+            // Clear all mutations first
+            selectedMutations = [];
+            const mutationCheckboxes = document.querySelectorAll('input[type="checkbox"][data-mutation]');
+            mutationCheckboxes.forEach(checkbox => {
+                checkbox.checked = false;
+                const label = checkbox.closest('label');
+                if (label) {
+                    label.classList.remove('bg-green-700/50', 'border-green-500', 'text-white');
+                    label.classList.add('bg-gray-700/30', 'text-gray-300');
+                }
+            });
+            
+            // Add max mutations
+            const maxMutations = ['Shocked', 'Celestial', 'Paradisal'];
+            maxMutations.forEach(mutationName => {
+                const checkbox = document.querySelector(`input[data-mutation="${mutationName}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                    const label = checkbox.closest('label');
+                    if (label) {
+                        label.classList.remove('bg-gray-700/30', 'text-gray-300');
+                        label.classList.add('bg-green-700/50', 'border-green-500', 'text-white');
+                    }
+                    selectedMutations.push(mutationName);
+                }
+            });
+            
+            console.log('Applied max mutations:', selectedMutations);
+            updateCalculationIfReady();
+        });
+    } else {
+        console.warn('Max mutations button not found');
+    }
+    
+    // Clear all button
+    const clearAllButton = document.getElementById('clear-all');
+    if (clearAllButton) {
+        clearAllButton.addEventListener('click', function() {
+            console.log('Clear all button clicked');
+            
+            // Clear mutations
+            selectedMutations = [];
+            const mutationCheckboxes = document.querySelectorAll('input[type="checkbox"][data-mutation]');
+            mutationCheckboxes.forEach(checkbox => {
+                checkbox.checked = false;
+                const label = checkbox.closest('label');
+                if (label) {
+                    label.classList.remove('bg-green-700/50', 'border-green-500', 'text-white');
+                    label.classList.add('bg-gray-700/30', 'text-gray-300');
+                }
+            });
+            
+            // Reset variant to Normal
+            currentVariant = 'Normal';
+            const normalRadio = document.querySelector('input[value="Normal"]');
+            if (normalRadio) {
+                normalRadio.checked = true;
+                // Update variant visual state
+                const variantRadios = document.querySelectorAll('input[name="variant"]');
+                variantRadios.forEach(radio => {
+                    const label = radio.closest('label');
+                    if (label) {
+                        if (radio.checked) {
+                            label.classList.remove('bg-gray-700/30', 'text-gray-300');
+                            label.classList.add('bg-green-700/50', 'border-green-500', 'text-white');
+                        } else {
+                            label.classList.remove('bg-green-700/50', 'border-green-500', 'text-white');
+                            label.classList.add('bg-gray-700/30', 'text-gray-300');
+                        }
+                    }
+                });
+            }
+            
+            // Reset weight
+            const weightInput = document.getElementById('plant-weight');
+            if (weightInput) {
+                weightInput.value = '0.24';
+            }
+            
+            console.log('Cleared all selections');
+            hideResults();
+        });
+    } else {
+        console.warn('Clear all button not found');
+    }
+}
+
+/**
+ * Update variant selection styling
+ */
+function updateVariantSelection(selectedVariant) {
+    const variantLabels = document.querySelectorAll('input[name="variant"]');
+    variantLabels.forEach(radio => {
+        const label = radio.closest('label');
+        if (label) {
+            if (radio.value === selectedVariant) {
+                label.classList.remove('bg-gray-700/30', 'text-gray-300');
+                label.classList.add('bg-green-700/50', 'border-green-500', 'text-white');
+            } else {
+                label.classList.remove('bg-green-700/50', 'border-green-500', 'text-white');
+                label.classList.add('bg-gray-700/30', 'text-gray-300');
+            }
+        }
+    });
+}
+
+
 
 /**
  * Initialize mutation selection functionality
  */
 function initializeMutationSelection() {
-    const mutationButtons = document.querySelectorAll('.mutation-chip');
+    const mutationCheckboxes = document.querySelectorAll('input[type="checkbox"][data-mutation]');
+    const variantRadios = document.querySelectorAll('input[name="variant"]');
     
-    mutationButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const mutation = this.getAttribute('data-mutation');
-            toggleMutation(mutation);
+    console.log('Initializing mutation selection...');
+    console.log('Found mutation checkboxes:', mutationCheckboxes.length);
+    console.log('Found variant radios:', variantRadios.length);
+    
+    // Handle mutation checkboxes
+    mutationCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const label = this.closest('label');
+            if (this.checked) {
+                label.classList.remove('bg-gray-700/30', 'text-gray-300');
+                label.classList.add('bg-green-700/50', 'border-green-500', 'text-white');
+                selectedMutations.push(this.dataset.mutation);
+                console.log('Added mutation:', this.dataset.mutation);
+            } else {
+                label.classList.remove('bg-green-700/50', 'border-green-500', 'text-white');
+                label.classList.add('bg-gray-700/30', 'text-gray-300');
+                const index = selectedMutations.indexOf(this.dataset.mutation);
+                if (index > -1) {
+                    selectedMutations.splice(index, 1);
+                    console.log('Removed mutation:', this.dataset.mutation);
+                }
+            }
+            console.log('Current mutations:', selectedMutations);
+            updateCalculationIfReady();
         });
     });
-
-    // Clear mutations button
-    const clearButton = document.getElementById('clear-mutations');
-    if (clearButton) {
-        clearButton.addEventListener('click', function() {
-            selectedMutations = [];
-            updateMutationDisplay();
+    
+    // Handle variant radios
+    variantRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            console.log('Variant changed to:', this.value);
+            
+            // Update visual state for all variant labels
+            variantRadios.forEach(r => {
+                const label = r.closest('label');
+                if (r.checked) {
+                    label.classList.remove('bg-gray-700/30', 'text-gray-300');
+                    label.classList.add('bg-green-700/50', 'border-green-500', 'text-white');
+                } else {
+                    label.classList.remove('bg-green-700/50', 'border-green-500', 'text-white');
+                    label.classList.add('bg-gray-700/30', 'text-gray-300');
+                }
+            });
+            
+            currentVariant = this.value;
             updateCalculationIfReady();
         });
-    }
-
-    // Max mutations button
-    const maxButton = document.getElementById('max-mutations');
-    if (maxButton) {
-        maxButton.addEventListener('click', function() {
-            selectedMutations = ['Shocked', 'Celestial', 'Paradisal'];
-            updateMutationDisplay();
-            updateCalculationIfReady();
-        });
-    }
-
-    // Clear all button
-    const clearAllButton = document.getElementById('clear-all');
-    if (clearAllButton) {
-        clearAllButton.addEventListener('click', function() {
-            selectedMutations = [];
-            currentVariant = 'Normal';
-            document.querySelector('input[value="Normal"]').checked = true;
-            document.getElementById('plant-weight').value = '0.24';
-            updateMutationDisplay();
-            hideResults();
-        });
-    }
+    });
 }
 
 
@@ -161,17 +367,19 @@ function updateMutationDisplay() {
  * Calculate plant value
  */
 async function calculatePlantValue() {
-    const plantSelect = document.getElementById('plant-select');
     const weightInput = document.getElementById('plant-weight');
     const amountInput = document.getElementById('plant-amount');
     
-    if (!plantSelect || !weightInput || !amountInput) return;
+    if (!weightInput || !amountInput) return;
 
-    const plantName = plantSelect.value;
+    const plantName = currentPlant;
     const weight = parseFloat(weightInput.value);
     const amount = parseInt(amountInput.value);
 
+    console.log('Calculating for:', plantName, weight, amount, selectedMutations);
+
     if (!plantName || !weight || weight <= 0 || !amount || amount <= 0) {
+        console.log('Invalid inputs, hiding results');
         hideResults();
         return;
     }
@@ -207,29 +415,26 @@ async function calculatePlantValue() {
  * Display calculation results
  */
 function displayResults(result) {
-    const resultsDiv = document.getElementById('calculation-results');
-    const noResultsDiv = document.getElementById('no-results');
-    
-    if (!resultsDiv || !noResultsDiv) return;
+    // The results are always visible in our new layout, just update them
 
-    // Show results, hide no-results
-    resultsDiv.classList.remove('hidden');
-    noResultsDiv.classList.add('hidden');
-
-    // Update result displays
-    updateElement('result-title', `${result.plant_name} | ${result.weight}kg`);
-    updateElement('result-value', `🌿 ≈$${formatNumber(result.final_value)}`);
-    updateElement('result-sheckles', `(${result.final_value.toFixed(2)})`);
-    updateElement('total-multiplier', `x${result.mutation_multiplier.toFixed(2)}`);
-    updateElement('plant-name', result.plant_name);
-    updateElement('weight-display', result.weight);
-    updateElement('multiplier-display', `x${result.mutation_multiplier.toFixed(2)}`);
-    updateElement('final-sheckles', result.final_value.toFixed(2));
+    // Update result displays with safety checks
+    const elementsToUpdate = [
+        { id: 'result-title', text: `${result.plant_name} | ${result.weight}kg | would cost around:` },
+        { id: 'result-value', text: `🌿 ≈$${formatNumber(result.final_value)}` },
+        { id: 'result-sheckles', text: `(${result.final_value.toFixed(2)})` },
+        { id: 'total-multiplier', text: `x${result.mutation_multiplier.toFixed(2)}` },
+        { id: 'plant-name', text: result.plant_name },
+        { id: 'weight-display', text: result.weight },
+        { id: 'multiplier-display', text: `x${result.mutation_multiplier.toFixed(2)}` },
+        { id: 'final-sheckles', text: result.final_value.toFixed(2) },
+        { id: 'plant-count', text: result.plant_amount },
+        { id: 'total-value', text: `💰 $${formatNumber(result.total_value)}` },
+        { id: 'total-sheckles', text: `(${result.total_value.toFixed(2)} Sheckles)` }
+    ];
     
-    // Update bulk/total value displays
-    updateElement('plant-count', result.plant_amount);
-    updateElement('total-value', `💰 $${formatNumber(result.total_value)}`);
-    updateElement('total-sheckles', `(${result.total_value.toFixed(2)} Sheckles)`);
+    elementsToUpdate.forEach(({ id, text }) => {
+        updateElement(id, text);
+    });
     
     // Show/hide total value section based on plant amount
     const totalValueSection = document.getElementById('total-value-section');
@@ -242,12 +447,12 @@ function displayResults(result) {
     }
 
     // Update mutation breakdown
-    const breakdownDiv = document.getElementById('mutation-breakdown');
-    if (breakdownDiv) {
+    const breakdownSpan = document.getElementById('mutation-breakdown');
+    if (breakdownSpan) {
         if (result.mutations.length > 0) {
-            breakdownDiv.textContent = `Mutations: ${result.mutations.join(', ')}`;
+            breakdownSpan.textContent = `Mutations: ${result.mutations.join(', ')}`;
         } else {
-            breakdownDiv.textContent = 'No mutations applied';
+            breakdownSpan.textContent = 'Default';
         }
     }
 }
@@ -256,27 +461,23 @@ function displayResults(result) {
  * Hide calculation results
  */
 function hideResults() {
-    const resultsDiv = document.getElementById('calculation-results');
-    const noResultsDiv = document.getElementById('no-results');
-    
-    if (resultsDiv && noResultsDiv) {
-        resultsDiv.classList.add('hidden');
-        noResultsDiv.classList.remove('hidden');
-    }
+    // In our new layout, we don't hide results, just reset to defaults
+    updateElement('result-title', 'Select a plant to calculate');
+    updateElement('result-value', '🌿 ≈$0');
+    updateElement('result-sheckles', '(0.00)');
 }
 
 /**
  * Update weight range display when plant changes
  */
 async function updateWeightRange() {
-    const plantSelect = document.getElementById('plant-select');
     const weightRangeDiv = document.getElementById('weight-range');
     const weightMinSpan = document.getElementById('weight-min');
     const weightMaxSpan = document.getElementById('weight-max');
     
-    if (!plantSelect || !weightRangeDiv || !weightMinSpan || !weightMaxSpan) return;
+    if (!weightRangeDiv || !weightMinSpan || !weightMaxSpan) return;
     
-    const plantName = plantSelect.value;
+    const plantName = currentPlant;
     
     if (!plantName) {
         weightRangeDiv.classList.add('hidden');
@@ -313,9 +514,16 @@ async function updateWeightRange() {
  * Update calculation if inputs are ready
  */
 function updateCalculationIfReady() {
-    const plantSelect = document.getElementById('plant-select');
-    if (plantSelect && plantSelect.value) {
+    console.log('updateCalculationIfReady called');
+    console.log('Current plant:', currentPlant);
+    console.log('Current variant:', currentVariant);
+    console.log('Selected mutations:', selectedMutations);
+    
+    if (currentPlant) {
+        console.log('Triggering calculation...');
         calculatePlantValue();
+    } else {
+        console.log('No plant selected, skipping calculation');
     }
 }
 
@@ -481,6 +689,8 @@ function updateElement(id, text) {
     const element = document.getElementById(id);
     if (element) {
         element.textContent = text;
+    } else {
+        console.warn(`Element with id '${id}' not found`);
     }
 }
 
@@ -513,3 +723,25 @@ function loadCombo(mutations) {
         updateCalculationIfReady();
     }
 }
+
+// Initialize everything when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing calculator...');
+    
+    // Check if key elements exist
+    const keyElements = [
+        'plant-grid', 'plant-search', 'plant-weight', 'plant-amount',
+        'result-title', 'result-value', 'weight-range', 'total-multiplier'
+    ];
+    
+    keyElements.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            console.log(`✓ Found element: ${id}`);
+        } else {
+            console.warn(`✗ Missing element: ${id}`);
+        }
+    });
+    
+    initializeCalculatorForm();
+});

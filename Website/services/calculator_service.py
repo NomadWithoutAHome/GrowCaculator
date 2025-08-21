@@ -146,9 +146,9 @@ class CalculatorService:
         
         return result
     
-    def get_plant_names(self) -> List[str]:
-        """Get sorted list of all plant names."""
-        return sorted(self.plants.keys())
+    def get_plants(self) -> List[PlantData]:
+        """Get sorted list of all plant data objects."""
+        return sorted(self.plants.values(), key=lambda x: x.name)
     
     def get_variants(self) -> List[VariantData]:
         """Get list of all variants."""

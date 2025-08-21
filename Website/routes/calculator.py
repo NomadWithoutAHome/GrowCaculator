@@ -18,7 +18,7 @@ async def home(request: Request):
         "index.html",
         {
             "request": request,
-            "plants": calculator_service.get_plant_names(),
+            "plants": calculator_service.get_plants(),
             "variants": calculator_service.get_variants(),
             "mutations": calculator_service.get_mutations(),
         }

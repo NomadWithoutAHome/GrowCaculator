@@ -11,40 +11,42 @@
     
     <!-- Custom CSS -->
     <style>
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .plant-card {
-            transition: all 0.3s ease;
-        }
-        .plant-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
         .mutation-chip {
-            @apply bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium;
+            @apply bg-gray-700/30 text-gray-300 px-3 py-2 rounded-md text-sm font-medium border border-gray-600 cursor-pointer transition-all duration-200;
+        }
+        .mutation-chip:hover {
+            @apply bg-green-800/40 text-white;
         }
         .mutation-chip.selected {
-            @apply bg-purple-600 text-white;
+            @apply bg-green-700/50 border-green-500 text-white;
+        }
+        .dark-input {
+            @apply bg-gray-700 border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-green-500;
+        }
+        .dark-button {
+            @apply bg-gray-700 hover:bg-gray-600 text-white border border-gray-600 transition-colors duration-200;
+        }
+        .dark-card {
+            @apply bg-gray-800 rounded-lg shadow-lg;
+        }
+        .dark-card-inner {
+            @apply bg-gray-800 rounded-lg shadow-md;
         }
     </style>
     
     {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="bg-gradient-to-b from-gray-900 to-gray-800 text-white min-h-screen">
     <!-- Navigation -->
-    <nav class="gradient-bg shadow-lg">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-4">
-                <div class="flex items-center space-x-4">
-                    <h1 class="text-2xl font-bold text-white">🌱 GrowCalculator</h1>
-                    <span class="text-purple-200 text-sm hidden sm:block">for Roblox Grow a Garden</span>
-                </div>
-                <div class="flex space-x-6">
-                    <a href="/" class="text-white hover:text-purple-200 transition-colors">Home</a>
-                    <a href="/mutation-calculator" class="text-white hover:text-purple-200 transition-colors">Mutation Calculator</a>
-                    <a href="/about" class="text-white hover:text-purple-200 transition-colors">About</a>
-                </div>
+    <nav class="bg-gray-900 text-white w-full sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <a class="flex items-center space-x-1" href="/">
+                <span class="text-white text-xl">🌱 Grow A Garden Calculator</span>
+            </a>
+            <div class="hidden md:flex space-x-6 text-lg font-medium">
+                <a class="hover:text-green-400 transition-colors" href="/">Home</a>
+                <a class="hover:text-green-400 transition-colors" href="/mutation-calculator">Mutation Calculator</a>
+                <a class="hover:text-green-400 transition-colors" href="/about">About</a>
             </div>
         </div>
     </nav>
@@ -55,31 +57,33 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">🌱 GrowCalculator</h3>
-                    <p class="text-gray-300">The most accurate plant value calculator for Roblox Grow a Garden. Calculate mutations, variants, and optimize your harvest!</p>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Tools</h4>
-                    <ul class="space-y-2 text-gray-300">
-                        <li><a href="/" class="hover:text-white transition-colors">Plant Value Calculator</a></li>
-                        <li><a href="/mutation-calculator" class="hover:text-white transition-colors">Mutation Calculator</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
-                    <ul class="space-y-2 text-gray-300">
-                        <li><a href="/about" class="hover:text-white transition-colors">About</a></li>
-                        <li><a href="https://www.roblox.com/games/15478376746/Grow-A-Garden" target="_blank" class="hover:text-white transition-colors">Play Game</a></li>
-                    </ul>
-                </div>
+    <footer class="bg-gray-900 text-gray-300 py-10 px-4 mt-16">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div>
+                <h3 class="flex items-center gap-2 text-white font-bold text-2xl mb-3">
+                    🌱 Grow A Garden Calculator
+                </h3>
+                <p class="text-md leading-relaxed">The most accurate plant value calculator for Roblox Grow a Garden. Calculate mutations, variants, and optimize your harvest with 96-100% accuracy!</p>
             </div>
-            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+            <div>
+                <h3 class="text-white font-bold text-2xl mb-3">Tools</h3>
+                <ul class="space-y-2 text-md">
+                    <li><a href="/" class="hover:text-green-400 transition-colors">Plant Value Calculator</a></li>
+                    <li><a href="/mutation-calculator" class="hover:text-green-400 transition-colors">Mutation Calculator</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-white font-bold text-2xl mb-3">Quick Links</h3>
+                <ul class="space-y-2 text-md">
+                    <li><a href="/about" class="hover:text-green-400 transition-colors">About</a></li>
+                    <li><a href="https://www.roblox.com/games/15478376746/Grow-A-Garden" target="_blank" class="hover:text-green-400 transition-colors">Play Game</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-white/10 mt-12 pt-6">
+            <div class="max-w-7xl mx-auto text-center text-sm text-gray-400">
                 <p>&copy; 2025 GrowCalculator. Made with ❤️ for the Roblox community.</p>
-                <p class="mt-2 text-sm">This site is not affiliated with Do Big Studios. or Grow A Garden. For informational purposes only.</p>
+                <p class="mt-2">This site is not affiliated with Do Big Studios or Grow A Garden. For informational purposes only.</p>
             </div>
         </div>
     </footer>
