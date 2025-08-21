@@ -540,7 +540,9 @@ function displayResults(result) {
     
     // Animate final-sheckles in the summary text
     if (currentFinalSheckles) {
-        animateSheckles(currentFinalSheckles, currentFinalShecklesValue, result.final_value, 500, false, true);
+        // Update instantly without animation for the summary text, using abbreviated format
+        const formattedValue = formatLargeNumber(result.final_value);
+        currentFinalSheckles.textContent = formattedValue;
     }
     
     // Animate total-sheckles
@@ -806,6 +808,29 @@ function initializeMutationCalculator() {
 // Format numbers with commas
 function formatNumber(num) {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+/**
+ * Format large numbers into readable abbreviations
+ */
+function formatLargeNumber(num) {
+    if (num >= 1e21) {
+        return (num / 1e21).toFixed(2) + ' Sextillion';
+    } else if (num >= 1e18) {
+        return (num / 1e18).toFixed(2) + ' Quintillion';
+    } else if (num >= 1e15) {
+        return (num / 1e15).toFixed(2) + ' Quadrillion';
+    } else if (num >= 1e12) {
+        return (num / 1e12).toFixed(2) + ' Trillion';
+    } else if (num >= 1e9) {
+        return (num / 1e9).toFixed(2) + ' Billion';
+    } else if (num >= 1e6) {
+        return (num / 1e6).toFixed(2) + ' Million';
+    } else if (num >= 1e3) {
+        return (num / 1e3).toFixed(2) + 'K';
+    } else {
+        return num.toFixed(2);
+    }
 }
 
 /**
