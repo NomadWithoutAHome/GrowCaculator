@@ -187,7 +187,6 @@ async function calculatePlantValue() {
                 variant: currentVariant,
                 weight: weight,
                 mutations: selectedMutations,
-                friend_boost: 0,
                 plant_amount: amount
             })
         });

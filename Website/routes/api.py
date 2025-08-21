@@ -25,7 +25,6 @@ async def calculate_plant_value(request: CalculationRequest):
             variant=request.variant,
             weight=request.weight,
             mutations=request.mutations,
-            friend_boost=request.friend_boost,
             plant_amount=request.plant_amount
         )
         return result

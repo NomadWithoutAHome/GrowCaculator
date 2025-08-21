@@ -81,7 +81,6 @@ class CalculatorService:
         variant: str,
         weight: float,
         mutation_multi: float,
-        friend_boost: float = 0.0,
         plant_amount: int = 1
     ) -> CalculationResponse:
         """
@@ -107,14 +106,8 @@ class CalculatorService:
         # Final value = base_value * (clamped_ratio^2)
         final_value = base_value * (clamped_ratio * clamped_ratio)
         
-        # Apply friend boost if provided
-        boosted_value = final_value
-        if friend_boost > 0:
-            boosted_value = final_value * (1 + friend_boost / 100)
-        
         # Calculate bulk totals
         total_value = round(final_value) * plant_amount
-        total_boosted_value = round(boosted_value) * plant_amount
         
         return CalculationResponse(
             plant_name=plant_name,
@@ -125,11 +118,8 @@ class CalculatorService:
             base_value=base_value,
             weight_ratio=weight_ratio,
             final_value=round(final_value),
-            friend_boost=friend_boost,
-            boosted_value=round(boosted_value),
             plant_amount=plant_amount,
-            total_value=total_value,
-            total_boosted_value=total_boosted_value
+            total_value=total_value
         )
     
     def calculate_full_value(
@@ -138,7 +128,6 @@ class CalculatorService:
         variant: str,
         weight: float,
         mutations: List[str],
-        friend_boost: float = 0.0,
         plant_amount: int = 1
     ) -> CalculationResponse:
         """
@@ -149,7 +138,7 @@ class CalculatorService:
         
         # Calculate plant value
         result = self.calculate_plant_value(
-            plant_name, variant, weight, mutation_multi, friend_boost, plant_amount
+            plant_name, variant, weight, mutation_multi, plant_amount
         )
         
         # Add mutations to response
