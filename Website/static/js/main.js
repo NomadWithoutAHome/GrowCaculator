@@ -455,50 +455,97 @@ async function calculatePlantValue() {
 function displayResults(result) {
     // The results are always visible in our new layout, just update them
 
-    // Update result displays with safety checks
+    // Get current values for animation
+    const currentResultValue = document.getElementById('result-value');
+    const currentTotalValue = document.getElementById('total-value');
+    const currentResultSheckles = document.getElementById('result-sheckles');
+    const currentFinalSheckles = document.getElementById('final-sheckles');
+    const currentTotalSheckles = document.getElementById('total-sheckles');
+    
+    // Extract current numeric values for smooth animation
+    let currentDollarValue = 0;
+    let currentTotalDollarValue = 0;
+    let currentShecklesValue = 0;
+    let currentFinalShecklesValue = 0;
+    let currentTotalShecklesValue = 0;
+    
+    if (currentResultValue) {
+        const currentText = currentResultValue.textContent;
+        const match = currentText.match(/\$([0-9,]+)/);
+        if (match) {
+            currentDollarValue = parseInt(match[1].replace(/,/g, ''));
+        }
+    }
+    
+    if (currentTotalValue) {
+        const currentText = currentTotalValue.textContent;
+        const match = currentText.match(/\$([0-9,]+)/);
+        if (match) {
+            currentTotalDollarValue = parseInt(match[1].replace(/,/g, ''));
+        }
+    }
+    
+    if (currentResultSheckles) {
+        const currentText = currentResultSheckles.textContent;
+        const match = currentText.match(/\(([0-9,.]+)\)/);
+        if (match) {
+            currentShecklesValue = parseFloat(match[1].replace(/,/g, ''));
+        }
+    }
+    
+    if (currentFinalSheckles) {
+        const currentText = currentFinalSheckles.textContent;
+        const match = currentText.match(/([0-9,.]+)/);
+        if (match) {
+            currentFinalShecklesValue = parseFloat(match[1].replace(/,/g, ''));
+        }
+    }
+    
+    if (currentTotalSheckles) {
+        const currentText = currentTotalSheckles.textContent;
+        const match = currentText.match(/\(([0-9,.]+)/);
+        if (match) {
+            currentTotalShecklesValue = parseFloat(match[1].replace(/,/g, ''));
+        }
+    }
+
+    // Update result displays with safety checks (non-animated elements)
     const elementsToUpdate = [
         { id: 'result-title', text: `${result.plant_name} | ${result.weight}kg | would cost around:` },
-        { id: 'result-value', text: `🌿 ≈$${formatNumber(result.final_value)}` },
         { id: 'total-multiplier', text: `x${result.mutation_multiplier.toFixed(2)}` },
         { id: 'plant-name', text: result.plant_name },
         { id: 'weight-display', text: result.weight },
         { id: 'multiplier-display', text: `x${result.mutation_multiplier.toFixed(2)}` },
-        { id: 'plant-count', text: result.plant_amount },
-        { id: 'total-value', text: `💰 $${formatNumber(result.total_value)}` }
+        { id: 'plant-count', text: result.plant_amount }
     ];
     
     elementsToUpdate.forEach(({ id, text }) => {
         updateElement(id, text);
     });
     
-    // Update result-sheckles separately since it's nested inside result-value
-    const resultSheckles = document.getElementById('result-sheckles');
-    if (resultSheckles) {
-        // Format the integer part with commas, then add decimal places
-        const integerPart = Math.floor(result.final_value);
-        const decimalPart = (result.final_value % 1).toFixed(2).substring(1); // Get .00 part
-        const formattedInteger = formatNumber(integerPart);
-        resultSheckles.textContent = `(${formattedInteger}${decimalPart})`;
+    // Animate the main dollar value
+    if (currentResultValue) {
+        animateNumber(currentResultValue, currentDollarValue, result.final_value, 500, true);
     }
     
-    // Update final-sheckles in the summary text
-    const finalSheckles = document.getElementById('final-sheckles');
-    if (finalSheckles) {
-        // Format the integer part with commas, then add decimal places
-        const integerPart = Math.floor(result.final_value);
-        const decimalPart = (result.final_value % 1).toFixed(2).substring(1); // Get .00 part
-        const formattedInteger = formatNumber(integerPart);
-        finalSheckles.textContent = `${formattedInteger}${decimalPart}`;
+    // Animate the total dollar value
+    if (currentTotalValue) {
+        animateNumber(currentTotalValue, currentTotalDollarValue, result.total_value, 500, false);
     }
     
-    // Update total-sheckles with proper formatting
-    const totalSheckles = document.getElementById('total-sheckles');
-    if (totalSheckles) {
-        // Format the integer part with commas, then add decimal places
-        const integerPart = Math.floor(result.total_value);
-        const decimalPart = (result.total_value % 1).toFixed(2).substring(1); // Get .00 part
-        const formattedInteger = formatNumber(integerPart);
-        totalSheckles.textContent = `(${formattedInteger}${decimalPart} Sheckles)`;
+    // Animate result-sheckles
+    if (currentResultSheckles) {
+        animateSheckles(currentResultSheckles, currentShecklesValue, result.final_value);
+    }
+    
+    // Animate final-sheckles in the summary text
+    if (currentFinalSheckles) {
+        animateSheckles(currentFinalSheckles, currentFinalShecklesValue, result.final_value, 500, false, true);
+    }
+    
+    // Animate total-sheckles
+    if (currentTotalSheckles) {
+        animateSheckles(currentTotalSheckles, currentTotalShecklesValue, result.total_value, 500, true);
     }
     
     // Show/hide total value section based on plant amount
@@ -759,6 +806,79 @@ function initializeMutationCalculator() {
 // Format numbers with commas
 function formatNumber(num) {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+/**
+ * Animate number counting smoothly
+ */
+function animateNumber(element, startValue, endValue, duration = 500, isResultValue = false) {
+    if (!element) return;
+    
+    const start = performance.now();
+    const difference = endValue - startValue;
+    
+    function update(currentTime) {
+        const elapsed = currentTime - start;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Easing function for smooth animation
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+        const currentValue = startValue + (difference * easeOutQuart);
+        
+        // Format the number with commas
+        const formattedValue = formatNumber(Math.round(currentValue));
+        
+        if (isResultValue) {
+            element.textContent = `🌿 ≈$${formattedValue}`;
+        } else {
+            element.textContent = `💰 $${formattedValue}`;
+        }
+        
+        if (progress < 1) {
+            requestAnimationFrame(update);
+        }
+    }
+    
+    requestAnimationFrame(update);
+}
+
+/**
+ * Animate sheckles counting smoothly
+ */
+function animateSheckles(element, startValue, endValue, duration = 500, includeSheckles = false, isFinalSheckles = false) {
+    if (!element) return;
+    
+    const start = performance.now();
+    const difference = endValue - startValue;
+    
+    function update(currentTime) {
+        const elapsed = currentTime - start;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Easing function for smooth animation
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+        const currentValue = startValue + (difference * easeOutQuart);
+        
+        // Format the number with commas and decimal places
+        const integerPart = Math.floor(currentValue);
+        const decimalPart = (currentValue % 1).toFixed(2).substring(1);
+        const formattedInteger = formatNumber(integerPart);
+        
+        if (isFinalSheckles) {
+            // For final-sheckles, don't include parentheses
+            element.textContent = `${formattedInteger}${decimalPart}`;
+        } else if (includeSheckles) {
+            element.textContent = `(${formattedInteger}${decimalPart} Sheckles)`;
+        } else {
+            element.textContent = `(${formattedInteger}${decimalPart})`;
+        }
+        
+        if (progress < 1) {
+            requestAnimationFrame(update);
+        }
+    }
+    
+    requestAnimationFrame(update);
 }
 
 // Update element text content safely
