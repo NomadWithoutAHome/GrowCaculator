@@ -421,7 +421,6 @@ function displayResults(result) {
     const elementsToUpdate = [
         { id: 'result-title', text: `${result.plant_name} | ${result.weight}kg | would cost around:` },
         { id: 'result-value', text: `🌿 ≈$${formatNumber(result.final_value)}` },
-        { id: 'result-sheckles', text: `(${result.final_value.toFixed(2)})` },
         { id: 'total-multiplier', text: `x${result.mutation_multiplier.toFixed(2)}` },
         { id: 'plant-name', text: result.plant_name },
         { id: 'weight-display', text: result.weight },
@@ -435,6 +434,12 @@ function displayResults(result) {
     elementsToUpdate.forEach(({ id, text }) => {
         updateElement(id, text);
     });
+    
+    // Update result-sheckles separately since it's nested inside result-value
+    const resultSheckles = document.getElementById('result-sheckles');
+    if (resultSheckles) {
+        resultSheckles.textContent = `(${result.final_value.toFixed(2)})`;
+    }
     
     // Show/hide total value section based on plant amount
     const totalValueSection = document.getElementById('total-value-section');
@@ -464,7 +469,12 @@ function hideResults() {
     // In our new layout, we don't hide results, just reset to defaults
     updateElement('result-title', 'Select a plant to calculate');
     updateElement('result-value', '🌿 ≈$0');
-    updateElement('result-sheckles', '(0.00)');
+    
+    // Update result-sheckles separately since it's nested
+    const resultSheckles = document.getElementById('result-sheckles');
+    if (resultSheckles) {
+        resultSheckles.textContent = '(0.00)';
+    }
 }
 
 /**
