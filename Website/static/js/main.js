@@ -828,8 +828,8 @@ function updatePlantImage(plantName) {
     
     if (!plantImage || !plantPlaceholder) return;
     
-    // Convert plant name to filename format (lowercase, replace spaces with hyphens)
-    const filename = plantName.toLowerCase().replace(/\s+/g, '-');
+    // Convert plant name to filename format (lowercase, replace spaces with hyphens, remove apostrophes)
+    const filename = plantName.toLowerCase().replace(/\s+/g, '-').replace(/'/g, '');
     const imagePath = `/static/img/crop-${filename}.webp`;
     
     // Set the image source
@@ -862,8 +862,8 @@ function preloadPlantImages() {
         const cropPlaceholder = button.querySelector('.crop-placeholder');
         
         if (cropImage && cropPlaceholder) {
-            // Convert plant name to filename format (lowercase, replace spaces with hyphens)
-            const filename = plantName.toLowerCase().replace(/\s+/g, '-');
+            // Convert plant name to filename format (lowercase, replace spaces with hyphens, remove apostrophes)
+            const filename = plantName.toLowerCase().replace(/\s+/g, '-').replace(/'/g, '');
             const imagePath = `/static/img/crop-${filename}.webp`;
             
             // Set the image source
