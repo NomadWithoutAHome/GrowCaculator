@@ -484,6 +484,12 @@ function initializeMutationSelection() {
         console.error('Environmental Mutations heading not found');
     }
     
+    // Initialize mutation search functionality
+    console.log('About to initialize mutation search...');
+    setTimeout(() => {
+        initializeMutationSearch();
+    }, 100); // Small delay to ensure DOM is ready
+    
     // Handle mutation checkboxes
     mutationCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
@@ -531,6 +537,79 @@ function initializeMutationSelection() {
 }
 
 
+
+/**
+ * Initialize mutation search functionality
+ */
+function initializeMutationSearch() {
+    const searchInput = document.getElementById('mutation-search');
+    
+    if (!searchInput) {
+        console.warn('Mutation search input not found');
+        return;
+    }
+    
+    console.log('Initializing mutation search...');
+    
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase().trim();
+        console.log('Searching for mutations containing:', searchTerm);
+        
+        // Get all mutation labels dynamically each time to ensure we have the latest
+        const mutationLabels = document.querySelectorAll('input[type="checkbox"][data-mutation]');
+        console.log('Found', mutationLabels.length, 'mutation checkboxes to search through');
+        
+        let visibleCount = 0;
+        mutationLabels.forEach(checkbox => {
+            const label = checkbox.closest('label');
+            if (!label) {
+                console.warn('No label found for checkbox:', checkbox);
+                return;
+            }
+            
+            const mutationName = checkbox.dataset.mutation.toLowerCase();
+            console.log('Checking mutation:', mutationName, 'against search term:', searchTerm);
+            
+            if (mutationName.includes(searchTerm)) {
+                label.style.display = 'flex';
+                visibleCount++;
+            } else {
+                label.style.display = 'none';
+            }
+        });
+        
+        console.log('Found', visibleCount, 'visible mutations');
+    });
+    
+    // Clear search when input is cleared
+    searchInput.addEventListener('change', function() {
+        if (this.value === '') {
+            const mutationLabels = document.querySelectorAll('input[type="checkbox"][data-mutation]');
+            mutationLabels.forEach(checkbox => {
+                const label = checkbox.closest('label');
+                if (label) {
+                    label.style.display = 'flex';
+                }
+            });
+            console.log('Search cleared, showing all mutations');
+        }
+    });
+    
+    // Also clear on keyup for better responsiveness
+    searchInput.addEventListener('keyup', function() {
+        if (this.value === '') {
+            const mutationLabels = document.querySelectorAll('input[type="checkbox"][data-mutation]');
+            mutationLabels.forEach(checkbox => {
+                const label = checkbox.closest('label');
+                if (label) {
+                    label.style.display = 'flex';
+                }
+            });
+        }
+    });
+    
+    console.log('Mutation search functionality initialized successfully');
+}
 
 /**
  * Toggle mutation selection
@@ -1212,7 +1291,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Check if key elements exist
     const keyElements = [
         'plant-grid', 'plant-search', 'plant-weight', 'plant-amount',
-        'result-title', 'result-value', 'weight-range', 'total-multiplier'
+        'result-title', 'result-value', 'weight-range', 'total-multiplier',
+        'mutation-search' // Add mutation search to key elements check
     ];
     
     keyElements.forEach(id => {
