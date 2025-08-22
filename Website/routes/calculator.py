@@ -44,3 +44,12 @@ async def about(request: Request):
         "about.html",
         {"request": request}
     )
+
+
+@router.get("/share/{share_id}", response_class=HTMLResponse)
+async def share_result(request: Request, share_id: str):
+    """Share results page."""
+    return templates.TemplateResponse(
+        "share.html",
+        {"request": request, "share_id": share_id}
+    )

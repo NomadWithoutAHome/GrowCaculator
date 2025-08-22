@@ -175,44 +175,64 @@ function initializePlantGrid() {
 function initializeActionButtons() {
     console.log('Initializing action buttons...');
     
-    // Max mutations button
-    const maxButton = document.getElementById('max-mutations');
-    if (maxButton) {
-        maxButton.addEventListener('click', function() {
-            console.log('Max mutations button clicked');
+    // Share result button
+    const shareButton = document.getElementById('share-result');
+    if (shareButton) {
+        shareButton.addEventListener('click', function() {
+            console.log('Share result button clicked');
             
-            // Clear all mutations first
-            selectedMutations = [];
-            const mutationCheckboxes = document.querySelectorAll('input[type="checkbox"][data-mutation]');
-            mutationCheckboxes.forEach(checkbox => {
-                checkbox.checked = false;
-                const label = checkbox.closest('label');
-                if (label) {
-                    label.classList.remove('bg-green-700/50', 'border-green-500', 'text-white');
-                    label.classList.add('bg-gray-700/30', 'text-gray-300');
-                }
-            });
+            // Check if we have calculation results to share
+            if (!currentPlant) {
+                alert('Please select a plant before sharing results.');
+                return;
+            }
             
-            // Add max mutations
-            const maxMutations = ['Shocked', 'Celestial', 'Paradisal'];
-            maxMutations.forEach(mutationName => {
-                const checkbox = document.querySelector(`input[data-mutation="${mutationName}"]`);
-                if (checkbox) {
-                    checkbox.checked = true;
-                    const label = checkbox.closest('label');
-                    if (label) {
-                        label.classList.remove('bg-gray-700/30', 'text-gray-300');
-                        label.classList.add('bg-green-700/50', 'border-green-500', 'text-white');
-                    }
-                    selectedMutations.push(mutationName);
-                }
-            });
+            // Check if we have any calculation results
+            const currentResultValue = document.getElementById('result-value');
+            if (!currentResultValue || currentResultValue.textContent.includes('≈$0') || currentResultValue.textContent === '🌿') {
+                alert('Please calculate a plant value before sharing results.');
+                return;
+            }
             
-            console.log('Applied max mutations:', selectedMutations);
-            updateCalculationIfReady();
+            // Get current calculation results
+            const currentFinalSheckles = document.getElementById('final-sheckles');
+            const currentTotalValue = document.getElementById('total-value');
+            
+            // Get additional calculation details
+            const totalMultiplier = document.getElementById('total-multiplier')?.textContent || 'x1';
+            const mutationBreakdown = document.getElementById('mutation-breakdown')?.textContent || 'Default';
+            const weightMin = document.getElementById('weight-min')?.textContent || '0.17';
+            const weightMax = document.getElementById('weight-max')?.textContent || '0.38';
+            
+            // Create share data
+            const shareData = {
+                plant: currentPlant,
+                variant: currentVariant,
+                mutations: selectedMutations,
+                weight: document.getElementById('plant-weight')?.value || '0.24',
+                amount: document.getElementById('plant-amount')?.value || '1',
+                resultValue: currentResultValue?.textContent || '',
+                finalSheckles: currentFinalSheckles?.textContent || '',
+                totalValue: currentTotalValue?.textContent || '',
+                totalMultiplier: totalMultiplier,
+                mutationBreakdown: mutationBreakdown,
+                weightMin: weightMin,
+                weightMax: weightMax,
+                timestamp: new Date().toISOString(),
+                expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours from now
+            };
+            
+            // Generate unique share ID
+            const shareId = generateShareId();
+            
+            // Store share data (in a real app, this would go to a database)
+            localStorage.setItem(`share_${shareId}`, JSON.stringify(shareData));
+            
+            // Redirect to share page
+            window.open(`/share/${shareId}`, '_blank');
         });
     } else {
-        console.warn('Max mutations button not found');
+        console.warn('Share result button not found');
     }
     
     // Clear all button
@@ -1139,6 +1159,11 @@ function debounce(func, wait) {
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
     };
+}
+
+// Generate unique share ID
+function generateShareId() {
+    return 'share_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 }
 
 // Get random mutations
