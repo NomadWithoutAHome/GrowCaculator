@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}GrowCalculator - Plant Value Calculator for Roblox Grow a Garden{% endblock %}</title>
+    <title>{% block title %}Grow Calculator - Plant Value Calculator for Roblox Grow a Garden{% endblock %}</title>
     <meta name="description" content="{% block description %}Calculate fruit values for Roblox Grow a Garden! The most accurate calculator for plant mutations, variants, and weight calculations.{% endblock %}">
     
     <!-- Tailwind CSS -->
@@ -69,6 +69,64 @@
         .mutations-scrollbar-button:single-button:end {
             border-radius: 0 0 2px 2px;
         }
+        
+        /* Custom scrollbar for mutation calculator */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            display: block;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #2d3748;
+            border-radius: 3px;
+            display: block;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #10b981;
+            border-radius: 3px;
+            min-height: 40px;
+            display: block;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #059669;
+        }
+        .custom-scrollbar::-webkit-scrollbar-button {
+            background: #10b981;
+            height: 12px;
+            border-radius: 2px;
+            display: block;
+        }
+        .custom-scrollbar::-webkit-scrollbar-button:hover {
+            background: #059669;
+        }
+        .custom-scrollbar::-webkit-scrollbar-button:single-button:start {
+            border-radius: 2px 2px 0 0;
+        }
+        .custom-scrollbar::-webkit-scrollbar-button:single-button:end {
+            border-radius: 0 0 2px 2px;
+        }
+        
+        /* Mutation button states */
+        .mutation-btn {
+            transition: all 0.2s ease;
+        }
+        
+        /* Base state - unselected */
+        .mutation-btn:not(.selected) {
+            background-color: #374151 !important; /* bg-gray-700 */
+            color: #d1d5db !important; /* text-gray-300 */
+        }
+        
+        /* Hover state for unselected buttons */
+        .mutation-btn:not(.selected):hover {
+            background-color: #065f46 !important; /* bg-green-800/40 equivalent */
+            color: white !important;
+        }
+        
+        /* Selected state */
+        .mutation-btn.selected {
+            background-color: #9333ea !important; /* bg-purple-600 */
+            color: white !important;
+        }
     </style>
     
     {% block extra_head %}{% endblock %}
@@ -112,7 +170,7 @@
                 <h3 class="text-white font-bold text-2xl mb-3">Quick Links</h3>
                 <ul class="space-y-2 text-md">
                     <li><a href="/about" class="hover:text-green-400 transition-colors">About</a></li>
-                    <li><a href="https://www.roblox.com/games/15478376746/Grow-A-Garden" target="_blank" class="hover:text-green-400 transition-colors">Play Game</a></li>
+                    <li><a href="https://www.roblox.com/games/126884695634066/Grow-a-Garden" target="_blank" class="hover:text-green-400 transition-colors">Play Game</a></li>
                 </ul>
             </div>
         </div>

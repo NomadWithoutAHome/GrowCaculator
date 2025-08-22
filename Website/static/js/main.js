@@ -56,6 +56,9 @@ function initializeCalculatorForm() {
     setTimeout(() => {
         updateCalculationIfReady();
     }, 100);
+    
+    // Set initial plant image
+    updatePlantImage('Carrot');
 }
 
 /**
@@ -95,6 +98,9 @@ function initializePlantGrid() {
         // Update current plant
         currentPlant = plantButton.dataset.plant;
         console.log('Selected plant:', currentPlant);
+        
+        // Update plant image
+        updatePlantImage(currentPlant);
         
         // Update weight range first, then trigger calculation when complete
         updateWeightRange().then(() => {
@@ -137,9 +143,15 @@ function initializePlantGrid() {
         defaultPlant.classList.add('bg-green-800', 'border-green-600', 'ring-2', 'ring-green-400');
         defaultPlant.setAttribute('aria-pressed', 'true');
         currentPlant = 'Carrot';
+        
+        // Update plant image for default plant
+        updatePlantImage('Carrot');
     } else {
         console.warn('Default plant (Carrot) not found');
     }
+    
+    // Preload all plant images
+    preloadPlantImages();
 }
 
 /**
@@ -261,6 +273,9 @@ function initializeActionButtons() {
             }
             
             console.log('Cleared all selections, reset to Carrot');
+            
+            // Update plant image back to Carrot
+            updatePlantImage('Carrot');
             
             // Update weight range and trigger calculation
             updateWeightRange().then(() => {
@@ -745,6 +760,82 @@ async function updateWeightRange() {
     
     // Always return a resolved promise
     return Promise.resolve();
+}
+
+/**
+ * Update plant image when a plant is selected
+ */
+function updatePlantImage(plantName) {
+    const plantEmojiContainer = document.getElementById('plant-emoji');
+    if (!plantEmojiContainer) return;
+    
+    // Convert plant name to filename format (lowercase, replace spaces with hyphens)
+    const filename = plantName.toLowerCase().replace(/\s+/g, '-');
+    const imagePath = `/static/img/crop-${filename}.webp`;
+    
+    // Check if we need to recreate the image element (in case it was replaced by fallback)
+    let plantImage = plantEmojiContainer.querySelector('img');
+    if (!plantImage) {
+        // Recreate the image element if it doesn't exist
+        plantEmojiContainer.innerHTML = `<img src="${imagePath}" alt="${plantName}" class="w-full h-full object-contain" id="plant-image">`;
+        plantImage = plantEmojiContainer.querySelector('img');
+    } else {
+        // Update existing image
+        plantImage.src = imagePath;
+        plantImage.alt = plantName;
+    }
+    
+    // Handle image load errors by showing a fallback placeholder image
+    plantImage.onerror = function() {
+        console.warn(`Image not found for ${plantName}, using fallback placeholder`);
+        plantEmojiContainer.innerHTML = '<img src="/static/img/placeholder.png" alt="Placeholder" class="w-full h-full object-contain">';
+    };
+    
+    // Handle successful image load
+    plantImage.onload = function() {
+        console.log(`Successfully loaded image for ${plantName}`);
+    };
+}
+
+/**
+ * Preload all plant images for better performance
+ */
+function preloadPlantImages() {
+    const plantButtons = document.querySelectorAll('[data-plant]');
+    plantButtons.forEach(button => {
+        const plantName = button.dataset.plant;
+        const plantImage = button.querySelector('img');
+        
+        if (plantImage) {
+            // Convert plant name to filename format (lowercase, replace spaces with hyphens)
+            const filename = plantName.toLowerCase().replace(/\s+/g, '-');
+            const imagePath = `/static/img/crop-${filename}.webp`;
+            
+            // Set the image source
+            plantImage.src = imagePath;
+            plantImage.alt = plantName;
+            
+            // Handle image load errors by showing fallback placeholder image
+            plantImage.onerror = function() {
+                console.warn(`Image not found for ${plantName}, using fallback placeholder`);
+                this.style.display = 'none';
+                const fallbackPlaceholder = this.nextElementSibling;
+                if (fallbackPlaceholder) {
+                    fallbackPlaceholder.style.display = 'block';
+                }
+            };
+            
+            // Handle successful image load
+            plantImage.onload = function() {
+                console.log(`Successfully loaded image for ${plantName}`);
+                this.style.display = 'block';
+                const fallbackPlaceholder = this.nextElementSibling;
+                if (fallbackPlaceholder) {
+                    fallbackPlaceholder.style.display = 'none';
+                }
+            };
+        }
+    });
 }
 
 /**
