@@ -3,18 +3,15 @@
 {% block title %}Grow Calculator - Fruit Value Calculator for Roblox Grow a Garden{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<div class="p-4 flex flex-col items-center mt-6">
-    <span class="inline-flex items-center space-x-2 bg-green-500/10 text-sm font-bold border border-green-500/20 rounded-full px-4 py-2 mb-2">
-        A Value Calculator
-    </span>
-    <h1 class="text-4xl font-bold text-center bg-gradient-to-r from-green-400 to-purple-600 bg-clip-text text-transparent">
-        Grow a Garden Calculator
-    </h1>
-    <p class="text-center text-gray-400 text-sm mt-1">
-        Calculate fruit values for Roblox Grow a Garden!
-    </p>
-</div>
+ <!-- Hero Section -->
+ <div class="p-4 flex flex-col items-center mt-8">
+     <h1 class="text-4xl font-bold text-center flex items-center justify-center mb-2">
+         <img src="/static/img/title.png" alt="Grow a Garden Calculator" class="h-16">
+     </h1>
+     <div class="text-center">
+         <img src="/static/img/subtitletext.png" alt="Calculate fruit values for Roblox Grow a Garden!" class="h-4">
+     </div>
+ </div>
 
 <!-- Main Calculator Section -->
 <main class="w-full max-w-6xl flex flex-col gap-6 mt-6">
@@ -50,7 +47,10 @@
     <div class="bg-gray-800 p-4 rounded-lg shadow-lg space-y-4">
         <!-- Growth Mutations -->
         <div class="bg-gray-800 p-4 rounded-lg shadow-md">
-            <h3 class="text-base sm:text-lg font-semibold mb-3 text-gray-200">⭐ Variant Mutations</h3>
+            <h3 class="text-base sm:text-lg font-semibold mb-3 text-gray-200 flex items-center">
+                <img src="/static/img/Variant.png" alt="Variant Icon" class="w-5 h-5 mr-2">
+                Variant Mutations
+            </h3>
             <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3">
                 {% for variant in variants %}
                 <label class="flex items-center gap-2 p-2 border rounded-md text-sm transition cursor-pointer {% if variant.name == 'Normal' %}bg-green-700/50 border-green-500 text-white{% else %}bg-gray-700/30 text-gray-300 hover:bg-green-800/40 hover:text-white{% endif %}">
@@ -67,7 +67,10 @@
 
         <!-- Environmental Mutations (including weather mutations) -->
         <div class="bg-gray-800 p-4 rounded-lg shadow-md">
-            <h3 class="text-base sm:text-lg font-semibold mb-3 text-gray-200">✨ Mutations</h3>
+                         <h3 class="text-base sm:text-lg font-semibold mb-3 text-gray-200 flex items-center">
+                 <img src="/static/img/normal.png" alt="Mutations Icon" class="w-5 h-5 mr-2">
+                 Mutations
+             </h3>
             <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3 mutations-scrollable" style="max-height: calc(6 * 2.5rem + 1rem); overflow-y: auto; scrollbar-width: thin; scrollbar-color: #10b981 #2d3748;">
                 {% for mutation in mutations %}
                 <label class="flex items-center gap-2 p-2 border rounded-md text-sm transition cursor-pointer bg-gray-700/30 text-gray-300 hover:bg-green-800/40 hover:text-white">
@@ -129,12 +132,12 @@
                 <p class="text-sm text-gray-300 leading-snug">
                     <span class="text-yellow-200" id="mutation-breakdown"></span>
                 </p>
-                <p class="text-sm mt-2 text-gray-400" id="result-summary">
-                    🌿 <span class="text-green-300 font-semibold" id="plant-name"></span> weighing 
-                    <span class="text-blue-300" id="weight-display"></span> kg, after 
-                    <span class="text-purple-400" id="multiplier-display"></span> mutation, worth 
-                    <span class="text-green-400" id="final-sheckles"></span> Sheckles.
-                </p>
+                                 <p class="text-sm mt-2 text-gray-400" id="result-summary">
+                     <img src="/static/img/currency.png" alt="Currency" class="w-4 h-4 inline-block mr-1"> <span class="text-green-300 font-semibold" id="plant-name"></span> weighing 
+                     <span class="text-blue-300" id="weight-display"></span> kg, after 
+                     <span class="text-purple-400" id="multiplier-display"></span> mutation, worth 
+                     <span class="text-green-400" id="final-sheckles"></span> Sheckles.
+                 </p>
             </div>
             
             <!-- Action Buttons -->
