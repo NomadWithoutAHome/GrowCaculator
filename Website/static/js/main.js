@@ -304,6 +304,117 @@ function initializeMutationSelection() {
     console.log('Found mutation checkboxes:', mutationCheckboxes.length);
     console.log('Found variant radios:', variantRadios.length);
     
+    // Add scrollbar to mutations container if it exists
+    // Look for the mutations section by finding the h3 with "Environmental Mutations" text
+    const mutationsHeading = Array.from(document.querySelectorAll('h3')).find(h3 => 
+        h3.textContent.includes('Environmental Mutations')
+    );
+    
+    console.log('Found mutations heading:', mutationsHeading);
+    
+    if (mutationsHeading) {
+        const mutationsContainer = mutationsHeading.closest('.bg-gray-800');
+        console.log('Found mutations container:', mutationsContainer);
+        
+        if (mutationsContainer) {
+            // Find the grid container within the mutations section
+            const mutationsGrid = mutationsContainer.querySelector('.grid');
+            console.log('Found mutations grid:', mutationsGrid);
+            
+            if (mutationsGrid) {
+                // Force the scrollbar to appear by setting a smaller max height
+                mutationsGrid.style.maxHeight = 'calc(6 * 2.5rem + 1rem)'; // Reduced to 6 rows to ensure scrollbar appears
+                mutationsGrid.style.overflowY = 'auto';
+                mutationsGrid.style.scrollbarWidth = 'thin';
+                mutationsGrid.style.scrollbarColor = '#10b981 #2d3748';
+                
+                // Custom scrollbar styling for webkit browsers
+                mutationsGrid.style.setProperty('--scrollbar-thumb', '#10b981');
+                mutationsGrid.style.setProperty('--scrollbar-track', '#2d3748');
+                
+                // Add custom scrollbar CSS with a unique identifier and prevent conflicts
+                const existingStyle = document.getElementById('mutations-scrollbar-style');
+                if (existingStyle) {
+                    existingStyle.remove();
+                }
+                
+                const style = document.createElement('style');
+                style.id = 'mutations-scrollbar-style';
+                style.textContent = `
+                    .mutations-scrollable::-webkit-scrollbar {
+                        width: 6px !important;
+                        display: block !important;
+                    }
+                    .mutations-scrollable::-webkit-scrollbar-track {
+                        background: #2d3748 !important;
+                        border-radius: 3px !important;
+                        display: block !important;
+                    }
+                    .mutations-scrollable::-webkit-scrollbar-thumb {
+                        background: #10b981 !important;
+                        border-radius: 3px !important;
+                        min-height: 40px !important;
+                        display: block !important;
+                    }
+                    .mutations-scrollable::-webkit-scrollbar-thumb:hover {
+                        background: #059669 !important;
+                    }
+                    .mutations-scrollable::-webkit-scrollbar-button {
+                        background: #10b981 !important;
+                        height: 12px !important;
+                        border-radius: 2px !important;
+                        display: block !important;
+                    }
+                    .mutations-scrollable::-webkit-scrollbar-button:hover {
+                        background: #059669 !important;
+                    }
+                    .mutations-scrollable::-webkit-scrollbar-button:single-button:start {
+                        border-radius: 2px 2px 0 0 !important;
+                    }
+                    .mutations-scrollable::-webkit-scrollbar-button:single-button:end {
+                        border-radius: 0 0 2px 2px !important;
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                // Add the class for webkit scrollbar styling
+                mutationsGrid.classList.add('mutations-scrollable');
+                
+                // Force a reflow to ensure styles are applied
+                mutationsGrid.offsetHeight;
+                
+                // Add a MutationObserver to ensure scrollbar styling persists
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                            // Re-apply scrollbar styling if it gets removed
+                            if (!mutationsGrid.style.overflowY || mutationsGrid.style.overflowY !== 'auto') {
+                                mutationsGrid.style.maxHeight = 'calc(6 * 2.5rem + 1rem)';
+                                mutationsGrid.style.overflowY = 'auto';
+                                mutationsGrid.style.scrollbarWidth = 'thin';
+                                mutationsGrid.style.scrollbarColor = '#10b981 #2d3748';
+                            }
+                        }
+                    });
+                });
+                
+                observer.observe(mutationsGrid, { attributes: true, attributeFilter: ['style'] });
+                
+                console.log('Scrollbar added to mutations grid with exact plant grid styling');
+                console.log('Grid max height:', mutationsGrid.style.maxHeight);
+                console.log('Grid overflow:', mutationsGrid.style.overflowY);
+                console.log('Grid classes:', mutationsGrid.className);
+                console.log('MutationObserver added to maintain scrollbar styling');
+            } else {
+                console.error('Mutations grid not found within container');
+            }
+        } else {
+            console.error('Mutations container not found');
+        }
+    } else {
+        console.error('Environmental Mutations heading not found');
+    }
+    
     // Handle mutation checkboxes
     mutationCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {

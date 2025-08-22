@@ -62,7 +62,7 @@
         <!-- Environmental Mutations (including weather mutations) -->
         <div class="bg-gray-800 p-4 rounded-lg shadow-md">
             <h3 class="text-base sm:text-lg font-semibold mb-3 text-gray-200">✨ Environmental Mutations</h3>
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3 mutations-scrollable" style="max-height: calc(6 * 2.5rem + 1rem); overflow-y: auto; scrollbar-width: thin; scrollbar-color: #10b981 #2d3748;">
                 {% for mutation in mutations %}
                 <label class="flex items-center gap-2 p-2 border rounded-md text-sm transition cursor-pointer bg-gray-700/30 text-gray-300 hover:bg-green-800/40 hover:text-white">
                     <input type="checkbox" class="accent-green-500 w-4 h-4" data-mutation="{{ mutation.name }}">

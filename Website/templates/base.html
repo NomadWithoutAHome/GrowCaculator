@@ -34,6 +34,41 @@
         .dark-card-inner {
             @apply bg-gray-800 rounded-lg shadow-md;
         }
+        
+        /* Custom scrollbar for mutations section - prevents flash on load */
+        .mutations-scrollable::-webkit-scrollbar {
+            width: 6px;
+            display: block;
+        }
+        .mutations-scrollable::-webkit-scrollbar-track {
+            background: #2d3748;
+            border-radius: 3px;
+            display: block;
+        }
+        .mutations-scrollable::-webkit-scrollbar-thumb {
+            background: #10b981;
+            border-radius: 3px;
+            min-height: 40px;
+            display: block;
+        }
+        .mutations-scrollable::-webkit-scrollbar-thumb:hover {
+            background: #059669;
+        }
+        .mutations-scrollable::-webkit-scrollbar-button {
+            background: #10b981;
+            height: 12px;
+            border-radius: 2px;
+            display: block;
+        }
+        .mutations-scrollable::-webkit-scrollbar-button:hover {
+            background: #059669;
+        }
+        .mutations-scrollable::-webkit-scrollbar-button:single-button:start {
+            border-radius: 2px 2px 0 0;
+        }
+        .mutations-scrollbar-button:single-button:end {
+            border-radius: 0 0 2px 2px;
+        }
     </style>
     
     {% block extra_head %}{% endblock %}
@@ -47,8 +82,7 @@
             </a>
             <div class="hidden md:flex space-x-6 text-lg font-medium">
                 <a class="hover:text-green-400 transition-colors" href="/">Home</a>
-                <a class="hover:text-green-400 transition-colors" href="/mutation-calculator">Mutation Calculator</a>
-                <a class="hover:text-green-400 transition-colors" href="/about">About</a>
+                <a class="hover:text-yellow-400 transition-colors text-yellow-300" href="/about">About</a>
             </div>
         </div>
     </nav>
