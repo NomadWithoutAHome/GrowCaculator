@@ -59,6 +59,21 @@ function initializeCalculatorForm() {
     
     // Set initial plant image
     updatePlantImage('Carrot');
+    
+    // Set default values to prevent flash
+    setDefaultValues();
+}
+
+/**
+ * Set default values to prevent flash
+ */
+function setDefaultValues() {
+    // Set default input values
+    const plantAmountInput = document.getElementById('plant-amount');
+    const plantWeightInput = document.getElementById('plant-weight');
+    
+    if (plantAmountInput) plantAmountInput.value = '1';
+    if (plantWeightInput) plantWeightInput.value = '0.24';
 }
 
 /**
@@ -637,7 +652,7 @@ function displayResults(result) {
 
     // Update result displays with safety checks (non-animated elements)
     const elementsToUpdate = [
-        { id: 'result-title', text: `${result.plant_name} | ${result.weight}kg | would cost around:` },
+        { id: 'result-title', text: `${result.plant_name} | ${result.weight}kg | would sell around:` },
         { id: 'total-multiplier', text: `x${result.mutation_multiplier.toFixed(2)}` },
         { id: 'plant-name', text: result.plant_name },
         { id: 'weight-display', text: result.weight },
@@ -769,31 +784,31 @@ function updatePlantImage(plantName) {
     const plantEmojiContainer = document.getElementById('plant-emoji');
     if (!plantEmojiContainer) return;
     
+    const plantImage = document.getElementById('plant-image');
+    const plantPlaceholder = document.getElementById('plant-placeholder');
+    
+    if (!plantImage || !plantPlaceholder) return;
+    
     // Convert plant name to filename format (lowercase, replace spaces with hyphens)
     const filename = plantName.toLowerCase().replace(/\s+/g, '-');
     const imagePath = `/static/img/crop-${filename}.webp`;
     
-    // Check if we need to recreate the image element (in case it was replaced by fallback)
-    let plantImage = plantEmojiContainer.querySelector('img');
-    if (!plantImage) {
-        // Recreate the image element if it doesn't exist
-        plantEmojiContainer.innerHTML = `<img src="${imagePath}" alt="${plantName}" class="w-full h-full object-contain" id="plant-image">`;
-        plantImage = plantEmojiContainer.querySelector('img');
-    } else {
-        // Update existing image
-        plantImage.src = imagePath;
-        plantImage.alt = plantName;
-    }
+    // Set the image source
+    plantImage.src = imagePath;
+    plantImage.alt = plantName;
     
-    // Handle image load errors by showing a fallback placeholder image
+    // Handle image load errors by showing placeholder
     plantImage.onerror = function() {
         console.warn(`Image not found for ${plantName}, using fallback placeholder`);
-        plantEmojiContainer.innerHTML = '<img src="/static/img/placeholder.png" alt="Placeholder" class="w-full h-full object-contain">';
+        plantImage.style.display = 'none';
+        plantPlaceholder.style.display = 'block';
     };
     
     // Handle successful image load
     plantImage.onload = function() {
         console.log(`Successfully loaded image for ${plantName}`);
+        plantImage.style.display = 'block';
+        plantPlaceholder.style.display = 'none';
     };
 }
 
@@ -804,35 +819,30 @@ function preloadPlantImages() {
     const plantButtons = document.querySelectorAll('[data-plant]');
     plantButtons.forEach(button => {
         const plantName = button.dataset.plant;
-        const plantImage = button.querySelector('img');
+        const cropImage = button.querySelector('.crop-image');
+        const cropPlaceholder = button.querySelector('.crop-placeholder');
         
-        if (plantImage) {
+        if (cropImage && cropPlaceholder) {
             // Convert plant name to filename format (lowercase, replace spaces with hyphens)
             const filename = plantName.toLowerCase().replace(/\s+/g, '-');
             const imagePath = `/static/img/crop-${filename}.webp`;
             
             // Set the image source
-            plantImage.src = imagePath;
-            plantImage.alt = plantName;
+            cropImage.src = imagePath;
+            cropImage.alt = plantName;
             
             // Handle image load errors by showing fallback placeholder image
-            plantImage.onerror = function() {
+            cropImage.onerror = function() {
                 console.warn(`Image not found for ${plantName}, using fallback placeholder`);
                 this.style.display = 'none';
-                const fallbackPlaceholder = this.nextElementSibling;
-                if (fallbackPlaceholder) {
-                    fallbackPlaceholder.style.display = 'block';
-                }
+                cropPlaceholder.style.display = 'block';
             };
             
             // Handle successful image load
-            plantImage.onload = function() {
+            cropImage.onload = function() {
                 console.log(`Successfully loaded image for ${plantName}`);
                 this.style.display = 'block';
-                const fallbackPlaceholder = this.nextElementSibling;
-                if (fallbackPlaceholder) {
-                    fallbackPlaceholder.style.display = 'none';
-                }
+                cropPlaceholder.style.display = 'none';
             };
         }
     });

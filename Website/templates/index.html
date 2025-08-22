@@ -30,14 +30,15 @@
                          title="{{ plant.name }}
  💰 Value: {{ plant.base_price }} | ⚖️ Weight: {{ plant.base_weight }}kg" 
                          aria-pressed="false">
-                     <div class="w-12 h-12 mx-auto mb-2 flex items-center justify-center">
-                         <img src="/static/img/crop-{{ plant.name.lower().replace(' ', '-') }}.webp" 
-                              alt="{{ plant.name }}" 
-                              class="w-full h-full object-contain"
-                              onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
-                              onload="this.nextElementSibling.style.display='none';">
-                         <img src="/static/img/placeholder.png" alt="Placeholder" class="w-full h-full object-contain" style="display: none;">
-                     </div>
+                                           <div class="w-12 h-12 mx-auto mb-2 flex items-center justify-center">
+                          <img src="/static/img/placeholder.png" alt="Placeholder" class="w-full h-full object-contain crop-placeholder">
+                          <img src="/static/img/crop-{{ plant.name.lower().replace(' ', '-') }}.webp" 
+                               alt="{{ plant.name }}" 
+                               class="w-full h-full object-contain crop-image"
+                               style="display: none;"
+                               onerror="this.style.display='none'; this.previousElementSibling.style.display='block';"
+                               onload="this.style.display='block'; this.previousElementSibling.style.display='none';">
+                      </div>
                      <p class="text-sm font-semibold text-white truncate">{{ plant.name }}</p>
                  </button>
                  {% endfor %}
@@ -89,49 +90,50 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm mb-1 text-gray-300 translate" translate="yes">Amount of Plants</label>
-                        <input type="number" min="1" id="plant-amount" aria-label="Amount of Plants" 
-                               class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-green-500" value="1">
+                                                 <input type="number" min="1" id="plant-amount" aria-label="Amount of Plants" 
+                                class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-green-500" value="">
                     </div>
                     <div>
                         <label class="block text-sm mb-1 text-gray-300 translate" translate="yes">Total Weight (kg)</label>
-                        <input type="text" id="plant-weight" aria-label="Crop weight in kilograms" 
-                               class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-green-500" value="0.24">
+                                                 <input type="text" id="plant-weight" aria-label="Crop weight in kilograms" 
+                                class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-green-500" value="">
                         <div id="weight-range" class="text-xs text-gray-400 mt-1">
-                            Expected: <span id="weight-min">0.17</span> – <span id="weight-max">0.38</span> kg
+                            Expected: <span id="weight-min"></span> – <span id="weight-max"></span> kg
                         </div>
                     </div>
                 </div>
                 
                 <!-- Results Section -->
                 <div class="flex flex-col justify-center items-center text-center">
-                    <div class="w-20 h-20 mb-3 flex items-center justify-center" id="plant-emoji">
-                        <img src="/static/img/crop-carrot.webp" alt="Carrot" class="w-full h-full object-contain" id="plant-image">
-                    </div>
-                    <div class="mb-2 text-lg font-semibold text-yellow-400" id="result-title">Carrot | 0.240kg | would cost around:</div>
+                                         <div class="w-20 h-20 mb-3 flex items-center justify-center" id="plant-emoji">
+                         <img src="/static/img/placeholder.png" alt="Placeholder" class="w-full h-full object-contain" id="plant-placeholder">
+                         <img src="" alt="" class="w-full h-full object-contain" id="plant-image" style="display: none;">
+                     </div>
+                    <div class="mb-2 text-lg font-semibold text-yellow-400" id="result-title"></div>
                     <div class="text-green-400 font-bold text-3xl" id="result-value">🌿
                         <div class="text-sm text-gray-300 mt-1" id="result-sheckles"></div>
                     </div>
                     
                     <!-- Total Value Display -->
                     <div id="total-value-section" class="mt-4 p-3 bg-purple-50/10 rounded-lg hidden">
-                        <p class="text-sm text-purple-300 mb-1">Total Value (<span id="plant-count">1</span> plants):</p>
-                        <div class="text-3xl font-bold text-purple-400" id="total-value">💰 $0</div>
-                        <div class="text-xs text-purple-300" id="total-sheckles">(0.00 Sheckles)</div>
+                                                 <p class="text-sm text-purple-300 mb-1">Total Value (<span id="plant-count"></span> plants):</p>
+                         <div class="text-3xl font-bold text-purple-400" id="total-value"></div>
+                         <div class="text-xs text-purple-300" id="total-sheckles"></div>
                     </div>
                 </div>
             </div>
             
             <!-- Calculation Summary -->
             <div class="mt-6 bg-gray-900 p-4 rounded-md notranslate" translate="no">
-                <h4 class="text-md font-semibold text-yellow-300 mb-2 translate" translate="yes">Total Multiplier: <span class="text-blue-400" id="total-multiplier">x1</span></h4>
+                <h4 class="text-md font-semibold text-yellow-300 mb-2 translate" translate="yes">Total Multiplier: <span class="text-blue-400" id="total-multiplier"></span></h4>
                 <p class="text-sm text-gray-300 leading-snug">
-                    <span class="text-yellow-200" id="mutation-breakdown">Default</span>
+                    <span class="text-yellow-200" id="mutation-breakdown"></span>
                 </p>
                 <p class="text-sm mt-2 text-gray-400" id="result-summary">
-                    🌿 <span class="text-green-300 font-semibold" id="plant-name">Carrot</span> weighing 
-                    <span class="text-blue-300" id="weight-display">0.24</span> kg, after 
-                    <span class="text-purple-400" id="multiplier-display">x1</span> mutation, worth 
-                    <span class="text-green-400" id="final-sheckles">18.00</span> Sheckles.
+                    🌿 <span class="text-green-300 font-semibold" id="plant-name"></span> weighing 
+                    <span class="text-blue-300" id="weight-display"></span> kg, after 
+                    <span class="text-purple-400" id="multiplier-display"></span> mutation, worth 
+                    <span class="text-green-400" id="final-sheckles"></span> Sheckles.
                 </p>
             </div>
             
