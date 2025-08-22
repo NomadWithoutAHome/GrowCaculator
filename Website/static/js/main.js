@@ -178,7 +178,7 @@ function initializeActionButtons() {
     // Share result button
     const shareButton = document.getElementById('share-result');
     if (shareButton) {
-        shareButton.addEventListener('click', function() {
+        shareButton.addEventListener('click', async function() {
             console.log('Share result button clicked');
             
             // Check if we have calculation results to share
@@ -211,25 +211,44 @@ function initializeActionButtons() {
                 mutations: selectedMutations,
                 weight: document.getElementById('plant-weight')?.value || '0.24',
                 amount: document.getElementById('plant-amount')?.value || '1',
-                resultValue: currentResultValue?.textContent || '',
-                finalSheckles: currentFinalSheckles?.textContent || '',
-                totalValue: currentTotalValue?.textContent || '',
-                totalMultiplier: totalMultiplier,
-                mutationBreakdown: mutationBreakdown,
-                weightMin: weightMin,
-                weightMax: weightMax,
-                timestamp: new Date().toISOString(),
-                expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours from now
+                result_value: currentResultValue?.textContent || '',
+                final_sheckles: currentFinalSheckles?.textContent || '',
+                total_value: currentTotalValue?.textContent || '',
+                total_multiplier: totalMultiplier,
+                mutation_breakdown: mutationBreakdown,
+                weight_min: weightMin,
+                weight_max: weightMax,
+                created_at: new Date().toISOString(),
+                expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours from now
             };
             
-            // Generate unique share ID
-            const shareId = generateShareId();
-            
-            // Store share data (in a real app, this would go to a database)
-            localStorage.setItem(`share_${shareId}`, JSON.stringify(shareData));
-            
-            // Redirect to share page
-            window.open(`/share/${shareId}`, '_blank');
+            // Store share data in database via API
+            try {
+                const response = await fetch('/api/share', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(shareData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create share');
+                }
+
+                const result = await response.json();
+                if (result.success && result.data) {
+                    // Use the share_id returned from the API response
+                    const shareId = result.data.share_id;
+                    // Redirect to share page
+                    window.open(`/share/${shareId}`, '_blank');
+                } else {
+                    alert('Failed to create share: ' + (result.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error creating share:', error);
+                alert('Failed to create share. Please try again.');
+            }
         });
     } else {
         console.warn('Share result button not found');

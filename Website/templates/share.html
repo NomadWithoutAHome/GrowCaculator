@@ -175,21 +175,20 @@ const shareId = window.location.pathname.split('/').pop();
 // Load and display shared data
 async function loadSharedData() {
     try {
-        // Get share data from localStorage
-        const shareData = localStorage.getItem(`share_${shareId}`);
-        if (!shareData) {
+        // Get share data from API
+        const response = await fetch(`/api/share/${shareId}`);
+        if (!response.ok) {
             showError('Share data not found or has expired');
             return;
         }
 
-        const data = JSON.parse(shareData);
-        
-        // Check if share has expired
-        if (new Date() > new Date(data.expires)) {
-            showError('This share link has expired (24 hours)');
-            localStorage.removeItem(`share_${shareId}`);
+        const result = await response.json();
+        if (!result.success) {
+            showError(result.error || 'Share data not found or has expired');
             return;
         }
+
+        const data = result.data;
 
         // Display basic info
         document.getElementById('shared-plant-name').textContent = data.plant;
@@ -198,14 +197,14 @@ async function loadSharedData() {
         document.getElementById('shared-amount').textContent = data.amount;
         
         // Display weight range if available
-        if (data.weightMin && data.weightMax) {
-            document.getElementById('shared-weight-range').textContent = `${data.weightMin} - ${data.weightMax} kg`;
+        if (data.weight_min && data.weight_max) {
+            document.getElementById('shared-weight-range').textContent = `${data.weight_min} - ${data.weight_max} kg`;
         } else {
             document.getElementById('shared-weight-range').textContent = 'Unknown';
         }
         
-        document.getElementById('share-timestamp').textContent = new Date(data.timestamp).toLocaleString();
-        document.getElementById('share-expires').textContent = new Date(data.expires).toLocaleString();
+        document.getElementById('share-timestamp').textContent = new Date(data.created_at).toLocaleString();
+        document.getElementById('share-expires').textContent = new Date(data.expires_at).toLocaleString();
 
         // Load plant image
         const plantImage = document.getElementById('shared-plant-image');
@@ -235,9 +234,9 @@ async function loadSharedData() {
 async function calculateAndDisplayResults(data) {
     try {
         // Extract values from the stored data instead of recalculating
-        const resultValue = data.resultValue || '🌿 ≈$0';
-        const finalSheckles = data.finalSheckles || '0.00';
-        const totalValue = data.totalValue || '💰 $0';
+        const resultValue = data.result_value || '🌿 ≈$0';
+        const finalSheckles = data.final_sheckles || '0.00';
+        const totalValue = data.total_value || '💰 $0';
         
         // Parse the stored values to extract numeric information
         let finalValue = 0;
@@ -257,8 +256,8 @@ async function calculateAndDisplayResults(data) {
         
         // Extract mutation multiplier from stored data
         let mutationMultiplier = 1;
-        if (data.totalMultiplier) {
-            const multiplierMatch = data.totalMultiplier.match(/x([0-9.]+)/);
+        if (data.total_multiplier) {
+            const multiplierMatch = data.total_multiplier.match(/x([0-9.]+)/);
             if (multiplierMatch) {
                 mutationMultiplier = parseFloat(multiplierMatch[1]);
             }
@@ -291,8 +290,8 @@ async function calculateAndDisplayResults(data) {
         document.getElementById('breakdown-actual-weight').textContent = `${data.weight} kg`;
         
         // Use stored weight range data if available
-        if (data.weightMin && data.weightMax) {
-            const baseWeight = parseFloat(data.weightMin) + (parseFloat(data.weightMax) - parseFloat(data.weightMin)) / 2;
+        if (data.weight_min && data.weight_max) {
+            const baseWeight = parseFloat(data.weight_min) + (parseFloat(data.weight_max) - parseFloat(data.weight_min)) / 2;
             document.getElementById('breakdown-base-weight').textContent = `${baseWeight.toFixed(2)} kg`;
             
             const weightRatio = parseFloat(data.weight) / baseWeight;

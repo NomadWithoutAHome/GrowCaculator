@@ -3,6 +3,7 @@ Pydantic models for calculator requests and responses.
 """
 from typing import List, Optional
 from pydantic import BaseModel, Field
+from datetime import datetime
 
 
 class PlantData(BaseModel):
@@ -61,3 +62,29 @@ class VariantListResponse(BaseModel):
 class MutationListResponse(BaseModel):
     """Response model for mutation list."""
     mutations: List[MutationData]
+
+
+class SharedResult(BaseModel):
+    """Model for shared calculation results."""
+    share_id: str = Field(..., description="Unique share identifier")
+    plant: str = Field(..., description="Plant name")
+    variant: str = Field(..., description="Plant variant")
+    mutations: List[str] = Field(default=[], description="List of mutations")
+    weight: float = Field(..., description="Plant weight in kg")
+    amount: int = Field(..., description="Number of plants")
+    result_value: str = Field(..., description="Formatted result value")
+    final_sheckles: str = Field(..., description="Final sheckles value")
+    total_value: str = Field(..., description="Total value for all plants")
+    total_multiplier: str = Field(..., description="Total mutation multiplier")
+    mutation_breakdown: str = Field(..., description="Mutation breakdown description")
+    weight_min: str = Field(..., description="Minimum weight range")
+    weight_max: str = Field(..., description="Maximum weight range")
+    created_at: datetime = Field(default_factory=datetime.utcnow, description="Creation timestamp")
+    expires_at: datetime = Field(..., description="Expiration timestamp (24 hours from creation)")
+
+
+class SharedResultResponse(BaseModel):
+    """Response model for shared result retrieval."""
+    success: bool
+    data: Optional[SharedResult] = None
+    error: Optional[str] = None
