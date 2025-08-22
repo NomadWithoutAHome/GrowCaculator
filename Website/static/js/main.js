@@ -755,9 +755,12 @@ function displayResults(result) {
  * Hide calculation results
  */
 function hideResults() {
-    // In our new layout, we don't hide results, just reset to defaults
-    updateElement('result-title', 'Select a plant to calculate');
-    updateElement('result-value', '🌿 ≈$0');
+         // In our new layout, we don't hide results, just reset to defaults
+     updateElement('result-title', 'Select a plant to calculate');
+     const resultValueElement = document.getElementById('result-value');
+     if (resultValueElement) {
+         resultValueElement.innerHTML = `<img src="/static/img/currency.png" alt="Currency" class="w-8 h-8 inline-block mr-0">= $0`;
+     }
     
     // Update result-sheckles separately since it's nested
     const resultSheckles = document.getElementById('result-sheckles');
@@ -1104,11 +1107,11 @@ function animateNumber(element, startValue, endValue, duration = 500, isResultVa
         // Format the number with commas
         const formattedValue = formatNumber(Math.round(currentValue));
         
-        if (isResultValue) {
-            element.textContent = `🌿 ≈$${formattedValue}`;
-        } else {
-            element.textContent = `💰 $${formattedValue}`;
-        }
+                 if (isResultValue) {
+             element.innerHTML = `<img src="/static/img/currency.png" alt="Currency" class="w-8 h-8 inline-block mr-0">= $${formattedValue}`;
+         } else {
+             element.textContent = `💰 $${formattedValue}`;
+         }
         
         if (progress < 1) {
             requestAnimationFrame(update);
