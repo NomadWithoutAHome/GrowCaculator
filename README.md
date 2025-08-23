@@ -1,4 +1,7 @@
-# 🌱 GrowCalculator - Complete Plant Value Calculator
+# 🌱 Grow Calculator - Complete Plant Value Calculator
+
+<img src="https://www.imghost.dohmboy64.com/i/a5b05bb616024a579fed39a407b3887d.png" alt="Description of image" width="400">
+
 
 **The most accurate plant value calculator for Roblox Grow a Garden** - featuring both a **Windows Desktop Application** and a **Modern Web Application**. Built with reverse-engineered game source code to achieve **96-100% accuracy** in all calculations.
 
