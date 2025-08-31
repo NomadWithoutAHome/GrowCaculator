@@ -13,8 +13,7 @@ local v2 = {
 		"White Mulberry",
 		"Lingonberry",
 		"Elder Strawberry",
-		"Willowberry",
-		"Sunbulb"
+		"Willowberry"
 	},
 	["Root"] = {
 		"Carrot",
@@ -28,8 +27,7 @@ local v2 = {
 		"Onion",
 		"Tall Asparagus",
 		"Horsetail",
-		"Spring Onion",
-		"Aurora Vine"
+		"Spring Onion"
 	},
 	["Candy"] = {
 		"Blue Lollipop",
@@ -59,7 +57,6 @@ local v2 = {
 		"Purple Dahlia",
 		"Sunflower",
 		"Lavender",
-		"Suncoil",
 		"Honeysuckle",
 		"Manuka Flower",
 		"Ember Lily",
@@ -95,10 +92,7 @@ local v2 = {
 		"Paradise Petal",
 		"Crown of Thorns",
 		"Calla Lily",
-		"Cyclamen",
-		"Briar Rose",
-		"Spirit Flower",
-		"Broccoli"
+		"Cyclamen"
 	},
 	["Fruit"] = {
 		"Apple",
@@ -154,8 +148,7 @@ local v2 = {
 		"Violet Corn",
 		"Elder Strawberry",
 		"Willowberry",
-		"Carrot",
-		"Cocomango"
+		"Carrot"
 	},
 	["Leafy"] = {
 		"Apple",
@@ -228,9 +221,7 @@ local v2 = {
 		"Spirit Lantern",
 		"Glowpod",
 		"Shimmersprout",
-		"Willowberry",
-		"Brussels Sprout",
-		"Cocomango"
+		"Willowberry"
 	},
 	["Sour"] = {
 		"Cranberry",
@@ -241,9 +232,7 @@ local v2 = {
 		"Mangosteen",
 		"Flare Melon",
 		"Mangosteen",
-		"Kiwi",
-		"Sunbulb",
-		"Cocomango"
+		"Kiwi"
 	},
 	["Sweet"] = {
 		"Banana",
@@ -271,8 +260,7 @@ local v2 = {
 		"Crown Melon",
 		"Mangosteen",
 		"Canary Melon",
-		"Romanesco",
-		"Cocomango"
+		"Romanesco"
 	},
 	["Tropical"] = {
 		"Banana",
@@ -319,11 +307,7 @@ local v2 = {
 		"Mandrake",
 		"Mutant Carrot",
 		"Romanesco",
-		"Snaparino Beanarini",
-		"Untold Bell",
-		"Brussels Sprout",
-		"Potato",
-		"Broccoli"
+		"Snaparino Beanarini"
 	},
 	["Woody"] = {
 		"Apple",
@@ -359,9 +343,7 @@ local v2 = {
 		"Bendboo",
 		"Boneboo",
 		"Glowpod",
-		"Willowberry",
-		"Cocomango",
-		"Aurora Vine"
+		"Willowberry"
 	},
 	["Prickly"] = {
 		"Cactus",
@@ -378,8 +360,7 @@ local v2 = {
 		"Twisted Tangle",
 		"Pricklefruit",
 		"Princess Thorn",
-		"Crown of Thorns",
-		"Glowthorn"
+		"Crown of Thorns"
 	},
 	["Toxic"] = {
 		"Foxglove",
@@ -389,8 +370,7 @@ local v2 = {
 		"Horned Dinoshroom",
 		"Sinisterdrip",
 		"Cursed Fruit",
-		"Amber Spine",
-		"Glowthorn"
+		"Amber Spine"
 	},
 	["Fungus"] = {
 		"Mega Mushroom",
@@ -416,9 +396,7 @@ local v2 = {
 		"Aura Flora",
 		"Gleamroot",
 		"Glowpod",
-		"Shimmersprout",
-		"Glowthorn",
-		"Lightshoot"
+		"Shimmersprout"
 	},
 	["Spicy"] = {
 		"Cursed Fruit",
@@ -430,8 +408,7 @@ local v2 = {
 		"Grand Volcania",
 		"Jalapeno",
 		"Badlands Pepper",
-		"Taco Fern",
-		"Briar Rose"
+		"Taco Fern"
 	},
 	["Stalky"] = {
 		"Beanstalk",
@@ -467,10 +444,7 @@ local v2 = {
 		"Spectralis",
 		"Spirit Lantern",
 		"Flare Melon",
-		"Snaparino Beanarino",
-		"Untold Bell",
-		"Brussels Sprout",
-		"Lightshoot"
+		"Snaparino Beanarino"
 	},
 	["Summer"] = {
 		"Carrot",
@@ -533,20 +507,6 @@ local v2 = {
 		"Dezen",
 		"Lucky Bamboo",
 		"Tranquil Bloom"
-	},
-	["Magical"] = {
-		"Mandrake",
-		"Soul Fruit",
-		"Cursed Fruit",
-		"Firework Flower",
-		"Fossilight",
-		"Tranquil Bloom",
-		"King Cabbage",
-		"Amberheart",
-		"Golden Egg",
-		"Spirit Flower",
-		"Wispwing",
-		"Aurora Vine"
 	}
 }
 v_u_1.Traits = v2
@@ -571,8 +531,7 @@ local v_u_4 = {
 	["Night"] = { 93, 109, 126 },
 	["Prehistoric"] = { 133, 163, 81 },
 	["Zen"] = { 129, 207, 224 },
-	["Toxic"] = { 128, 0, 128 },
-	["Magical"] = { 186, 85, 211 }
+	["Toxic"] = { 128, 0, 128 }
 }
 for v5, _ in v2 do
 	v3[v5] = v5
