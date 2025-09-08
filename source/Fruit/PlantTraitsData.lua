@@ -14,7 +14,9 @@ local v2 = {
 		"Lingonberry",
 		"Elder Strawberry",
 		"Willowberry",
-		"Sunbulb"
+		"Sunbulb",
+		"Pyracantha",
+		"Blue Raspberry"
 	},
 	["Root"] = {
 		"Carrot",
@@ -29,7 +31,8 @@ local v2 = {
 		"Tall Asparagus",
 		"Horsetail",
 		"Spring Onion",
-		"Aurora Vine"
+		"Aurora Vine",
+		"Radish"
 	},
 	["Candy"] = {
 		"Blue Lollipop",
@@ -98,7 +101,12 @@ local v2 = {
 		"Cyclamen",
 		"Briar Rose",
 		"Spirit Flower",
-		"Broccoli"
+		"Broccoli",
+		"Pyracantha",
+		"Horned Melon",
+		"Urchin Plant",
+		"Untold Bell",
+		"Pixie Faern"
 	},
 	["Fruit"] = {
 		"Apple",
@@ -155,7 +163,11 @@ local v2 = {
 		"Elder Strawberry",
 		"Willowberry",
 		"Carrot",
-		"Cocomango"
+		"Cocomango",
+		"Pixie Faern",
+		"Blue Raspberry",
+		"Ackee",
+		"Pixie Faern"
 	},
 	["Leafy"] = {
 		"Apple",
@@ -230,7 +242,12 @@ local v2 = {
 		"Shimmersprout",
 		"Willowberry",
 		"Brussels Sprout",
-		"Cocomango"
+		"Cocomango",
+		"Urchin Plant",
+		"Fennel",
+		"Pixie Faern",
+		"Emerald Bud",
+		"Aetherfruit"
 	},
 	["Sour"] = {
 		"Cranberry",
@@ -243,7 +260,8 @@ local v2 = {
 		"Mangosteen",
 		"Kiwi",
 		"Sunbulb",
-		"Cocomango"
+		"Cocomango",
+		"Horned Melon"
 	},
 	["Sweet"] = {
 		"Banana",
@@ -272,7 +290,10 @@ local v2 = {
 		"Mangosteen",
 		"Canary Melon",
 		"Romanesco",
-		"Cocomango"
+		"Cocomango",
+		"Pixie Faern",
+		"Blue Raspberry",
+		"Untold Bell"
 	},
 	["Tropical"] = {
 		"Banana",
@@ -286,7 +307,8 @@ local v2 = {
 		"Watermelon",
 		"Parasol Flower",
 		"Cocovine",
-		"Starfruit"
+		"Starfruit",
+		"Ackee"
 	},
 	["Vegetable"] = {
 		"Carrot",
@@ -323,7 +345,10 @@ local v2 = {
 		"Untold Bell",
 		"Brussels Sprout",
 		"Potato",
-		"Broccoli"
+		"Broccoli",
+		"Fennel",
+		"Emerald Bud",
+		"Radish"
 	},
 	["Woody"] = {
 		"Apple",
@@ -361,7 +386,8 @@ local v2 = {
 		"Glowpod",
 		"Willowberry",
 		"Cocomango",
-		"Aurora Vine"
+		"Aurora Vine",
+		"Aetherfruit"
 	},
 	["Prickly"] = {
 		"Cactus",
@@ -379,7 +405,9 @@ local v2 = {
 		"Pricklefruit",
 		"Princess Thorn",
 		"Crown of Thorns",
-		"Glowthorn"
+		"Glowthorn",
+		"Pyracantha",
+		"Horned Melon"
 	},
 	["Toxic"] = {
 		"Foxglove",
@@ -390,7 +418,8 @@ local v2 = {
 		"Sinisterdrip",
 		"Cursed Fruit",
 		"Amber Spine",
-		"Glowthorn"
+		"Glowthorn",
+		"Ackee"
 	},
 	["Fungus"] = {
 		"Mega Mushroom",
@@ -431,7 +460,8 @@ local v2 = {
 		"Jalapeno",
 		"Badlands Pepper",
 		"Taco Fern",
-		"Briar Rose"
+		"Briar Rose",
+		"Radish"
 	},
 	["Stalky"] = {
 		"Beanstalk",
@@ -470,7 +500,10 @@ local v2 = {
 		"Snaparino Beanarino",
 		"Untold Bell",
 		"Brussels Sprout",
-		"Lightshoot"
+		"Lightshoot",
+		"Urchin Plant",
+		"Pyracantha",
+		"Urchin Plant"
 	},
 	["Summer"] = {
 		"Carrot",
@@ -546,7 +579,11 @@ local v2 = {
 		"Golden Egg",
 		"Spirit Flower",
 		"Wispwing",
-		"Aurora Vine"
+		"Aurora Vine",
+		"Emerald Bud",
+		"Aetherfruit",
+		"Untold Bell",
+		"Pixie Faern"
 	}
 }
 v_u_1.Traits = v2

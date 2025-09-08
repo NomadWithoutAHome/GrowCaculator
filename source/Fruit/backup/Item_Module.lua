@@ -174,6 +174,30 @@ local v_u_4 = {
 		160
 	},
 	{
+		"Broccoli",
+		4,
+		55555,
+		100
+	},
+	{
+		"Potato",
+		4,
+		90000,
+		150
+	},
+	{
+		"Brussels Sprout",
+		3,
+		120000,
+		150
+	},
+	{
+		"Cocomango",
+		15,
+		180000,
+		200
+	},
+	{
 		"Cauliflower",
 		5,
 		50,
@@ -1026,6 +1050,42 @@ local v_u_4 = {
 		250
 	},
 	{
+		"Sunbulb",
+		3,
+		20000,
+		125
+	},
+	{
+		"Glowthorn",
+		3,
+		35000,
+		140
+	},
+	{
+		"Lightshoot",
+		2,
+		40444,
+		290
+	},
+	{
+		"Briar Rose",
+		7,
+		75000,
+		450
+	},
+	{
+		"Spirit Flower",
+		6,
+		135000,
+		500
+	},
+	{
+		"Wispwing",
+		10,
+		180000,
+		500
+	},
+	{
 		"Mega Mushroom",
 		70,
 		500,
@@ -1072,18 +1132,6 @@ local v_u_4 = {
 		6,
 		35000,
 		90
-	},
-	{
-		"Potato",
-		4,
-		10000,
-		150
-	},
-	{
-		"Broccoli",
-		4,
-		6500,
-		80
 	},
 	{
 		"Log Pumpkin",
@@ -1152,12 +1200,6 @@ local v_u_4 = {
 		120
 	},
 	{
-		"Lightshoot",
-		2,
-		7500,
-		60
-	},
-	{
 		"Spirit Lantern",
 		10,
 		7500,
@@ -1166,8 +1208,8 @@ local v_u_4 = {
 	{
 		"Aurora Vine",
 		4.5,
-		7500,
-		200
+		120000,
+		100
 	},
 	{
 		"Snaparino Beanarini",
@@ -1180,6 +1222,36 @@ local v_u_4 = {
 		1,
 		350,
 		50
+	},
+	{
+		"Pomegranate",
+		2,
+		350,
+		135
+	},
+	{
+		"Horned Melon",
+		3,
+		8500,
+		90
+	},
+	{
+		"Untold Bell",
+		3,
+		15000,
+		145
+	},
+	{
+		"Emerald Bud",
+		5,
+		7500,
+		125
+	},
+	{
+		"Ackee",
+		1.5,
+		5500,
+		105
 	}
 }
 for _, v5 in v_u_3 do
@@ -1797,7 +1869,7 @@ local v_u_10 = {
 		"Purple Dahlia",
 		10,
 		"Common",
-		3265927895,
+		0,
 		100,
 		0,
 		nil
@@ -1807,7 +1879,7 @@ local v_u_10 = {
 		"Pink Lily",
 		10,
 		"Common",
-		3265927895,
+		0,
 		100,
 		0,
 		nil
@@ -1827,7 +1899,7 @@ local v_u_10 = {
 		"Sunflower",
 		10,
 		"Common",
-		3265927895,
+		0,
 		100,
 		0,
 		nil
@@ -1837,7 +1909,7 @@ local v_u_10 = {
 		"Rose",
 		10,
 		"Common",
-		3265927895,
+		0,
 		100,
 		0,
 		nil
@@ -1847,7 +1919,7 @@ local v_u_10 = {
 		"Foxglove",
 		10,
 		"Common",
-		3265927895,
+		0,
 		100,
 		0,
 		nil
@@ -2457,7 +2529,7 @@ local v_u_10 = {
 		"Soft Sunshine",
 		10,
 		"Common",
-		3265927895,
+		0,
 		100,
 		0,
 		nil
@@ -2667,20 +2739,20 @@ local v_u_10 = {
 		"Potato",
 		10,
 		"Legendary",
-		0,
+		3388363390,
 		100,
 		0,
-		0
+		3388449849
 	},
 	{
 		"Broccoli Seed",
 		"Broccoli",
 		10,
 		"Legendary",
-		0,
+		3388363071,
 		100,
 		0,
-		0
+		3388448748
 	},
 	{
 		"Bitter Melon Seed",
@@ -3020,6 +3092,126 @@ local v_u_10 = {
 		0,
 		800,
 		1,
+		nil
+	},
+	{
+		"Pomegranate Seed",
+		"Pomegranate",
+		4,
+		"Rare",
+		0,
+		800,
+		1,
+		nil
+	},
+	{
+		"Glowthorn Seed",
+		"Glowthorn",
+		10,
+		"Rare",
+		0,
+		100,
+		0,
+		nil
+	},
+	{
+		"Horned Melon Seed",
+		"Horned Melon",
+		10,
+		"Rare",
+		0,
+		100,
+		0,
+		nil
+	},
+	{
+		"Briar Rose Seed",
+		"Briar Rose",
+		10,
+		"Rare",
+		0,
+		100,
+		0,
+		nil
+	},
+	{
+		"Spirit Flower Seed",
+		"Spirit Flower",
+		10,
+		"Rare",
+		0,
+		100,
+		0,
+		nil
+	},
+	{
+		"Untold Bell Seed",
+		"Untold Bell",
+		10,
+		"Rare",
+		0,
+		100,
+		0,
+		nil
+	},
+	{
+		"Emerald Bud Seed",
+		"Emerald Bud",
+		10,
+		"Rare",
+		0,
+		100,
+		0,
+		nil
+	},
+	{
+		"Cocomango Seed",
+		"Cocomango",
+		10,
+		"Rare",
+		3388359799,
+		100,
+		0,
+		3388451065
+	},
+	{
+		"Wispwing Seed",
+		"Wispwing",
+		10,
+		"Rare",
+		0,
+		100,
+		0,
+		nil
+	},
+	{
+		"Ackee Seed",
+		"Ackee",
+		10,
+		"Rare",
+		0,
+		100,
+		0,
+		nil
+	},
+	{
+		"Brussels Sprout Seed",
+		"Brussels Sprout",
+		10,
+		"Rare",
+		3388360759,
+		100,
+		0,
+		3388450348
+	},
+	{
+		"Sunbulb Seed",
+		"Sunbulb",
+		10,
+		"Rare",
+		0,
+		100,
+		0,
 		nil
 	}
 }

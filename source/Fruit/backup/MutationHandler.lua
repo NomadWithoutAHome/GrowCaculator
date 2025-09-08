@@ -271,7 +271,7 @@ local function v_u_129(p_u_113)
 	end)
 end
 local _ = 0
-local v_u_518 = {
+local v_u_551 = {
 	["Shocked"] = {
 		["Id"] = "a",
 		["Name"] = "Shocked",
@@ -758,57 +758,110 @@ local v_u_518 = {
 			end
 		end
 	},
+	["Drenched"] = {
+		["Id"] = "dr",
+		["Name"] = "Drenched",
+		["ValueMulti"] = 5,
+		["Color"] = Color3.fromRGB(0, 55, 228),
+		["_AddFX"] = function(p250, p251, p252)
+			-- upvalues: (copy) v_u_13
+			p250:_RemoveFX(p251, p252)
+			if p252 then
+				for _, v253 in game.ServerStorage.Mutation_FX.Drenched:GetChildren() do
+					local v254 = v253:Clone()
+					v254.Parent = p252
+					v254.Enabled = true
+					v254:AddTag("Cleanup_Drenched")
+				end
+			end
+			for _, v255 in p251:GetChildren() do
+				if v255:IsA("BasePart") or v255:IsA("UnionOperation") then
+					v_u_13[v255] = v_u_13[v255] or v255.Color
+					local v256, v257, v258 = v255.Color:ToHSV()
+					local v259 = v257 + 0.1
+					local v260 = math.clamp(v259, v257, 1)
+					local v261 = v258 + 0.05
+					local v262 = math.clamp(v261, v258, 1)
+					v255.Color = Color3.fromHSV(v256, v260, v262)
+				end
+			end
+		end,
+		["_RemoveFX"] = function(_, p263, p264)
+			-- upvalues: (copy) v_u_13, (copy) v_u_16, (copy) v_u_17
+			if p264 then
+				for _, v265 in p264:GetChildren() do
+					if v265:HasTag("Cleanup_Drenched") then
+						v265:Destroy()
+					end
+				end
+			end
+			for _, v266 in p263:GetChildren() do
+				if v266:IsA("BasePart") or v266:IsA("UnionOperation") then
+					v266.Color = v_u_13[v266] or v266.Color
+					v_u_13[v266] = nil
+					if v_u_16[v266] then
+						v266.Material = v_u_16[v266]
+						v_u_16[v266] = nil
+					end
+					if v_u_17[v266] then
+						v266.MaterialVariant = v_u_17[v266]
+						v_u_17[v266] = nil
+					end
+				end
+			end
+		end
+	},
 	["Aurora"] = {
 		["Id"] = "l",
 		["Name"] = "Aurora",
 		["ValueMulti"] = 90,
 		["Color"] = Color3.fromRGB(99, 89, 175),
-		["_AddFX"] = function(p250, p251, p252)
+		["_AddFX"] = function(p267, p268, p269)
 			-- upvalues: (copy) v_u_13, (copy) v_u_16
-			p250:_RemoveFX(p251, p252)
-			for v253, v254 in p251:GetDescendants() do
-				if v254:IsA("BasePart") or v254:IsA("UnionOperation") then
-					if v253 % 5 == 0 then
-						local v255 = game.ServerStorage.Mutation_FX.Aurora.Light:Clone()
-						v255.Parent = v254
-						v255.Enabled = true
-						v255:AddTag("Cleanup_Aurora")
+			p267:_RemoveFX(p268, p269)
+			for v270, v271 in p268:GetDescendants() do
+				if v271:IsA("BasePart") or v271:IsA("UnionOperation") then
+					if v270 % 5 == 0 then
+						local v272 = game.ServerStorage.Mutation_FX.Aurora.Light:Clone()
+						v272.Parent = v271
+						v272.Enabled = true
+						v272:AddTag("Cleanup_Aurora")
 					end
-					if not v254:HasTag("Effect") then
-						local v256 = Random.new():NextInteger(1, 3)
-						v_u_13[v254] = v_u_13[v254] or v254.Color
-						if v256 == 1 then
-							v254.Color = Color3.fromRGB(150, 92, 186)
-						elseif v256 == 2 then
-							v254.Color = Color3.fromRGB(87, 91, 171)
-						elseif v256 == 3 then
-							v254.Color = Color3.fromRGB(76, 156, 165)
+					if not v271:HasTag("Effect") then
+						local v273 = Random.new():NextInteger(1, 3)
+						v_u_13[v271] = v_u_13[v271] or v271.Color
+						if v273 == 1 then
+							v271.Color = Color3.fromRGB(150, 92, 186)
+						elseif v273 == 2 then
+							v271.Color = Color3.fromRGB(87, 91, 171)
+						elseif v273 == 3 then
+							v271.Color = Color3.fromRGB(76, 156, 165)
 						end
-						v_u_16[v254] = v_u_16[v254] or v254.Material
-						v254.Material = Enum.Material.Neon
-						v254:AddTag("AuroraVisual")
+						v_u_16[v271] = v_u_16[v271] or v271.Material
+						v271.Material = Enum.Material.Neon
+						v271:AddTag("AuroraVisual")
 					end
 				end
 			end
 		end,
-		["_RemoveFX"] = function(_, p257, p258)
+		["_RemoveFX"] = function(_, p274, p275)
 			-- upvalues: (copy) v_u_13, (copy) v_u_16
-			if p258 then
-				for _, v259 in p258:GetChildren() do
-					if v259:HasTag("Cleanup_Aurora") then
-						v259:Destroy()
+			if p275 then
+				for _, v276 in p275:GetChildren() do
+					if v276:HasTag("Cleanup_Aurora") then
+						v276:Destroy()
 					end
 				end
 			end
-			for _, v260 in p257:GetDescendants() do
-				if (v260:IsA("BasePart") or v260:IsA("UnionOperation")) and v260:HasTag("GalacticVisual") then
-					v260.Reflectance = 0
-					v260.Color = v_u_13[v260] or v260.Color
-					v_u_13[v260] = nil
-					v260:RemoveTag("AuroraVisual")
-					if v_u_16[v260] then
-						v260.Material = v_u_16[v260]
-						v_u_16[v260] = nil
+			for _, v277 in p274:GetDescendants() do
+				if (v277:IsA("BasePart") or v277:IsA("UnionOperation")) and v277:HasTag("GalacticVisual") then
+					v277.Reflectance = 0
+					v277.Color = v_u_13[v277] or v277.Color
+					v_u_13[v277] = nil
+					v277:RemoveTag("AuroraVisual")
+					if v_u_16[v277] then
+						v277.Material = v_u_16[v277]
+						v_u_16[v277] = nil
 					end
 				end
 			end
@@ -819,33 +872,33 @@ local v_u_518 = {
 		["Name"] = "Chilled",
 		["ValueMulti"] = 2,
 		["Color"] = Color3.fromRGB(135, 206, 250),
-		["_AddFX"] = function(p261, p262, p263)
-			p261:_RemoveFX(p262, p263)
-			if p263 then
-				for _, v264 in game.ServerStorage.Mutation_FX.Chilled:GetChildren() do
-					local v265 = v264:Clone()
-					v265.Parent = p263
-					v265.Enabled = true
-					v265:AddTag("Cleanup_Chilled")
+		["_AddFX"] = function(p278, p279, p280)
+			p278:_RemoveFX(p279, p280)
+			if p280 then
+				for _, v281 in game.ServerStorage.Mutation_FX.Chilled:GetChildren() do
+					local v282 = v281:Clone()
+					v282.Parent = p280
+					v282.Enabled = true
+					v282:AddTag("Cleanup_Chilled")
 				end
 			end
-			for _, v266 in p262:GetChildren() do
-				if v266:IsA("BasePart") or v266:IsA("UnionOperation") then
-					v266.Reflectance = 0.1
+			for _, v283 in p279:GetChildren() do
+				if v283:IsA("BasePart") or v283:IsA("UnionOperation") then
+					v283.Reflectance = 0.1
 				end
 			end
 		end,
-		["_RemoveFX"] = function(_, p267, p268)
-			if p268 then
-				for _, v269 in p268:GetChildren() do
-					if v269:HasTag("Cleanup_Chilled") then
-						v269:Destroy()
+		["_RemoveFX"] = function(_, p284, p285)
+			if p285 then
+				for _, v286 in p285:GetChildren() do
+					if v286:HasTag("Cleanup_Chilled") then
+						v286:Destroy()
 					end
 				end
 			end
-			for _, v270 in p267:GetChildren() do
-				if v270:IsA("BasePart") or v270:IsA("UnionOperation") then
-					v270.Reflectance = 0
+			for _, v287 in p284:GetChildren() do
+				if v287:IsA("BasePart") or v287:IsA("UnionOperation") then
+					v287.Reflectance = 0
 				end
 			end
 		end
@@ -855,22 +908,22 @@ local v_u_518 = {
 		["Name"] = "Sundried",
 		["ValueMulti"] = 85,
 		["Color"] = Color3.fromRGB(207, 93, 0),
-		["_AddFX"] = function(p271, p272, p273)
+		["_AddFX"] = function(p288, p289, p290)
 			-- upvalues: (copy) v_u_13
-			p271:_RemoveFX(p272, p273)
-			for _, v274 in p272:GetChildren() do
-				if v274:IsA("BasePart") or v274:IsA("UnionOperation") then
-					v_u_13[v274] = v_u_13[v274] or v274.Color
-					v274.Color = Color3.fromRGB(v274.Color.R * 178.5, v274.Color.G * 127.5, v274.Color.B * 127.5)
+			p288:_RemoveFX(p289, p290)
+			for _, v291 in p289:GetChildren() do
+				if v291:IsA("BasePart") or v291:IsA("UnionOperation") then
+					v_u_13[v291] = v_u_13[v291] or v291.Color
+					v291.Color = Color3.fromRGB(v291.Color.R * 178.5, v291.Color.G * 127.5, v291.Color.B * 127.5)
 				end
 			end
 		end,
-		["_RemoveFX"] = function(_, p275, _)
+		["_RemoveFX"] = function(_, p292, _)
 			-- upvalues: (copy) v_u_13
-			for _, v276 in p275:GetChildren() do
-				if v276:IsA("BasePart") or v276:IsA("UnionOperation") then
-					v276.Color = v_u_13[v276] or v276.Color
-					v_u_13[v276] = nil
+			for _, v293 in p292:GetChildren() do
+				if v293:IsA("BasePart") or v293:IsA("UnionOperation") then
+					v293.Color = v_u_13[v293] or v293.Color
+					v_u_13[v293] = nil
 				end
 			end
 		end
@@ -880,80 +933,27 @@ local v_u_518 = {
 		["Name"] = "Wiltproof",
 		["ValueMulti"] = 4,
 		["Color"] = Color3.fromRGB(0, 222, 155),
-		["_AddFX"] = function(p277, p278, p279)
+		["_AddFX"] = function(p294, p295, p296)
 			-- upvalues: (copy) v_u_13
-			p277:_RemoveFX(p278, p279)
-			for _, v280 in p278:GetChildren() do
-				if v280:IsA("BasePart") or v280:IsA("UnionOperation") then
-					v_u_13[v280] = v_u_13[v280] or v280.Color
-					local v281 = v280.Color
-					local v282 = v281.R * 0.3 + v281.G * 0.59 + v281.B * 0.11
-					local v283 = Color3.new
-					local v284 = v282 + (v281.R - v282) * 3
-					local v285 = math.clamp(v284, 0, 1)
-					local v286 = v282 + (v281.G - v282) * 4
-					local v287 = math.clamp(v286, 0, 1)
-					local v288 = v282 + (v281.B - v282) * 3
-					v280.Color = v283(v285, v287, (math.clamp(v288, 0, 1)))
+			p294:_RemoveFX(p295, p296)
+			for _, v297 in p295:GetChildren() do
+				if v297:IsA("BasePart") or v297:IsA("UnionOperation") then
+					v_u_13[v297] = v_u_13[v297] or v297.Color
+					local v298 = v297.Color
+					local v299 = v298.R * 0.3 + v298.G * 0.59 + v298.B * 0.11
+					local v300 = Color3.new
+					local v301 = v299 + (v298.R - v299) * 3
+					local v302 = math.clamp(v301, 0, 1)
+					local v303 = v299 + (v298.G - v299) * 4
+					local v304 = math.clamp(v303, 0, 1)
+					local v305 = v299 + (v298.B - v299) * 3
+					v297.Color = v300(v302, v304, (math.clamp(v305, 0, 1)))
 				end
 			end
 		end,
-		["_RemoveFX"] = function(_, p289, _)
+		["_RemoveFX"] = function(_, p306, _)
 			-- upvalues: (copy) v_u_13, (copy) v_u_16, (copy) v_u_17
-			for _, v290 in p289:GetChildren() do
-				if v290:IsA("BasePart") or v290:IsA("UnionOperation") then
-					v290.Color = v_u_13[v290] or v290.Color
-					v_u_13[v290] = nil
-					if v_u_16[v290] then
-						v290.Material = v_u_16[v290]
-						v_u_16[v290] = nil
-					end
-					if v_u_17[v290] then
-						v290.MaterialVariant = v_u_17[v290]
-						v_u_17[v290] = nil
-					end
-				end
-			end
-		end
-	},
-	["Drenched"] = {
-		["Id"] = "p",
-		["Name"] = "Drenched",
-		["ValueMulti"] = 5,
-		["Color"] = Color3.fromRGB(0, 55, 228),
-		["_AddFX"] = function(p291, p292, p293)
-			-- upvalues: (copy) v_u_13
-			p291:_RemoveFX(p292, p293)
-			if p293 then
-				for _, v294 in game.ServerStorage.Mutation_FX.Drenched:GetChildren() do
-					local v295 = v294:Clone()
-					v295.Parent = p293
-					v295.Enabled = true
-					v295:AddTag("Cleanup_Drenched")
-				end
-			end
-			for _, v296 in p292:GetChildren() do
-				if v296:IsA("BasePart") or v296:IsA("UnionOperation") then
-					v_u_13[v296] = v_u_13[v296] or v296.Color
-					local v297, v298, v299 = v296.Color:ToHSV()
-					local v300 = v298 + 0.1
-					local v301 = math.clamp(v300, v298, 1)
-					local v302 = v299 + 0.05
-					local v303 = math.clamp(v302, v299, 1)
-					v296.Color = Color3.fromHSV(v297, v301, v303)
-				end
-			end
-		end,
-		["_RemoveFX"] = function(_, p304, p305)
-			-- upvalues: (copy) v_u_13, (copy) v_u_16, (copy) v_u_17
-			if p305 then
-				for _, v306 in p305:GetChildren() do
-					if v306:HasTag("Cleanup_Drenched") then
-						v306:Destroy()
-					end
-				end
-			end
-			for _, v307 in p304:GetChildren() do
+			for _, v307 in p306:GetChildren() do
 				if v307:IsA("BasePart") or v307:IsA("UnionOperation") then
 					v307.Color = v_u_13[v307] or v307.Color
 					v_u_13[v307] = nil
@@ -969,62 +969,115 @@ local v_u_518 = {
 			end
 		end
 	},
+	["Drenched"] = {
+		["Id"] = "p",
+		["Name"] = "Drenched",
+		["ValueMulti"] = 5,
+		["Color"] = Color3.fromRGB(0, 55, 228),
+		["_AddFX"] = function(p308, p309, p310)
+			-- upvalues: (copy) v_u_13
+			p308:_RemoveFX(p309, p310)
+			if p310 then
+				for _, v311 in game.ServerStorage.Mutation_FX.Drenched:GetChildren() do
+					local v312 = v311:Clone()
+					v312.Parent = p310
+					v312.Enabled = true
+					v312:AddTag("Cleanup_Drenched")
+				end
+			end
+			for _, v313 in p309:GetChildren() do
+				if v313:IsA("BasePart") or v313:IsA("UnionOperation") then
+					v_u_13[v313] = v_u_13[v313] or v313.Color
+					local v314, v315, v316 = v313.Color:ToHSV()
+					local v317 = v315 + 0.1
+					local v318 = math.clamp(v317, v315, 1)
+					local v319 = v316 + 0.05
+					local v320 = math.clamp(v319, v316, 1)
+					v313.Color = Color3.fromHSV(v314, v318, v320)
+				end
+			end
+		end,
+		["_RemoveFX"] = function(_, p321, p322)
+			-- upvalues: (copy) v_u_13, (copy) v_u_16, (copy) v_u_17
+			if p322 then
+				for _, v323 in p322:GetChildren() do
+					if v323:HasTag("Cleanup_Drenched") then
+						v323:Destroy()
+					end
+				end
+			end
+			for _, v324 in p321:GetChildren() do
+				if v324:IsA("BasePart") or v324:IsA("UnionOperation") then
+					v324.Color = v_u_13[v324] or v324.Color
+					v_u_13[v324] = nil
+					if v_u_16[v324] then
+						v324.Material = v_u_16[v324]
+						v_u_16[v324] = nil
+					end
+					if v_u_17[v324] then
+						v324.MaterialVariant = v_u_17[v324]
+						v_u_17[v324] = nil
+					end
+				end
+			end
+		end
+	},
 	["Verdant"] = {
 		["Id"] = "q",
 		["Name"] = "Verdant",
 		["ValueMulti"] = 4,
 		["Color"] = Color3.fromRGB(34, 139, 34),
-		["_AddFX"] = function(p308, p309, p310)
+		["_AddFX"] = function(p325, p326, p327)
 			-- upvalues: (copy) v_u_13, (copy) v_u_16
-			p308:_RemoveFX(p309, p310)
-			if p310 then
-				for _, v311 in game.ServerStorage.Mutation_FX.Verdant:GetChildren() do
-					local v312 = v311:Clone()
-					v312.Parent = p310
-					v312.Enabled = true
-					v312:AddTag("Cleanup_Verdant")
+			p325:_RemoveFX(p326, p327)
+			if p327 then
+				for _, v328 in game.ServerStorage.Mutation_FX.Verdant:GetChildren() do
+					local v329 = v328:Clone()
+					v329.Parent = p327
+					v329.Enabled = true
+					v329:AddTag("Cleanup_Verdant")
 				end
 			end
-			for v313, v314 in p309:GetDescendants() do
-				if v314:IsA("BasePart") or v314:IsA("UnionOperation") then
-					if v313 % 6 == 0 then
-						local v315 = game.ServerStorage.Mutation_FX.Verdant.LeafSwirl:Clone()
-						v315.Parent = v314
-						v315.Enabled = true
-						v315:AddTag("Cleanup_Verdant")
+			for v330, v331 in p326:GetDescendants() do
+				if v331:IsA("BasePart") or v331:IsA("UnionOperation") then
+					if v330 % 6 == 0 then
+						local v332 = game.ServerStorage.Mutation_FX.Verdant.LeafSwirl:Clone()
+						v332.Parent = v331
+						v332.Enabled = true
+						v332:AddTag("Cleanup_Verdant")
 					end
-					if not v314:HasTag("Effect") then
-						local v316 = v314.Color
-						v_u_13[v314] = v_u_13[v314] or v314.Color
-						v_u_16[v314] = v_u_16[v314] or v314.Material
-						local v317 = Color3.fromRGB
-						local v318 = v316.R * 166 * 0.5
-						local v319 = v316.G * 255 + 150
-						v314.Color = v317(v318, math.clamp(v319, 0, 255) * 0.5, v316.B * 166 * 0.5)
-						v314:AddTag("VerdantVisual")
+					if not v331:HasTag("Effect") then
+						local v333 = v331.Color
+						v_u_13[v331] = v_u_13[v331] or v331.Color
+						v_u_16[v331] = v_u_16[v331] or v331.Material
+						local v334 = Color3.fromRGB
+						local v335 = v333.R * 166 * 0.5
+						local v336 = v333.G * 255 + 150
+						v331.Color = v334(v335, math.clamp(v336, 0, 255) * 0.5, v333.B * 166 * 0.5)
+						v331:AddTag("VerdantVisual")
 					end
 				end
 			end
 		end,
-		["_RemoveFX"] = function(_, p320, p321)
+		["_RemoveFX"] = function(_, p337, p338)
 			-- upvalues: (copy) v_u_13, (copy) v_u_16
-			if p321 then
-				for _, v322 in p321:GetChildren() do
-					if v322:HasTag("Cleanup_Verdant") then
-						v322:Destroy()
+			if p338 then
+				for _, v339 in p338:GetChildren() do
+					if v339:HasTag("Cleanup_Verdant") then
+						v339:Destroy()
 					end
 				end
 			end
-			for _, v323 in p320:GetDescendants() do
-				if (v323:IsA("BasePart") or v323:IsA("UnionOperation")) and v323:HasTag("VerdantVisual") then
-					v323:RemoveTag("VerdantVisual")
-					v323.Color = v_u_13[v323] or v323.Color
-					v_u_13[v323] = nil
-					if v_u_16[v323] then
-						v323.Material = v_u_16[v323]
-						v_u_16[v323] = nil
+			for _, v340 in p337:GetDescendants() do
+				if (v340:IsA("BasePart") or v340:IsA("UnionOperation")) and v340:HasTag("VerdantVisual") then
+					v340:RemoveTag("VerdantVisual")
+					v340.Color = v_u_13[v340] or v340.Color
+					v_u_13[v340] = nil
+					if v_u_16[v340] then
+						v340.Material = v_u_16[v340]
+						v_u_16[v340] = nil
 					end
-					v323.Reflectance = 0
+					v340.Reflectance = 0
 				end
 			end
 		end
@@ -1034,53 +1087,53 @@ local v_u_518 = {
 		["Name"] = "Paradisal",
 		["ValueMulti"] = 100,
 		["Color"] = Color3.fromRGB(176, 240, 0),
-		["_AddFX"] = function(p324, p325, p326)
+		["_AddFX"] = function(p341, p342, p343)
 			-- upvalues: (copy) v_u_13, (copy) v_u_16
-			p324:_RemoveFX(p325, p326)
-			if p326 then
-				for _, v327 in game.ServerStorage.Mutation_FX.Paradisal:GetChildren() do
-					local v328 = v327:Clone()
-					v328.Parent = p326
-					v328.Enabled = true
-					v328:AddTag("Cleanup_Paradisal")
+			p341:_RemoveFX(p342, p343)
+			if p343 then
+				for _, v344 in game.ServerStorage.Mutation_FX.Paradisal:GetChildren() do
+					local v345 = v344:Clone()
+					v345.Parent = p343
+					v345.Enabled = true
+					v345:AddTag("Cleanup_Paradisal")
 				end
 			end
-			for v329, v330 in p325:GetDescendants() do
-				if v330:IsA("BasePart") or v330:IsA("UnionOperation") then
-					if v329 % 6 == 0 then
-						local v331 = game.ServerStorage.Mutation_FX.Paradisal.Rays:Clone()
-						v331.Parent = v330
-						v331.Enabled = true
-						v331:AddTag("Cleanup_Paradisal")
+			for v346, v347 in p342:GetDescendants() do
+				if v347:IsA("BasePart") or v347:IsA("UnionOperation") then
+					if v346 % 6 == 0 then
+						local v348 = game.ServerStorage.Mutation_FX.Paradisal.Rays:Clone()
+						v348.Parent = v347
+						v348.Enabled = true
+						v348:AddTag("Cleanup_Paradisal")
 					end
-					if not v330:HasTag("Effect") then
-						v_u_13[v330] = v_u_13[v330] or v330.Color
-						v_u_16[v330] = v_u_16[v330] or v330.Material
-						v330.Color = Color3.fromRGB(176, 240, 0)
-						v330:AddTag("ParadisalVisual")
+					if not v347:HasTag("Effect") then
+						v_u_13[v347] = v_u_13[v347] or v347.Color
+						v_u_16[v347] = v_u_16[v347] or v347.Material
+						v347.Color = Color3.fromRGB(176, 240, 0)
+						v347:AddTag("ParadisalVisual")
 					end
 				end
 			end
 		end,
-		["_RemoveFX"] = function(_, p332, p333)
+		["_RemoveFX"] = function(_, p349, p350)
 			-- upvalues: (copy) v_u_13, (copy) v_u_16
-			if p333 then
-				for _, v334 in p333:GetChildren() do
-					if v334:HasTag("Cleanup_Paradisal") then
-						v334:Destroy()
+			if p350 then
+				for _, v351 in p350:GetChildren() do
+					if v351:HasTag("Cleanup_Paradisal") then
+						v351:Destroy()
 					end
 				end
 			end
-			for _, v335 in p332:GetDescendants() do
-				if (v335:IsA("BasePart") or v335:IsA("UnionOperation")) and v335:HasTag("ParadisalVisual") then
-					v335:RemoveTag("ParadisalVisual")
-					v335.Color = v_u_13[v335] or v335.Color
-					v_u_13[v335] = nil
-					if v_u_16[v335] then
-						v335.Material = v_u_16[v335]
-						v_u_16[v335] = nil
+			for _, v352 in p349:GetDescendants() do
+				if (v352:IsA("BasePart") or v352:IsA("UnionOperation")) and v352:HasTag("ParadisalVisual") then
+					v352:RemoveTag("ParadisalVisual")
+					v352.Color = v_u_13[v352] or v352.Color
+					v_u_13[v352] = nil
+					if v_u_16[v352] then
+						v352.Material = v_u_16[v352]
+						v_u_16[v352] = nil
 					end
-					v335.Reflectance = 0
+					v352.Reflectance = 0
 				end
 			end
 		end
@@ -1088,64 +1141,145 @@ local v_u_518 = {
 	["Glitched"] = {
 		["Id"] = "gli",
 		["Name"] = "Glitched",
-		["ValueMulti"] = 5,
+		["ValueMulti"] = 85,
 		["Color"] = Color3.fromRGB(240, 96, 228),
-		["_AddFX"] = function(p336, p337, p338)
+		["_AddFX"] = function(p353, p354, p355)
 			-- upvalues: (copy) v_u_13, (copy) v_u_16
-			p336:_RemoveFX(p337, p338)
-			if p338 then
-				for _, v339 in game.ServerStorage.Mutation_FX.Glitched:GetChildren() do
-					local v340 = v339:Clone()
-					v340.Parent = p338
-					v340.Enabled = true
-					v340:AddTag("Cleanup_Glitched")
+			p353:_RemoveFX(p354, p355)
+			if p355 then
+				for _, v356 in game.ServerStorage.Mutation_FX.Glitched:GetChildren() do
+					local v357 = v356:Clone()
+					v357.Parent = p355
+					v357.Enabled = true
+					v357:AddTag("Cleanup_Glitched")
 				end
 			end
-			local v341 = {
+			local v358 = {
 				Color3.fromRGB(240, 96, 228),
 				Color3.fromRGB(79, 237, 240),
 				Color3.fromRGB(84, 240, 67),
 				Color3.fromRGB(217, 217, 217),
 				Color3.fromRGB(39, 39, 255)
 			}
-			for v342, v343 in p337:GetDescendants() do
-				if v343:IsA("BasePart") or v343:IsA("UnionOperation") then
-					if v342 % 6 == 0 then
-						local v344 = game.ServerStorage.Mutation_FX.Glitched.Glitchy:Clone()
-						v344.Parent = v343
-						v344.Enabled = true
-						v344.Rate = math.random(12, 35) / 10
-						v344:AddTag("Cleanup_Glitched")
+			for v359, v360 in p354:GetDescendants() do
+				if v360:IsA("BasePart") or v360:IsA("UnionOperation") then
+					if v359 % 6 == 0 then
+						local v361 = game.ServerStorage.Mutation_FX.Glitched.Glitchy:Clone()
+						v361.Parent = v360
+						v361.Enabled = true
+						v361.Rate = math.random(12, 35) / 10
+						v361:AddTag("Cleanup_Glitched")
 					end
-					if not v343:HasTag("Effect") then
-						v_u_13[v343] = v_u_13[v343] or v343.Color
-						v_u_16[v343] = v_u_16[v343] or v343.Material
-						v343.Color = v341[math.random(1, #v341)]
-						v343.Material = "ForceField"
-						v343:AddTag("GlitchedVisual")
+					if not v360:HasTag("Effect") then
+						v_u_13[v360] = v_u_13[v360] or v360.Color
+						v_u_16[v360] = v_u_16[v360] or v360.Material
+						v360.Color = v358[math.random(1, #v358)]
+						v360.Material = "ForceField"
+						v360:AddTag("GlitchedVisual")
 					end
 				end
 			end
 		end,
-		["_RemoveFX"] = function(_, p345, p346)
+		["_RemoveFX"] = function(_, p362, p363)
 			-- upvalues: (copy) v_u_13, (copy) v_u_16
-			if p346 then
-				for _, v347 in p346:GetChildren() do
-					if v347:HasTag("Cleanup_Glitched") then
-						v347:Destroy()
+			if p363 then
+				for _, v364 in p363:GetChildren() do
+					if v364:HasTag("Cleanup_Glitched") then
+						v364:Destroy()
 					end
 				end
 			end
-			for _, v348 in p345:GetDescendants() do
-				if (v348:IsA("BasePart") or v348:IsA("UnionOperation")) and v348:HasTag("GlitchedVisual") then
-					v348:RemoveTag("GlitchedVisual")
-					v348.Color = v_u_13[v348] or v348.Color
-					v_u_13[v348] = nil
-					if v_u_16[v348] then
-						v348.Material = v_u_16[v348]
-						v_u_16[v348] = nil
+			for _, v365 in p362:GetDescendants() do
+				if (v365:IsA("BasePart") or v365:IsA("UnionOperation")) and v365:HasTag("GlitchedVisual") then
+					v365:RemoveTag("GlitchedVisual")
+					v365.Color = v_u_13[v365] or v365.Color
+					v_u_13[v365] = nil
+					if v_u_16[v365] then
+						v365.Material = v_u_16[v365]
+						v_u_16[v365] = nil
 					end
-					v348.Reflectance = 0
+					v365.Reflectance = 0
+				end
+			end
+		end
+	},
+	["Glimmering"] = {
+		["Id"] = "glm",
+		["Name"] = "Glimmering",
+		["ValueMulti"] = 2,
+		["Color"] = Color3.fromRGB(255, 135, 245),
+		["_AddFX"] = function(p366, p367, p368)
+			-- upvalues: (copy) v_u_13, (copy) v_u_16
+			p366:_RemoveFX(p367, p368)
+			if p368 then
+				for _, v369 in game.ServerStorage.Mutation_FX.Glimmering:GetChildren() do
+					local v370 = v369:Clone()
+					v370.Parent = p368
+					v370.Enabled = true
+					v370:AddTag("Cleanup_Enchanment")
+				end
+			end
+			local v371 = { Color3.fromRGB(246, 142, 255), Color3.fromRGB(176, 130, 255), Color3.fromRGB(255, 80, 238) }
+			for v372, v373 in p367:GetDescendants() do
+				if v373:IsA("BasePart") or v373:IsA("UnionOperation") then
+					if v372 % 6 == 0 then
+						local v374 = game.ServerStorage.Mutation_FX.Glimmering.Sparkle:Clone()
+						v374.Parent = v373
+						v374.Enabled = true
+						v374.Rate = math.random(8, 25) / 10
+						v374:AddTag("Cleanup_Glimmering")
+						local v375 = Instance.new("Attachment", v373)
+						v375:AddTag("Cleanup_Glimmering")
+						local v376 = Instance.new("Attachment", v373)
+						v376:AddTag("Cleanup_Glimmering")
+						v375.Position = Vector3.new(0, 0.1, 0)
+						v376.Position = Vector3.new(0, -0.1, 0)
+						local v377 = Instance.new("Trail")
+						v377.Color = ColorSequence.new(Color3.fromRGB(105, 30, 255))
+						v377.LightInfluence = 0
+						v377.Brightness = 3
+						v377.Attachment0 = v375
+						v377.Attachment1 = v376
+						v377.Lifetime = 0.3
+						v377.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(1, 1) })
+						v377.WidthScale = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(1, 0) })
+						v377.Parent = v373
+						v377:AddTag("Cleanup_Glimmering")
+					end
+					if not v373:HasTag("Effect") then
+						v_u_13[v373] = v_u_13[v373] or v373.Color
+						v_u_16[v373] = v_u_16[v373] or v373.Material
+						if v373.Transparency ~= 1 then
+							v373.Color = v371[math.random(1, #v371)]
+							v373.Material = "Neon"
+							v373:SetAttribute("OTransparency", v373.Transparency)
+							v373.Transparency = 0.5
+							v373:AddTag("EnchanmentVisual")
+						end
+					end
+				end
+			end
+		end,
+		["_RemoveFX"] = function(_, p378, p379)
+			-- upvalues: (copy) v_u_13, (copy) v_u_16
+			if p379 then
+				for _, v380 in p379:GetChildren() do
+					if v380:HasTag("Cleanup_Glimmering") then
+						v380:Destroy()
+					end
+				end
+			end
+			for _, v381 in p378:GetDescendants() do
+				if (v381:IsA("BasePart") or v381:IsA("UnionOperation")) and v381:HasTag("EnchamtmentVisual") then
+					v381:RemoveTag("EnchamtmentVisual")
+					v381.Color = v_u_13[v381] or v381.Color
+					v_u_13[v381] = nil
+					v381.Transparency = v381:GetAttribute("OTransparency") or 0
+					if v_u_16[v381] then
+						v381.Material = v_u_16[v381]
+						v_u_16[v381] = nil
+					end
+					v381.Reflectance = 0
 				end
 			end
 		end
@@ -1155,78 +1289,78 @@ local v_u_518 = {
 		["Name"] = "Enchanted",
 		["ValueMulti"] = 50,
 		["Color"] = Color3.fromRGB(255, 214, 89),
-		["_AddFX"] = function(p349, p350, p351)
+		["_AddFX"] = function(p382, p383, p384)
 			-- upvalues: (copy) v_u_13, (copy) v_u_16
-			p349:_RemoveFX(p350, p351)
-			if p351 then
-				for _, v352 in game.ServerStorage.Mutation_FX.Enchanted:GetChildren() do
-					local v353 = v352:Clone()
-					v353.Parent = p351
-					v353.Enabled = true
-					v353:AddTag("Cleanup_Enchanment")
+			p382:_RemoveFX(p383, p384)
+			if p384 then
+				for _, v385 in game.ServerStorage.Mutation_FX.Enchanted:GetChildren() do
+					local v386 = v385:Clone()
+					v386.Parent = p384
+					v386.Enabled = true
+					v386:AddTag("Cleanup_Enchanment")
 				end
 			end
-			local v354 = { Color3.fromRGB(255, 214, 89), Color3.fromRGB(255, 159, 80), Color3.fromRGB(255, 244, 123) }
-			for v355, v356 in p350:GetDescendants() do
-				if v356:IsA("BasePart") or v356:IsA("UnionOperation") then
-					if v355 % 6 == 0 then
-						local v357 = game.ServerStorage.Mutation_FX.Enchanted.Sparkle:Clone()
-						v357.Parent = v356
-						v357.Enabled = true
-						v357.Rate = math.random(8, 25) / 10
-						v357:AddTag("Cleanup_Enchanment")
-						local v358 = Instance.new("Attachment", v356)
-						v358:AddTag("Cleanup_Enchanment")
-						local v359 = Instance.new("Attachment", v356)
-						v359:AddTag("Cleanup_Enchanment")
-						v358.Position = Vector3.new(0, 0.1, 0)
-						v359.Position = Vector3.new(0, -0.1, 0)
-						local v360 = Instance.new("Trail")
-						v360.Color = ColorSequence.new(Color3.fromRGB(255, 214, 89))
-						v360.LightInfluence = 0
-						v360.Brightness = 3
-						v360.Attachment0 = v358
-						v360.Attachment1 = v359
-						v360.Lifetime = 0.3
-						v360.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(1, 1) })
-						v360.WidthScale = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(1, 0) })
-						v360.Parent = v356
-						v360:AddTag("Cleanup_Enchanment")
+			local v387 = { Color3.fromRGB(255, 214, 89), Color3.fromRGB(255, 159, 80), Color3.fromRGB(255, 244, 123) }
+			for v388, v389 in p383:GetDescendants() do
+				if v389:IsA("BasePart") or v389:IsA("UnionOperation") then
+					if v388 % 6 == 0 then
+						local v390 = game.ServerStorage.Mutation_FX.Enchanted.Sparkle:Clone()
+						v390.Parent = v389
+						v390.Enabled = true
+						v390.Rate = math.random(8, 25) / 10
+						v390:AddTag("Cleanup_Enchanment")
+						local v391 = Instance.new("Attachment", v389)
+						v391:AddTag("Cleanup_Enchanment")
+						local v392 = Instance.new("Attachment", v389)
+						v392:AddTag("Cleanup_Enchanment")
+						v391.Position = Vector3.new(0, 0.1, 0)
+						v392.Position = Vector3.new(0, -0.1, 0)
+						local v393 = Instance.new("Trail")
+						v393.Color = ColorSequence.new(Color3.fromRGB(255, 214, 89))
+						v393.LightInfluence = 0
+						v393.Brightness = 3
+						v393.Attachment0 = v391
+						v393.Attachment1 = v392
+						v393.Lifetime = 0.3
+						v393.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(1, 1) })
+						v393.WidthScale = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(1, 0) })
+						v393.Parent = v389
+						v393:AddTag("Cleanup_Enchanment")
 					end
-					if not v356:HasTag("Effect") then
-						v_u_13[v356] = v_u_13[v356] or v356.Color
-						v_u_16[v356] = v_u_16[v356] or v356.Material
-						if v356.Transparency ~= 1 then
-							v356.Color = v354[math.random(1, #v354)]
-							v356.Material = "Neon"
-							v356:SetAttribute("OTransparency", v356.Transparency)
-							v356.Transparency = 0.5
-							v356:AddTag("EnchanmentVisual")
+					if not v389:HasTag("Effect") then
+						v_u_13[v389] = v_u_13[v389] or v389.Color
+						v_u_16[v389] = v_u_16[v389] or v389.Material
+						if v389.Transparency ~= 1 then
+							v389.Color = v387[math.random(1, #v387)]
+							v389.Material = "Neon"
+							v389:SetAttribute("OTransparency", v389.Transparency)
+							v389.Transparency = 0.5
+							v389:AddTag("EnchanmentVisual")
 						end
 					end
 				end
 			end
 		end,
-		["_RemoveFX"] = function(_, p361, p362)
+		["_RemoveFX"] = function(_, p394, p395)
 			-- upvalues: (copy) v_u_13, (copy) v_u_16
-			if p362 then
-				for _, v363 in p362:GetChildren() do
-					if v363:HasTag("Cleanup_Enchantment") then
-						v363:Destroy()
+			if p395 then
+				for _, v396 in p395:GetChildren() do
+					if v396:HasTag("Cleanup_Enchantment") then
+						v396:Destroy()
 					end
 				end
 			end
-			for _, v364 in p361:GetDescendants() do
-				if (v364:IsA("BasePart") or v364:IsA("UnionOperation")) and v364:HasTag("EnchamtmentVisual") then
-					v364:RemoveTag("EnchamtmentVisual")
-					v364.Color = v_u_13[v364] or v364.Color
-					v_u_13[v364] = nil
-					v364.Transparency = v364:GetAttribute("OTransparency") or 0
-					if v_u_16[v364] then
-						v364.Material = v_u_16[v364]
-						v_u_16[v364] = nil
+			for _, v397 in p394:GetDescendants() do
+				if (v397:IsA("BasePart") or v397:IsA("UnionOperation")) and v397:HasTag("EnchamtmentVisual") then
+					v397:RemoveTag("EnchamtmentVisual")
+					v397.Color = v_u_13[v397] or v397.Color
+					v_u_13[v397] = nil
+					v397.Transparency = v397:GetAttribute("OTransparency") or 0
+					if v_u_16[v397] then
+						v397.Material = v_u_16[v397]
+						v_u_16[v397] = nil
 					end
-					v364.Reflectance = 0
+					v397.Reflectance = 0
 				end
 			end
 		end
@@ -1236,13 +1370,13 @@ local v_u_518 = {
 		["Name"] = "Frozen",
 		["ValueMulti"] = 10,
 		["Color"] = Color3.fromRGB(108, 184, 255),
-		["_AddFX"] = function(p365, p366, p367)
+		["_AddFX"] = function(p398, p399, p400)
 			-- upvalues: (copy) v_u_96
-			v_u_96(p365, p366, p367, 0.8)
+			v_u_96(p398, p399, p400, 0.8)
 		end,
-		["_RemoveFX"] = function(p368, p369, p370)
+		["_RemoveFX"] = function(p401, p402, p403)
 			-- upvalues: (copy) v_u_105
-			v_u_105(p368, p369, p370)
+			v_u_105(p401, p402, p403)
 		end
 	},
 	["Disco"] = {
@@ -1250,46 +1384,46 @@ local v_u_518 = {
 		["Name"] = "Disco",
 		["ValueMulti"] = 125,
 		["Color"] = Color3.fromRGB(255, 105, 180),
-		["_AddFX"] = function(p371, p372, p373)
+		["_AddFX"] = function(p404, p405, p406)
 			-- upvalues: (copy) v_u_13, (copy) v_u_16
-			p371:_RemoveFX(p372, p373)
-			local function v_u_376(p374)
-				-- upvalues: (ref) v_u_13, (ref) v_u_16, (copy) v_u_376
-				for _, v375 in p374:GetChildren() do
-					if v375:IsA("BasePart") or v375:IsA("UnionOperation") then
-						v_u_13[v375] = v_u_13[v375] or v375.Color
-						v_u_16[v375] = v_u_16[v375] or v375.Material
-						v375.Material = Enum.Material.Neon
-						v375:AddTag("Discofied")
-					elseif v375:IsA("Model") then
-						v_u_376(v375)
+			p404:_RemoveFX(p405, p406)
+			local function v_u_409(p407)
+				-- upvalues: (ref) v_u_13, (ref) v_u_16, (copy) v_u_409
+				for _, v408 in p407:GetChildren() do
+					if v408:IsA("BasePart") or v408:IsA("UnionOperation") then
+						v_u_13[v408] = v_u_13[v408] or v408.Color
+						v_u_16[v408] = v_u_16[v408] or v408.Material
+						v408.Material = Enum.Material.Neon
+						v408:AddTag("Discofied")
+					elseif v408:IsA("Model") then
+						v_u_409(v408)
 					end
 				end
 			end
-			v_u_376(p372)
+			v_u_409(p405)
 		end,
-		["_RemoveFX"] = function(_, p377, _)
+		["_RemoveFX"] = function(_, p410, _)
 			-- upvalues: (copy) v_u_13, (copy) v_u_16, (copy) v_u_5
-			local v378 = {}
-			for _, v379 in p377:GetDescendants() do
-				if (v379:IsA("BasePart") or v379:IsA("UnionOperation")) and v379:HasTag("Discofied") then
-					v379.Reflectance = 0
-					v379:RemoveTag("Discofied")
-					v379.Color = v_u_13[v379] or v379.Color
-					v_u_13[v379] = nil
-					local v380 = {
-						["Part"] = v379,
-						["Color"] = v379.Color
+			local v411 = {}
+			for _, v412 in p410:GetDescendants() do
+				if (v412:IsA("BasePart") or v412:IsA("UnionOperation")) and v412:HasTag("Discofied") then
+					v412.Reflectance = 0
+					v412:RemoveTag("Discofied")
+					v412.Color = v_u_13[v412] or v412.Color
+					v_u_13[v412] = nil
+					local v413 = {
+						["Part"] = v412,
+						["Color"] = v412.Color
 					}
-					table.insert(v378, v380)
-					local v381 = v_u_16[v379]
-					if v381 then
-						v379.Material = v381
-						v_u_16[v379] = nil
+					table.insert(v411, v413)
+					local v414 = v_u_16[v412]
+					if v414 then
+						v412.Material = v414
+						v_u_16[v412] = nil
 					end
 				end
 			end
-			v_u_5:FireAllClients(v378)
+			v_u_5:FireAllClients(v411)
 		end
 	},
 	["Choc"] = {
@@ -1297,45 +1431,45 @@ local v_u_518 = {
 		["Name"] = "Choc",
 		["ValueMulti"] = 2,
 		["Color"] = Color3.fromRGB(92, 64, 51),
-		["_AddFX"] = function(p382, p383, p384)
+		["_AddFX"] = function(p415, p416, p417)
 			-- upvalues: (copy) v_u_12
-			p382:_RemoveFX(p383, p384)
-			local function v_u_391(p385)
-				-- upvalues: (ref) v_u_12, (copy) v_u_391
-				for _, v_u_386 in p385:GetChildren() do
-					if v_u_386:IsA("BasePart") or v_u_386:IsA("UnionOperation") then
-						local v_u_387 = {}
-						for _, v388 in game.ServerStorage.Mutation_Textures.Choc:GetChildren() do
-							local v389 = v388:Clone()
-							v389.Parent = v_u_386
-							v389.Transparency = v_u_386.Transparency
-							table.insert(v_u_387, v389)
-							v389:AddTag("Cleanup_Choc")
+			p415:_RemoveFX(p416, p417)
+			local function v_u_424(p418)
+				-- upvalues: (ref) v_u_12, (copy) v_u_424
+				for _, v_u_419 in p418:GetChildren() do
+					if v_u_419:IsA("BasePart") or v_u_419:IsA("UnionOperation") then
+						local v_u_420 = {}
+						for _, v421 in game.ServerStorage.Mutation_Textures.Choc:GetChildren() do
+							local v422 = v421:Clone()
+							v422.Parent = v_u_419
+							v422.Transparency = v_u_419.Transparency
+							table.insert(v_u_420, v422)
+							v422:AddTag("Cleanup_Choc")
 						end
-						v_u_12[v_u_386] = v_u_386.Changed:Connect(function()
-							-- upvalues: (copy) v_u_386, (ref) v_u_12, (copy) v_u_387
-							if v_u_386.Transparency == 0 then
-								v_u_12[v_u_386]:Disconnect()
-								for _, v390 in v_u_387 do
-									v390.Transparency = 0
+						v_u_12[v_u_419] = v_u_419.Changed:Connect(function()
+							-- upvalues: (copy) v_u_419, (ref) v_u_12, (copy) v_u_420
+							if v_u_419.Transparency == 0 then
+								v_u_12[v_u_419]:Disconnect()
+								for _, v423 in v_u_420 do
+									v423.Transparency = 0
 								end
 							end
 						end)
-					elseif v_u_386:IsA("Model") then
-						v_u_391(v_u_386)
+					elseif v_u_419:IsA("Model") then
+						v_u_424(v_u_419)
 					end
 				end
 			end
-			v_u_391(p383)
+			v_u_424(p416)
 		end,
-		["_RemoveFX"] = function(_, p392, _)
+		["_RemoveFX"] = function(_, p425, _)
 			-- upvalues: (copy) v_u_12
-			for _, v393 in p392:GetDescendants() do
-				if v393:HasTag("Cleanup_Choc") then
-					v393:Destroy()
+			for _, v426 in p425:GetDescendants() do
+				if v426:HasTag("Cleanup_Choc") then
+					v426:Destroy()
 				end
-				if v_u_12[v393] then
-					v_u_12[v393]:Disconnect()
+				if v_u_12[v426] then
+					v_u_12[v426]:Disconnect()
 				end
 			end
 		end
@@ -1345,52 +1479,52 @@ local v_u_518 = {
 		["Name"] = "Plasma",
 		["ValueMulti"] = 5,
 		["Color"] = Color3.fromRGB(208, 43, 137),
-		["_AddFX"] = function(p394, p395, p396)
+		["_AddFX"] = function(p427, p428, p429)
 			-- upvalues: (copy) v_u_13, (copy) v_u_16
-			p394:_RemoveFX(p395, p396)
-			if p396 then
-				for _, v397 in game.ServerStorage.Mutation_FX.Plasma:GetChildren() do
-					local v398 = v397:Clone()
-					v398.Parent = p396
-					v398.Enabled = true
-					v398:AddTag("Cleanup_Plasma")
+			p427:_RemoveFX(p428, p429)
+			if p429 then
+				for _, v430 in game.ServerStorage.Mutation_FX.Plasma:GetChildren() do
+					local v431 = v430:Clone()
+					v431.Parent = p429
+					v431.Enabled = true
+					v431:AddTag("Cleanup_Plasma")
 				end
 			end
-			for _, v399 in p395:GetDescendants() do
-				if (v399:IsA("BasePart") or v399:IsA("UnionOperation")) and not v399:HasTag("Effect") then
-					v_u_13[v399] = v_u_13[v399] or v399.Color
-					v399.Color = Color3.fromRGB(189, 67, 142)
-					v_u_16[v399] = v_u_16[v399] or v399.Material
-					v399.Material = Enum.Material.Neon
-					v399.Reflectance = 0.05
-					v399:AddTag("PlasmaVisual")
+			for _, v432 in p428:GetDescendants() do
+				if (v432:IsA("BasePart") or v432:IsA("UnionOperation")) and not v432:HasTag("Effect") then
+					v_u_13[v432] = v_u_13[v432] or v432.Color
+					v432.Color = Color3.fromRGB(189, 67, 142)
+					v_u_16[v432] = v_u_16[v432] or v432.Material
+					v432.Material = Enum.Material.Neon
+					v432.Reflectance = 0.05
+					v432:AddTag("PlasmaVisual")
 				end
 			end
 		end,
-		["_RemoveFX"] = function(_, p400, p401)
+		["_RemoveFX"] = function(_, p433, p434)
 			-- upvalues: (copy) v_u_13, (copy) v_u_16
-			local function v404(p402)
-				for _, v403 in p402:GetDescendants() do
-					if v403:HasTag("Cleanup_Plasma") then
-						v403:Destroy()
+			local function v437(p435)
+				for _, v436 in p435:GetDescendants() do
+					if v436:HasTag("Cleanup_Plasma") then
+						v436:Destroy()
 					end
 				end
 			end
-			if p401 then
-				v404(p401)
+			if p434 then
+				v437(p434)
 			end
-			if p400 then
-				v404(p400)
+			if p433 then
+				v437(p433)
 			end
-			for _, v405 in p400:GetDescendants() do
-				if (v405:IsA("BasePart") or v405:IsA("UnionOperation")) and v405:HasTag("PlasmaVisual") then
-					v405.Reflectance = 0
-					v405.Color = v_u_13[v405] or v405.Color
-					v_u_13[v405] = nil
-					v405:RemoveTag("PlasmaVisual")
-					if v_u_16[v405] then
-						v405.Material = v_u_16[v405]
-						v_u_16[v405] = nil
+			for _, v438 in p433:GetDescendants() do
+				if (v438:IsA("BasePart") or v438:IsA("UnionOperation")) and v438:HasTag("PlasmaVisual") then
+					v438.Reflectance = 0
+					v438.Color = v_u_13[v438] or v438.Color
+					v_u_13[v438] = nil
+					v438:RemoveTag("PlasmaVisual")
+					if v_u_16[v438] then
+						v438.Material = v_u_16[v438]
+						v_u_16[v438] = nil
 					end
 				end
 			end
@@ -1401,30 +1535,30 @@ local v_u_518 = {
 		["Name"] = "Heavenly",
 		["ValueMulti"] = 5,
 		["Color"] = Color3.fromRGB(255, 249, 160),
-		["_AddFX"] = function(p406, p407, p408)
-			p406:_RemoveFX(p407, p408)
-			if p408 then
-				for _, v409 in game.ServerStorage.Mutation_FX.Heavenly:GetChildren() do
-					local v410 = v409:Clone()
-					v410.Parent = p408
-					v410.Enabled = true
-					v410:AddTag("Cleanup_Heavenly")
+		["_AddFX"] = function(p439, p440, p441)
+			p439:_RemoveFX(p440, p441)
+			if p441 then
+				for _, v442 in game.ServerStorage.Mutation_FX.Heavenly:GetChildren() do
+					local v443 = v442:Clone()
+					v443.Parent = p441
+					v443.Enabled = true
+					v443:AddTag("Cleanup_Heavenly")
 				end
 			end
 		end,
-		["_RemoveFX"] = function(_, p411, p412)
-			local function v415(p413)
-				for _, v414 in p413:GetDescendants() do
-					if v414:HasTag("Cleanup_Heavenly") then
-						v414:Destroy()
+		["_RemoveFX"] = function(_, p444, p445)
+			local function v448(p446)
+				for _, v447 in p446:GetDescendants() do
+					if v447:HasTag("Cleanup_Heavenly") then
+						v447:Destroy()
 					end
 				end
 			end
-			if p412 then
-				v415(p412)
+			if p445 then
+				v448(p445)
 			end
-			if p411 then
-				v415(p411)
+			if p444 then
+				v448(p444)
 			end
 		end
 	},
@@ -1433,52 +1567,52 @@ local v_u_518 = {
 		["Name"] = "Burnt",
 		["ValueMulti"] = 4,
 		["Color"] = Color3.fromRGB(40, 40, 40),
-		["_AddFX"] = function(p416, p417, p418)
+		["_AddFX"] = function(p449, p450, p451)
 			-- upvalues: (copy) v_u_13, (copy) v_u_16
-			p416:_RemoveFX(p417, p418)
-			if p418 then
-				for _, v419 in game.ServerStorage.Mutation_FX.Burnt:GetChildren() do
-					local v420 = v419:Clone()
-					v420.Parent = p418
-					v420.Enabled = true
-					v420:AddTag("Cleanup_Burnt")
+			p449:_RemoveFX(p450, p451)
+			if p451 then
+				for _, v452 in game.ServerStorage.Mutation_FX.Burnt:GetChildren() do
+					local v453 = v452:Clone()
+					v453.Parent = p451
+					v453.Enabled = true
+					v453:AddTag("Cleanup_Burnt")
 				end
 			end
-			for _, v421 in p417:GetDescendants() do
-				if (v421:IsA("BasePart") or v421:IsA("UnionOperation")) and not v421:HasTag("Effect") then
-					v_u_13[v421] = v_u_13[v421] or v421.Color
-					v421.Color = Color3.fromRGB(25, 25, 25)
-					v_u_16[v421] = v_u_16[v421] or v421.Material
-					v421.Material = Enum.Material.Slate
-					v421.Reflectance = 0.05
-					v421:AddTag("BurntVisual")
+			for _, v454 in p450:GetDescendants() do
+				if (v454:IsA("BasePart") or v454:IsA("UnionOperation")) and not v454:HasTag("Effect") then
+					v_u_13[v454] = v_u_13[v454] or v454.Color
+					v454.Color = Color3.fromRGB(25, 25, 25)
+					v_u_16[v454] = v_u_16[v454] or v454.Material
+					v454.Material = Enum.Material.Slate
+					v454.Reflectance = 0.05
+					v454:AddTag("BurntVisual")
 				end
 			end
 		end,
-		["_RemoveFX"] = function(_, p422, p423)
+		["_RemoveFX"] = function(_, p455, p456)
 			-- upvalues: (copy) v_u_13, (copy) v_u_16
-			local function v426(p424)
-				for _, v425 in p424:GetDescendants() do
-					if v425:HasTag("Cleanup_Burnt") then
-						v425:Destroy()
+			local function v459(p457)
+				for _, v458 in p457:GetDescendants() do
+					if v458:HasTag("Cleanup_Burnt") then
+						v458:Destroy()
 					end
 				end
 			end
-			if p423 then
-				v426(p423)
+			if p456 then
+				v459(p456)
 			end
-			if p422 then
-				v426(p422)
+			if p455 then
+				v459(p455)
 			end
-			for _, v427 in p422:GetDescendants() do
-				if (v427:IsA("BasePart") or v427:IsA("UnionOperation")) and v427:HasTag("BurntVisual") then
-					v427.Reflectance = 0
-					v427.Color = v_u_13[v427] or v427.Color
-					v_u_13[v427] = nil
-					v427:RemoveTag("BurntVisual")
-					if v_u_16[v427] then
-						v427.Material = v_u_16[v427]
-						v_u_16[v427] = nil
+			for _, v460 in p455:GetDescendants() do
+				if (v460:IsA("BasePart") or v460:IsA("UnionOperation")) and v460:HasTag("BurntVisual") then
+					v460.Reflectance = 0
+					v460.Color = v_u_13[v460] or v460.Color
+					v_u_13[v460] = nil
+					v460:RemoveTag("BurntVisual")
+					if v_u_16[v460] then
+						v460.Material = v_u_16[v460]
+						v_u_16[v460] = nil
 					end
 				end
 			end
@@ -1489,50 +1623,50 @@ local v_u_518 = {
 		["Name"] = "Cooked",
 		["ValueMulti"] = 10,
 		["Color"] = Color3.fromRGB(210, 120, 60),
-		["_AddFX"] = function(p428, p429, p430)
+		["_AddFX"] = function(p461, p462, p463)
 			-- upvalues: (copy) v_u_13
-			p428:_RemoveFX(p429, p430)
-			if p430 then
-				for _, v431 in game.ServerStorage.Mutation_FX.Cooked:GetChildren() do
-					local v432 = v431:Clone()
-					v432.Parent = p430
-					v432.Enabled = true
-					v432:AddTag("Cleanup_Cooked")
+			p461:_RemoveFX(p462, p463)
+			if p463 then
+				for _, v464 in game.ServerStorage.Mutation_FX.Cooked:GetChildren() do
+					local v465 = v464:Clone()
+					v465.Parent = p463
+					v465.Enabled = true
+					v465:AddTag("Cleanup_Cooked")
 				end
 			end
-			for _, v433 in p429:GetDescendants() do
-				if (v433:IsA("BasePart") or v433:IsA("UnionOperation")) and not v433:HasTag("Effect") then
-					v_u_13[v433] = v_u_13[v433] or v433.Color
-					v433.Color = Color3.fromRGB(210, 120, 60)
-					v433:AddTag("CookedVisual")
+			for _, v466 in p462:GetDescendants() do
+				if (v466:IsA("BasePart") or v466:IsA("UnionOperation")) and not v466:HasTag("Effect") then
+					v_u_13[v466] = v_u_13[v466] or v466.Color
+					v466.Color = Color3.fromRGB(210, 120, 60)
+					v466:AddTag("CookedVisual")
 				end
 			end
 		end,
-		["_RemoveFX"] = function(_, p434, p435)
+		["_RemoveFX"] = function(_, p467, p468)
 			-- upvalues: (copy) v_u_13, (copy) v_u_16
-			local function v438(p436)
-				for _, v437 in p436:GetDescendants() do
-					if v437:HasTag("Cleanup_Cooked") then
-						v437:Destroy()
+			local function v471(p469)
+				for _, v470 in p469:GetDescendants() do
+					if v470:HasTag("Cleanup_Cooked") then
+						v470:Destroy()
 					end
 				end
 			end
-			if p435 then
-				v438(p435)
+			if p468 then
+				v471(p468)
 			end
-			if p434 then
-				v438(p434)
+			if p467 then
+				v471(p467)
 			end
-			for _, v439 in p434:GetDescendants() do
-				if (v439:IsA("BasePart") or v439:IsA("UnionOperation")) and v439:HasTag("CookedVisual") then
-					v439.Reflectance = 0
-					v439.Color = v_u_13[v439] or v439.Color
-					v_u_13[v439] = nil
-					v439:RemoveTag("CookedVisual")
-					local v440 = v_u_16[v439]
-					if v440 then
-						v439.Material = v440
-						v_u_16[v439] = nil
+			for _, v472 in p467:GetDescendants() do
+				if (v472:IsA("BasePart") or v472:IsA("UnionOperation")) and v472:HasTag("CookedVisual") then
+					v472.Reflectance = 0
+					v472.Color = v_u_13[v472] or v472.Color
+					v_u_13[v472] = nil
+					v472:RemoveTag("CookedVisual")
+					local v473 = v_u_16[v472]
+					if v473 then
+						v472.Material = v473
+						v_u_16[v472] = nil
 					end
 				end
 			end
@@ -1543,46 +1677,46 @@ local v_u_518 = {
 		["Name"] = "Moonlit",
 		["ValueMulti"] = 2,
 		["Color"] = Color3.fromRGB(153, 141, 255),
-		["_AddFX"] = function(p441, p442, p443)
+		["_AddFX"] = function(p474, p475, p476)
 			-- upvalues: (copy) v_u_13
-			p441:_RemoveFX(p442, p443)
-			if p443 then
-				for _, v444 in game.ServerStorage.Mutation_FX.Moonlit:GetChildren() do
-					local v445 = v444:Clone()
-					v445.Parent = p443
-					v445.Enabled = true
-					v445:AddTag("Cleanup_Moonlit")
-					v445:AddTag("Effect")
+			p474:_RemoveFX(p475, p476)
+			if p476 then
+				for _, v477 in game.ServerStorage.Mutation_FX.Moonlit:GetChildren() do
+					local v478 = v477:Clone()
+					v478.Parent = p476
+					v478.Enabled = true
+					v478:AddTag("Cleanup_Moonlit")
+					v478:AddTag("Effect")
 				end
 			end
-			for _, v446 in p442:GetDescendants() do
-				if (v446:IsA("BasePart") or v446:IsA("UnionOperation")) and not v446:HasTag("Effect") then
-					v_u_13[v446] = v_u_13[v446] or v446.Color
-					v446.Color = Color3.fromRGB(62, 56, 86)
-					v446.Reflectance = 0.3
-					v446:AddTag("MoonlitVisual")
+			for _, v479 in p475:GetDescendants() do
+				if (v479:IsA("BasePart") or v479:IsA("UnionOperation")) and not v479:HasTag("Effect") then
+					v_u_13[v479] = v_u_13[v479] or v479.Color
+					v479.Color = Color3.fromRGB(62, 56, 86)
+					v479.Reflectance = 0.3
+					v479:AddTag("MoonlitVisual")
 				end
 			end
 		end,
-		["_RemoveFX"] = function(_, p447, p448)
+		["_RemoveFX"] = function(_, p480, p481)
 			-- upvalues: (copy) v_u_13, (copy) v_u_16
-			if p448 then
-				for _, v449 in p448:GetChildren() do
-					if v449:HasTag("Cleanup_Moonlit") then
-						v449:Destroy()
+			if p481 then
+				for _, v482 in p481:GetChildren() do
+					if v482:HasTag("Cleanup_Moonlit") then
+						v482:Destroy()
 					end
 				end
 			end
-			for _, v450 in p447:GetDescendants() do
-				if (v450:IsA("BasePart") or v450:IsA("UnionOperation")) and v450:HasTag("MoonlitVisual") then
-					v450.Color = v_u_13[v450] or v450.Color
-					v_u_13[v450] = nil
-					v450.Reflectance = 0
-					v450:RemoveTag("MoonlitVisual")
-					local v451 = v_u_16[v450]
-					if v451 then
-						v450.Material = v451
-						v_u_16[v450] = nil
+			for _, v483 in p480:GetDescendants() do
+				if (v483:IsA("BasePart") or v483:IsA("UnionOperation")) and v483:HasTag("MoonlitVisual") then
+					v483.Color = v_u_13[v483] or v483.Color
+					v_u_13[v483] = nil
+					v483.Reflectance = 0
+					v483:RemoveTag("MoonlitVisual")
+					local v484 = v_u_16[v483]
+					if v484 then
+						v483.Material = v484
+						v_u_16[v483] = nil
 					end
 				end
 			end
@@ -1593,46 +1727,46 @@ local v_u_518 = {
 		["Name"] = "Bloodlit",
 		["ValueMulti"] = 4,
 		["Color"] = Color3.fromRGB(200, 0, 0),
-		["_AddFX"] = function(p452, p453, p454)
+		["_AddFX"] = function(p485, p486, p487)
 			-- upvalues: (copy) v_u_13
-			p452:_RemoveFX(p453, p454)
-			if p454 then
-				for _, v455 in game.ServerStorage.Mutation_FX.Bloodlit:GetChildren() do
-					local v456 = v455:Clone()
-					v456.Parent = p454
-					v456.Enabled = true
-					v456:AddTag("Cleanup_Bloodlit")
-					v456:AddTag("Effect")
+			p485:_RemoveFX(p486, p487)
+			if p487 then
+				for _, v488 in game.ServerStorage.Mutation_FX.Bloodlit:GetChildren() do
+					local v489 = v488:Clone()
+					v489.Parent = p487
+					v489.Enabled = true
+					v489:AddTag("Cleanup_Bloodlit")
+					v489:AddTag("Effect")
 				end
 			end
-			for _, v457 in p453:GetDescendants() do
-				if (v457:IsA("BasePart") or v457:IsA("UnionOperation")) and not v457:HasTag("Effect") then
-					v_u_13[v457] = v_u_13[v457] or v457.Color
-					v457.Color = Color3.fromRGB(143, 1, 3)
-					v457.Reflectance = 0.3
-					v457:AddTag("BloodlitVisual")
+			for _, v490 in p486:GetDescendants() do
+				if (v490:IsA("BasePart") or v490:IsA("UnionOperation")) and not v490:HasTag("Effect") then
+					v_u_13[v490] = v_u_13[v490] or v490.Color
+					v490.Color = Color3.fromRGB(143, 1, 3)
+					v490.Reflectance = 0.3
+					v490:AddTag("BloodlitVisual")
 				end
 			end
 		end,
-		["_RemoveFX"] = function(_, p458, p459)
+		["_RemoveFX"] = function(_, p491, p492)
 			-- upvalues: (copy) v_u_13, (copy) v_u_16
-			if p459 then
-				for _, v460 in p459:GetChildren() do
-					if v460:HasTag("Cleanup_Bloodlit") then
-						v460:Destroy()
+			if p492 then
+				for _, v493 in p492:GetChildren() do
+					if v493:HasTag("Cleanup_Bloodlit") then
+						v493:Destroy()
 					end
 				end
 			end
-			for _, v461 in p458:GetDescendants() do
-				if (v461:IsA("BasePart") or v461:IsA("UnionOperation")) and v461:HasTag("BloodlitVisual") then
-					v461.Reflectance = 0
-					v461.Color = v_u_13[v461] or v461.Color
-					v_u_13[v461] = nil
-					v461:RemoveTag("BloodlitVisual")
-					local v462 = v_u_16[v461]
-					if v462 then
-						v461.Material = v462
-						v_u_16[v461] = nil
+			for _, v494 in p491:GetDescendants() do
+				if (v494:IsA("BasePart") or v494:IsA("UnionOperation")) and v494:HasTag("BloodlitVisual") then
+					v494.Reflectance = 0
+					v494.Color = v_u_13[v494] or v494.Color
+					v_u_13[v494] = nil
+					v494:RemoveTag("BloodlitVisual")
+					local v495 = v_u_16[v494]
+					if v495 then
+						v494.Material = v495
+						v_u_16[v494] = nil
 					end
 				end
 			end
@@ -1643,39 +1777,39 @@ local v_u_518 = {
 		["Name"] = "Zombified",
 		["ValueMulti"] = 25,
 		["Color"] = Color3.fromRGB(128, 199, 127),
-		["_AddFX"] = function(p463, p464, p465)
-			p463:_RemoveFX(p464, p465)
-			if p465 then
-				for _, v466 in game.ServerStorage.Mutation_FX.Zombified:GetChildren() do
-					local v467 = v466:Clone()
-					v467.Parent = p465
-					v467.Enabled = true
-					v467:AddTag("Cleanup_Zombified")
-					v467:AddTag("Effect")
+		["_AddFX"] = function(p496, p497, p498)
+			p496:_RemoveFX(p497, p498)
+			if p498 then
+				for _, v499 in game.ServerStorage.Mutation_FX.Zombified:GetChildren() do
+					local v500 = v499:Clone()
+					v500.Parent = p498
+					v500.Enabled = true
+					v500:AddTag("Cleanup_Zombified")
+					v500:AddTag("Effect")
 				end
 			end
-			for _, v468 in p464:GetDescendants() do
-				if (v468:IsA("BasePart") or v468:IsA("UnionOperation")) and not v468:HasTag("Effect") then
-					v468:AddTag("ZombifiedVisual")
+			for _, v501 in p497:GetDescendants() do
+				if (v501:IsA("BasePart") or v501:IsA("UnionOperation")) and not v501:HasTag("Effect") then
+					v501:AddTag("ZombifiedVisual")
 				end
 			end
 		end,
-		["_RemoveFX"] = function(_, p469, p470)
+		["_RemoveFX"] = function(_, p502, p503)
 			-- upvalues: (copy) v_u_16
-			if p470 then
-				for _, v471 in p470:GetChildren() do
-					if v471:HasTag("Cleanup_Zombified") then
-						v471:Destroy()
+			if p503 then
+				for _, v504 in p503:GetChildren() do
+					if v504:HasTag("Cleanup_Zombified") then
+						v504:Destroy()
 					end
 				end
 			end
-			for _, v472 in p469:GetDescendants() do
-				if (v472:IsA("BasePart") or v472:IsA("UnionOperation")) and v472:HasTag("ZombifiedVisual") then
-					v472:RemoveTag("ZombifiedVisual")
-					local v473 = v_u_16[v472]
-					if v473 then
-						v472.Material = v473
-						v_u_16[v472] = nil
+			for _, v505 in p502:GetDescendants() do
+				if (v505:IsA("BasePart") or v505:IsA("UnionOperation")) and v505:HasTag("ZombifiedVisual") then
+					v505:RemoveTag("ZombifiedVisual")
+					local v506 = v_u_16[v505]
+					if v506 then
+						v505.Material = v506
+						v_u_16[v505] = nil
 					end
 				end
 			end
@@ -1686,41 +1820,41 @@ local v_u_518 = {
 		["Name"] = "Celestial",
 		["ValueMulti"] = 120,
 		["Color"] = Color3.fromRGB(255, 0, 255),
-		["_AddFX"] = function(p474, p475, p476)
-			p474:_RemoveFX(p475, p476)
-			if p476 then
-				for _, v477 in game.ServerStorage.Mutation_FX.Celestial:GetChildren() do
-					local v478 = v477:Clone()
-					v478.Parent = p476
-					v478.Enabled = true
-					v478:AddTag("Cleanup_Celestial")
-					v478:AddTag("Effect")
+		["_AddFX"] = function(p507, p508, p509)
+			p507:_RemoveFX(p508, p509)
+			if p509 then
+				for _, v510 in game.ServerStorage.Mutation_FX.Celestial:GetChildren() do
+					local v511 = v510:Clone()
+					v511.Parent = p509
+					v511.Enabled = true
+					v511:AddTag("Cleanup_Celestial")
+					v511:AddTag("Effect")
 				end
 			end
-			for _, v479 in p475:GetDescendants() do
-				if (v479:IsA("BasePart") or v479:IsA("UnionOperation")) and not v479:HasTag("Effect") then
-					v479.Reflectance = 0.5
-					v479:AddTag("CelestialVisual")
+			for _, v512 in p508:GetDescendants() do
+				if (v512:IsA("BasePart") or v512:IsA("UnionOperation")) and not v512:HasTag("Effect") then
+					v512.Reflectance = 0.5
+					v512:AddTag("CelestialVisual")
 				end
 			end
 		end,
-		["_RemoveFX"] = function(_, p480, p481)
+		["_RemoveFX"] = function(_, p513, p514)
 			-- upvalues: (copy) v_u_16
-			if p481 then
-				for _, v482 in p481:GetChildren() do
-					if v482:HasTag("Cleanup_Celestial") then
-						v482:Destroy()
+			if p514 then
+				for _, v515 in p514:GetChildren() do
+					if v515:HasTag("Cleanup_Celestial") then
+						v515:Destroy()
 					end
 				end
 			end
-			for _, v483 in p480:GetDescendants() do
-				if (v483:IsA("BasePart") or v483:IsA("UnionOperation")) and v483:HasTag("CelestialVisual") then
-					v483.Reflectance = 0
-					v483:RemoveTag("CelestialVisual")
-					local v484 = v_u_16[v483]
-					if v484 then
-						v483.Material = v484
-						v_u_16[v483] = nil
+			for _, v516 in p513:GetDescendants() do
+				if (v516:IsA("BasePart") or v516:IsA("UnionOperation")) and v516:HasTag("CelestialVisual") then
+					v516.Reflectance = 0
+					v516:RemoveTag("CelestialVisual")
+					local v517 = v_u_16[v516]
+					if v517 then
+						v516.Material = v517
+						v_u_16[v516] = nil
 					end
 				end
 			end
@@ -1731,41 +1865,41 @@ local v_u_518 = {
 		["Name"] = "Meteoric",
 		["ValueMulti"] = 125,
 		["Color"] = Color3.fromRGB(73, 29, 193),
-		["_AddFX"] = function(p485, p486, p487)
-			p485:_RemoveFX(p486, p487)
-			if p487 then
-				for _, v488 in game.ServerStorage.Mutation_FX.Meteoric:GetChildren() do
-					local v489 = v488:Clone()
-					v489.Parent = p487
-					v489.Enabled = true
-					v489:AddTag("Cleanup_Meteoric")
-					v489:AddTag("Effect")
+		["_AddFX"] = function(p518, p519, p520)
+			p518:_RemoveFX(p519, p520)
+			if p520 then
+				for _, v521 in game.ServerStorage.Mutation_FX.Meteoric:GetChildren() do
+					local v522 = v521:Clone()
+					v522.Parent = p520
+					v522.Enabled = true
+					v522:AddTag("Cleanup_Meteoric")
+					v522:AddTag("Effect")
 				end
 			end
-			for _, v490 in p486:GetDescendants() do
-				if (v490:IsA("BasePart") or v490:IsA("UnionOperation")) and not v490:HasTag("Effect") then
-					v490.Reflectance = 0.5
-					v490:AddTag("MeteoricVisual")
+			for _, v523 in p519:GetDescendants() do
+				if (v523:IsA("BasePart") or v523:IsA("UnionOperation")) and not v523:HasTag("Effect") then
+					v523.Reflectance = 0.5
+					v523:AddTag("MeteoricVisual")
 				end
 			end
 		end,
-		["_RemoveFX"] = function(_, p491, p492)
+		["_RemoveFX"] = function(_, p524, p525)
 			-- upvalues: (copy) v_u_16
-			if p492 then
-				for _, v493 in p492:GetChildren() do
-					if v493:HasTag("Cleanup_Meteoric") then
-						v493:Destroy()
+			if p525 then
+				for _, v526 in p525:GetChildren() do
+					if v526:HasTag("Cleanup_Meteoric") then
+						v526:Destroy()
 					end
 				end
 			end
-			for _, v494 in p491:GetDescendants() do
-				if (v494:IsA("BasePart") or v494:IsA("UnionOperation")) and v494:HasTag("MeteoricVisual") then
-					v494.Reflectance = 0
-					v494:RemoveTag("MeteoricVisual")
-					local v495 = v_u_16[v494]
-					if v495 then
-						v494.Material = v495
-						v_u_16[v494] = nil
+			for _, v527 in p524:GetDescendants() do
+				if (v527:IsA("BasePart") or v527:IsA("UnionOperation")) and v527:HasTag("MeteoricVisual") then
+					v527.Reflectance = 0
+					v527:RemoveTag("MeteoricVisual")
+					local v528 = v_u_16[v527]
+					if v528 then
+						v527.Material = v528
+						v_u_16[v527] = nil
 					end
 				end
 			end
@@ -1776,39 +1910,39 @@ local v_u_518 = {
 		["Name"] = "HoneyGlazed",
 		["ValueMulti"] = 5,
 		["Color"] = Color3.fromRGB(255, 204, 0),
-		["_AddFX"] = function(p496, p497, p498)
-			p496:_RemoveFX(p497, p498)
-			if p498 then
-				for _, v499 in game.ServerStorage.Mutation_FX.Honey:GetChildren() do
-					local v500 = v499:Clone()
-					v500.Parent = p498
-					v500.Enabled = true
-					v500:AddTag("Cleanup_Honey")
-					v500:AddTag("Effect")
+		["_AddFX"] = function(p529, p530, p531)
+			p529:_RemoveFX(p530, p531)
+			if p531 then
+				for _, v532 in game.ServerStorage.Mutation_FX.Honey:GetChildren() do
+					local v533 = v532:Clone()
+					v533.Parent = p531
+					v533.Enabled = true
+					v533:AddTag("Cleanup_Honey")
+					v533:AddTag("Effect")
 				end
 			end
-			for _, v501 in p497:GetDescendants() do
-				if (v501:IsA("BasePart") or v501:IsA("UnionOperation")) and not v501:HasTag("Effect") then
-					v501:AddTag("HoneyVisual")
+			for _, v534 in p530:GetDescendants() do
+				if (v534:IsA("BasePart") or v534:IsA("UnionOperation")) and not v534:HasTag("Effect") then
+					v534:AddTag("HoneyVisual")
 				end
 			end
 		end,
-		["_RemoveFX"] = function(_, p502, p503)
+		["_RemoveFX"] = function(_, p535, p536)
 			-- upvalues: (copy) v_u_16
-			if p503 then
-				for _, v504 in p503:GetChildren() do
-					if v504:HasTag("Cleanup_Honey") then
-						v504:Destroy()
+			if p536 then
+				for _, v537 in p536:GetChildren() do
+					if v537:HasTag("Cleanup_Honey") then
+						v537:Destroy()
 					end
 				end
 			end
-			for _, v505 in p502:GetDescendants() do
-				if (v505:IsA("BasePart") or v505:IsA("UnionOperation")) and v505:HasTag("HoneyVisual") then
-					v505:RemoveTag("HoneyVisual")
-					local v506 = v_u_16[v505]
-					if v506 then
-						v505.Material = v506
-						v_u_16[v505] = nil
+			for _, v538 in p535:GetDescendants() do
+				if (v538:IsA("BasePart") or v538:IsA("UnionOperation")) and v538:HasTag("HoneyVisual") then
+					v538:RemoveTag("HoneyVisual")
+					local v539 = v_u_16[v538]
+					if v539 then
+						v538.Material = v539
+						v_u_16[v538] = nil
 					end
 				end
 			end
@@ -1819,51 +1953,51 @@ local v_u_518 = {
 		["Name"] = "Pollinated",
 		["ValueMulti"] = 3,
 		["Color"] = Color3.fromRGB(255, 170, 0),
-		["_AddFX"] = function(p507, p508, p509)
+		["_AddFX"] = function(p540, p541, p542)
 			-- upvalues: (copy) v_u_13
-			p507:_RemoveFX(p508, p509)
-			if p509 then
-				for _, v510 in game.ServerStorage.Mutation_FX.Pollinated:GetChildren() do
-					local v511 = v510:Clone()
-					v511.Parent = p509
-					v511.Enabled = true
-					v511:AddTag("Cleanup_Pollinated")
-					v511:AddTag("Effect")
+			p540:_RemoveFX(p541, p542)
+			if p542 then
+				for _, v543 in game.ServerStorage.Mutation_FX.Pollinated:GetChildren() do
+					local v544 = v543:Clone()
+					v544.Parent = p542
+					v544.Enabled = true
+					v544:AddTag("Cleanup_Pollinated")
+					v544:AddTag("Effect")
 				end
 			end
-			for _, v512 in p508:GetDescendants() do
-				if (v512:IsA("BasePart") or v512:IsA("UnionOperation")) and not v512:HasTag("Effect") then
-					v_u_13[v512] = v_u_13[v512] or v512.Color
-					v512.Color = Color3.fromRGB(255, 170, 0)
-					v512:AddTag("PollinatedlVisual")
+			for _, v545 in p541:GetDescendants() do
+				if (v545:IsA("BasePart") or v545:IsA("UnionOperation")) and not v545:HasTag("Effect") then
+					v_u_13[v545] = v_u_13[v545] or v545.Color
+					v545.Color = Color3.fromRGB(255, 170, 0)
+					v545:AddTag("PollinatedlVisual")
 				end
 			end
 		end,
-		["_RemoveFX"] = function(_, p513, p514)
+		["_RemoveFX"] = function(_, p546, p547)
 			-- upvalues: (copy) v_u_13, (copy) v_u_16
-			if p514 then
-				for _, v515 in p514:GetChildren() do
-					if v515:HasTag("Cleanup_Pollinated") then
-						v515:Destroy()
+			if p547 then
+				for _, v548 in p547:GetChildren() do
+					if v548:HasTag("Cleanup_Pollinated") then
+						v548:Destroy()
 					end
 				end
 			end
-			for _, v516 in p513:GetDescendants() do
-				if (v516:IsA("BasePart") or v516:IsA("UnionOperation")) and v516:HasTag("PollinatedlVisual") then
-					v516:RemoveTag("PollinatedVisual")
-					v516.Color = v_u_13[v516] or v516.Color
-					v_u_13[v516] = nil
-					local v517 = v_u_16[v516]
-					if v517 then
-						v516.Material = v517
-						v_u_16[v516] = nil
+			for _, v549 in p546:GetDescendants() do
+				if (v549:IsA("BasePart") or v549:IsA("UnionOperation")) and v549:HasTag("PollinatedlVisual") then
+					v549:RemoveTag("PollinatedVisual")
+					v549.Color = v_u_13[v549] or v549.Color
+					v_u_13[v549] = nil
+					local v550 = v_u_16[v549]
+					if v550 then
+						v549.Material = v550
+						v_u_16[v549] = nil
 					end
 				end
 			end
 		end
 	}
 }
-local v525 = {
+local v558 = {
 	["Id"] = "G",
 	["Name"] = "Amber",
 	["ValueMulti"] = 10,
@@ -1872,17 +2006,17 @@ local v525 = {
 		["TimeToChange"] = 86400,
 		["AddMutationName"] = "OldAmber"
 	},
-	["_AddFX"] = function(p519, p520, p521)
+	["_AddFX"] = function(p552, p553, p554)
 		-- upvalues: (copy) v_u_96
-		v_u_96(p519, p520, p521, 0.5)
+		v_u_96(p552, p553, p554, 0.5)
 	end,
-	["_RemoveFX"] = function(p522, p523, p524)
+	["_RemoveFX"] = function(p555, p556, p557)
 		-- upvalues: (copy) v_u_105
-		v_u_105(p522, p523, p524)
+		v_u_105(p555, p556, p557)
 	end
 }
-v_u_518.Amber = v525
-local v532 = {
+v_u_551.Amber = v558
+local v565 = {
 	["Id"] = "H",
 	["Name"] = "OldAmber",
 	["ValueMulti"] = 20,
@@ -1891,1890 +2025,1741 @@ local v532 = {
 		["TimeToChange"] = 172800,
 		["AddMutationName"] = "AncientAmber"
 	},
-	["_AddFX"] = function(p526, p527, p528)
+	["_AddFX"] = function(p559, p560, p561)
 		-- upvalues: (copy) v_u_96
-		v_u_96(p526, p527, p528, 0.5)
+		v_u_96(p559, p560, p561, 0.5)
 	end,
-	["_RemoveFX"] = function(p529, p530, p531)
+	["_RemoveFX"] = function(p562, p563, p564)
 		-- upvalues: (copy) v_u_105
-		v_u_105(p529, p530, p531)
+		v_u_105(p562, p563, p564)
 	end
 }
-v_u_518.OldAmber = v532
-v_u_518.AncientAmber = {
+v_u_551.OldAmber = v565
+v_u_551.AncientAmber = {
 	["Id"] = "I",
 	["Name"] = "AncientAmber",
 	["ValueMulti"] = 50,
 	["Color"] = Color3.fromRGB(204, 68, 0),
-	["_AddFX"] = function(p533, p534, p535)
+	["_AddFX"] = function(p566, p567, p568)
 		-- upvalues: (copy) v_u_96
-		v_u_96(p533, p534, p535, 0.5)
+		v_u_96(p566, p567, p568, 0.5)
 	end,
-	["_RemoveFX"] = function(p536, p537, p538)
+	["_RemoveFX"] = function(p569, p570, p571)
 		-- upvalues: (copy) v_u_105
-		v_u_105(p536, p537, p538)
+		v_u_105(p569, p570, p571)
 	end
 }
-v_u_518.Sandy = {
+v_u_551.Sandy = {
 	["Id"] = "J",
 	["Name"] = "Sandy",
 	["ValueMulti"] = 3,
 	["Color"] = Color3.fromRGB(212, 191, 141),
-	["_AddFX"] = function(p539, p540, p541)
+	["_AddFX"] = function(p572, p573, p574)
 		-- upvalues: (copy) v_u_13, (copy) v_u_16
-		p539:_RemoveFX(p540, p541)
-		if p541 then
-			for _, v542 in game.ServerStorage.Mutation_FX.Sandy:GetChildren() do
-				local v543 = v542:Clone()
-				v543.Parent = p541
-				v543.Enabled = true
-				v543:AddTag("Cleanup_Sandy")
+		p572:_RemoveFX(p573, p574)
+		if p574 then
+			for _, v575 in game.ServerStorage.Mutation_FX.Sandy:GetChildren() do
+				local v576 = v575:Clone()
+				v576.Parent = p574
+				v576.Enabled = true
+				v576:AddTag("Cleanup_Sandy")
 			end
 		end
-		for _, v544 in p540:GetDescendants() do
-			if (v544:IsA("BasePart") or v544:IsA("UnionOperation")) and not v544:HasTag("Effect") then
-				v_u_13[v544] = v_u_13[v544] or v544.Color
-				v544.Color = Color3.fromRGB(240, 206, 119)
-				v_u_16[v544] = v_u_16[v544] or v544.Material
-				v544.Material = Enum.Material.Sand
-				v544.Reflectance = 0
-				v544:AddTag("SandyVisual")
+		for _, v577 in p573:GetDescendants() do
+			if (v577:IsA("BasePart") or v577:IsA("UnionOperation")) and not v577:HasTag("Effect") then
+				v_u_13[v577] = v_u_13[v577] or v577.Color
+				v577.Color = Color3.fromRGB(240, 206, 119)
+				v_u_16[v577] = v_u_16[v577] or v577.Material
+				v577.Material = Enum.Material.Sand
+				v577.Reflectance = 0
+				v577:AddTag("SandyVisual")
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p545, p546)
+	["_RemoveFX"] = function(_, p578, p579)
 		-- upvalues: (copy) v_u_13, (copy) v_u_16
-		local function v549(p547)
-			for _, v548 in p547:GetDescendants() do
-				if v548:HasTag("Cleanup_Sandy") then
-					v548:Destroy()
+		local function v582(p580)
+			for _, v581 in p580:GetDescendants() do
+				if v581:HasTag("Cleanup_Sandy") then
+					v581:Destroy()
 				end
 			end
 		end
-		if p546 then
-			v549(p546)
+		if p579 then
+			v582(p579)
 		end
-		if p545 then
-			v549(p545)
+		if p578 then
+			v582(p578)
 		end
-		for _, v550 in p545:GetDescendants() do
-			if (v550:IsA("BasePart") or v550:IsA("UnionOperation")) and v550:HasTag("SandyVisual") then
-				v550.Reflectance = 0
-				v550.Color = v_u_13[v550] or v550.Color
-				v_u_13[v550] = nil
-				v550:RemoveTag("SandyVisual")
-				if v_u_16[v550] then
-					v550.Material = v_u_16[v550]
-					v_u_16[v550] = nil
+		for _, v583 in p578:GetDescendants() do
+			if (v583:IsA("BasePart") or v583:IsA("UnionOperation")) and v583:HasTag("SandyVisual") then
+				v583.Reflectance = 0
+				v583.Color = v_u_13[v583] or v583.Color
+				v_u_13[v583] = nil
+				v583:RemoveTag("SandyVisual")
+				if v_u_16[v583] then
+					v583.Material = v_u_16[v583]
+					v_u_16[v583] = nil
 				end
 			end
 		end
 	end
 }
-v_u_518.Clay = {
+v_u_551.Clay = {
 	["Id"] = "K",
 	["Name"] = "Clay",
 	["ValueMulti"] = 5,
 	["Color"] = Color3.fromRGB(147, 129, 122),
-	["_AddFX"] = function(p551, p552, p553)
+	["_AddFX"] = function(p584, p585, p586)
 		-- upvalues: (copy) v_u_13, (copy) v_u_16
-		p551:_RemoveFX(p552, p553)
-		if p553 then
-			for _, v554 in game.ServerStorage.Mutation_FX.Clay:GetChildren() do
-				local v555 = v554:Clone()
-				v555.Parent = p553
-				v555.Enabled = true
-				v555:AddTag("Cleanup_Clay")
+		p584:_RemoveFX(p585, p586)
+		if p586 then
+			for _, v587 in game.ServerStorage.Mutation_FX.Clay:GetChildren() do
+				local v588 = v587:Clone()
+				v588.Parent = p586
+				v588.Enabled = true
+				v588:AddTag("Cleanup_Clay")
 			end
 		end
-		for _, v556 in p552:GetDescendants() do
-			if (v556:IsA("BasePart") or v556:IsA("UnionOperation")) and not v556:HasTag("Effect") then
-				v_u_13[v556] = v_u_13[v556] or v556.Color
-				v556.Color = Color3.fromRGB(147, 129, 122)
-				v_u_16[v556] = v_u_16[v556] or v556.Material
-				v556.Material = Enum.Material.Plaster
-				v556.Reflectance = 0.5
-				v556:AddTag("ClayVisual")
+		for _, v589 in p585:GetDescendants() do
+			if (v589:IsA("BasePart") or v589:IsA("UnionOperation")) and not v589:HasTag("Effect") then
+				v_u_13[v589] = v_u_13[v589] or v589.Color
+				v589.Color = Color3.fromRGB(147, 129, 122)
+				v_u_16[v589] = v_u_16[v589] or v589.Material
+				v589.Material = Enum.Material.Plaster
+				v589.Reflectance = 0.5
+				v589:AddTag("ClayVisual")
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p557, p558)
+	["_RemoveFX"] = function(_, p590, p591)
 		-- upvalues: (copy) v_u_13, (copy) v_u_16
-		local function v561(p559)
-			for _, v560 in p559:GetDescendants() do
-				if v560:HasTag("Cleanup_Clay") then
-					v560:Destroy()
+		local function v594(p592)
+			for _, v593 in p592:GetDescendants() do
+				if v593:HasTag("Cleanup_Clay") then
+					v593:Destroy()
 				end
 			end
 		end
-		if p558 then
-			v561(p558)
+		if p591 then
+			v594(p591)
 		end
-		if p557 then
-			v561(p557)
+		if p590 then
+			v594(p590)
 		end
-		for _, v562 in p557:GetDescendants() do
-			if (v562:IsA("BasePart") or v562:IsA("UnionOperation")) and v562:HasTag("ClayVisual") then
-				v562.Reflectance = 0
-				v562.Color = v_u_13[v562] or v562.Color
-				v_u_13[v562] = nil
-				v562:RemoveTag("ClayVisual")
-				if v_u_16[v562] then
-					v562.Material = v_u_16[v562]
-					v_u_16[v562] = nil
+		for _, v595 in p590:GetDescendants() do
+			if (v595:IsA("BasePart") or v595:IsA("UnionOperation")) and v595:HasTag("ClayVisual") then
+				v595.Reflectance = 0
+				v595.Color = v_u_13[v595] or v595.Color
+				v_u_13[v595] = nil
+				v595:RemoveTag("ClayVisual")
+				if v_u_16[v595] then
+					v595.Material = v_u_16[v595]
+					v_u_16[v595] = nil
 				end
 			end
 		end
 	end
 }
-v_u_518.Ceramic = {
+v_u_551.Ceramic = {
 	["Id"] = "L",
 	["Name"] = "Ceramic",
 	["ValueMulti"] = 32,
 	["Color"] = Color3.fromRGB(234, 184, 146),
-	["_AddFX"] = function(p563, p564, p565)
+	["_AddFX"] = function(p596, p597, p598)
 		-- upvalues: (copy) v_u_13, (copy) v_u_16
-		p563:_RemoveFX(p564, p565)
-		if p565 then
-			for _, v566 in game.ServerStorage.Mutation_FX.Ceramic:GetChildren() do
-				local v567 = v566:Clone()
-				v567.Parent = p565
-				v567.Enabled = true
-				v567:AddTag("Cleanup_Ceramic")
+		p596:_RemoveFX(p597, p598)
+		if p598 then
+			for _, v599 in game.ServerStorage.Mutation_FX.Ceramic:GetChildren() do
+				local v600 = v599:Clone()
+				v600.Parent = p598
+				v600.Enabled = true
+				v600:AddTag("Cleanup_Ceramic")
 			end
 		end
-		for _, v568 in p564:GetDescendants() do
-			if (v568:IsA("BasePart") or v568:IsA("UnionOperation")) and not v568:HasTag("Effect") then
-				v_u_13[v568] = v_u_13[v568] or v568.Color
-				v568.Color = Color3.fromRGB(234, 184, 146)
-				v_u_16[v568] = v_u_16[v568] or v568.Material
-				v568.Material = Enum.Material.Concrete
-				v568:AddTag("CeramicVisual")
+		for _, v601 in p597:GetDescendants() do
+			if (v601:IsA("BasePart") or v601:IsA("UnionOperation")) and not v601:HasTag("Effect") then
+				v_u_13[v601] = v_u_13[v601] or v601.Color
+				v601.Color = Color3.fromRGB(234, 184, 146)
+				v_u_16[v601] = v_u_16[v601] or v601.Material
+				v601.Material = Enum.Material.Concrete
+				v601:AddTag("CeramicVisual")
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p569, p570)
+	["_RemoveFX"] = function(_, p602, p603)
 		-- upvalues: (copy) v_u_13, (copy) v_u_16
-		local function v573(p571)
-			for _, v572 in p571:GetDescendants() do
-				if v572:HasTag("Cleanup_Ceramic") then
-					v572:Destroy()
+		local function v606(p604)
+			for _, v605 in p604:GetDescendants() do
+				if v605:HasTag("Cleanup_Ceramic") then
+					v605:Destroy()
 				end
 			end
 		end
-		if p570 then
-			v573(p570)
+		if p603 then
+			v606(p603)
 		end
-		if p569 then
-			v573(p569)
+		if p602 then
+			v606(p602)
 		end
-		for _, v574 in p569:GetDescendants() do
-			if (v574:IsA("BasePart") or v574:IsA("UnionOperation")) and v574:HasTag("CeramicVisual") then
-				v574.Reflectance = 0
-				v574.Color = v_u_13[v574] or v574.Color
-				v_u_13[v574] = nil
-				v574:RemoveTag("CeramicVisual")
-				if v_u_16[v574] then
-					v574.Material = v_u_16[v574]
-					v_u_16[v574] = nil
+		for _, v607 in p602:GetDescendants() do
+			if (v607:IsA("BasePart") or v607:IsA("UnionOperation")) and v607:HasTag("CeramicVisual") then
+				v607.Reflectance = 0
+				v607.Color = v_u_13[v607] or v607.Color
+				v_u_13[v607] = nil
+				v607:RemoveTag("CeramicVisual")
+				if v_u_16[v607] then
+					v607.Material = v_u_16[v607]
+					v_u_16[v607] = nil
 				end
 			end
 		end
 	end
 }
-v_u_518.Friendbound = {
+v_u_551.Friendbound = {
 	["Id"] = "M",
 	["Name"] = "Friendbound",
 	["ValueMulti"] = 70,
 	["Color"] = Color3.fromRGB(255, 0, 127),
-	["_AddFX"] = function(p575, p576, p577)
+	["_AddFX"] = function(p608, p609, p610)
 		-- upvalues: (copy) v_u_13
-		p575:_RemoveFX(p576, p577)
-		if p577 then
-			for _, v578 in game.ServerStorage.Mutation_FX.Friendbound:GetChildren() do
-				local v579 = v578:Clone()
-				v579.Parent = p577
-				v579.Enabled = true
-				v579:AddTag("Cleanup_Friendbound")
+		p608:_RemoveFX(p609, p610)
+		if p610 then
+			for _, v611 in game.ServerStorage.Mutation_FX.Friendbound:GetChildren() do
+				local v612 = v611:Clone()
+				v612.Parent = p610
+				v612.Enabled = true
+				v612:AddTag("Cleanup_Friendbound")
 			end
 		end
-		for _, v580 in p576:GetDescendants() do
-			if (v580:IsA("BasePart") or v580:IsA("UnionOperation")) and not v580:HasTag("Effect") then
-				v_u_13[v580] = v_u_13[v580] or v580.Color
-				v580.Color = v_u_13[v580]:Lerp(Color3.fromRGB(255, 0, 127), 0.4)
-				v580:AddTag("FriendboundVisual")
+		for _, v613 in p609:GetDescendants() do
+			if (v613:IsA("BasePart") or v613:IsA("UnionOperation")) and not v613:HasTag("Effect") then
+				v_u_13[v613] = v_u_13[v613] or v613.Color
+				v613.Color = v_u_13[v613]:Lerp(Color3.fromRGB(255, 0, 127), 0.4)
+				v613:AddTag("FriendboundVisual")
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p581, p582)
+	["_RemoveFX"] = function(_, p614, p615)
 		-- upvalues: (copy) v_u_13
-		local function v585(p583)
-			for _, v584 in p583:GetDescendants() do
-				if v584:HasTag("Cleanup_Friendbound") then
-					v584:Destroy()
+		local function v618(p616)
+			for _, v617 in p616:GetDescendants() do
+				if v617:HasTag("Cleanup_Friendbound") then
+					v617:Destroy()
 				end
 			end
 		end
-		if p582 then
-			v585(p582)
+		if p615 then
+			v618(p615)
 		end
-		if p581 then
-			v585(p581)
+		if p614 then
+			v618(p614)
 		end
-		for _, v586 in p581:GetDescendants() do
-			if (v586:IsA("BasePart") or v586:IsA("UnionOperation")) and v586:HasTag("FriendboundVisual") then
-				v586.Color = v_u_13[v586] or v586.Color
-				v_u_13[v586] = nil
-				v586:RemoveTag("FriendboundVisual")
+		for _, v619 in p614:GetDescendants() do
+			if (v619:IsA("BasePart") or v619:IsA("UnionOperation")) and v619:HasTag("FriendboundVisual") then
+				v619.Color = v_u_13[v619] or v619.Color
+				v_u_13[v619] = nil
+				v619:RemoveTag("FriendboundVisual")
 			end
 		end
 	end
 }
-v_u_518.Tempestuous = {
+v_u_551.Tempestuous = {
 	["Id"] = "N",
 	["Name"] = "Tempestuous",
 	["ValueMulti"] = 12,
 	["Color"] = Color3.fromRGB(143, 163, 180),
-	["_AddFX"] = function(p587, p588, p589)
-		p587:_RemoveFX(p588, p589)
-		if p589 then
-			for _, v590 in { game.ServerStorage.Mutation_FX.Twisted, game.ServerStorage.Mutation_FX.Tempestous } do
-				for _, v591 in v590:GetChildren() do
-					local v592 = v591:Clone()
-					v592.Parent = p589
-					v592.Enabled = true
-					v592:AddTag("Cleanup_Tempestuous")
+	["_AddFX"] = function(p620, p621, p622)
+		p620:_RemoveFX(p621, p622)
+		if p622 then
+			for _, v623 in { game.ServerStorage.Mutation_FX.Twisted, game.ServerStorage.Mutation_FX.Tempestous } do
+				for _, v624 in v623:GetChildren() do
+					local v625 = v624:Clone()
+					v625.Parent = p622
+					v625.Enabled = true
+					v625:AddTag("Cleanup_Tempestuous")
 				end
 			end
 		end
-		for _, v593 in p588:GetDescendants() do
-			if (v593:IsA("BasePart") or v593:IsA("UnionOperation")) and not v593:HasTag("Effect") then
-				v593:AddTag("TempestuousVisual")
+		for _, v626 in p621:GetDescendants() do
+			if (v626:IsA("BasePart") or v626:IsA("UnionOperation")) and not v626:HasTag("Effect") then
+				v626:AddTag("TempestuousVisual")
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p594, p595)
-		if p595 then
-			for _, v596 in p595:GetChildren() do
-				if v596:HasTag("Cleanup_Tempestuous") then
-					v596:Destroy()
+	["_RemoveFX"] = function(_, p627, p628)
+		if p628 then
+			for _, v629 in p628:GetChildren() do
+				if v629:HasTag("Cleanup_Tempestuous") then
+					v629:Destroy()
 				end
 			end
 		end
-		for _, v597 in p594:GetDescendants() do
-			if (v597:IsA("BasePart") or v597:IsA("UnionOperation")) and v597:HasTag("TempestuousVisual") then
-				v597:RemoveTag("TempestuousVisual")
+		for _, v630 in p627:GetDescendants() do
+			if (v630:IsA("BasePart") or v630:IsA("UnionOperation")) and v630:HasTag("TempestuousVisual") then
+				v630:RemoveTag("TempestuousVisual")
 			end
 		end
 	end
 }
-v_u_518.Infected = {
+v_u_551.Infected = {
 	["Id"] = "O",
 	["Name"] = "Infected",
 	["ValueMulti"] = 75,
 	["Color"] = Color3.fromRGB(67, 167, 0),
-	["_AddFX"] = function(p598, p599, p600)
+	["_AddFX"] = function(p631, p632, p633)
 		-- upvalues: (copy) v_u_13, (copy) v_u_16
-		p598:_RemoveFX(p599, p600)
-		if p600 then
-			for _, v601 in game.ServerStorage.Mutation_FX.Infected:GetChildren() do
-				local v602 = v601:Clone()
-				v602.Parent = p600
-				v602.Enabled = true
-				v602:AddTag("Cleanup_Infected")
+		p631:_RemoveFX(p632, p633)
+		if p633 then
+			for _, v634 in game.ServerStorage.Mutation_FX.Infected:GetChildren() do
+				local v635 = v634:Clone()
+				v635.Parent = p633
+				v635.Enabled = true
+				v635:AddTag("Cleanup_Infected")
 			end
 		end
-		for _, v603 in p599:GetDescendants() do
-			if (v603:IsA("BasePart") or v603:IsA("UnionOperation")) and not v603:HasTag("Effect") then
-				v_u_13[v603] = v_u_13[v603] or v603.Color
-				v603.Color = Color3.fromRGB(65, 175, 0)
-				v_u_16[v603] = v_u_16[v603] or v603.Material
-				v603:AddTag("InfectedVisual")
+		for _, v636 in p632:GetDescendants() do
+			if (v636:IsA("BasePart") or v636:IsA("UnionOperation")) and not v636:HasTag("Effect") then
+				v_u_13[v636] = v_u_13[v636] or v636.Color
+				v636.Color = Color3.fromRGB(65, 175, 0)
+				v_u_16[v636] = v_u_16[v636] or v636.Material
+				v636:AddTag("InfectedVisual")
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p604, p605)
+	["_RemoveFX"] = function(_, p637, p638)
 		-- upvalues: (copy) v_u_13, (copy) v_u_16
-		local function v608(p606)
-			for _, v607 in p606:GetDescendants() do
-				if v607:HasTag("Cleanup_Infected") then
-					v607:Destroy()
+		local function v641(p639)
+			for _, v640 in p639:GetDescendants() do
+				if v640:HasTag("Cleanup_Infected") then
+					v640:Destroy()
 				end
 			end
 		end
-		if p605 then
-			v608(p605)
+		if p638 then
+			v641(p638)
 		end
-		if p604 then
-			v608(p604)
+		if p637 then
+			v641(p637)
 		end
-		for _, v609 in p604:GetDescendants() do
-			if (v609:IsA("BasePart") or v609:IsA("UnionOperation")) and v609:HasTag("InfectedVisual") then
-				v609.Reflectance = 0
-				v609.Color = v_u_13[v609] or v609.Color
-				v_u_13[v609] = nil
-				v609:RemoveTag("InfectedVisual")
-				if v_u_16[v609] then
-					v609.Material = v_u_16[v609]
-					v_u_16[v609] = nil
+		for _, v642 in p637:GetDescendants() do
+			if (v642:IsA("BasePart") or v642:IsA("UnionOperation")) and v642:HasTag("InfectedVisual") then
+				v642.Reflectance = 0
+				v642.Color = v_u_13[v642] or v642.Color
+				v_u_13[v642] = nil
+				v642:RemoveTag("InfectedVisual")
+				if v_u_16[v642] then
+					v642.Material = v_u_16[v642]
+					v_u_16[v642] = nil
 				end
 			end
 		end
 	end
 }
-v_u_518.Radioactive = {
+v_u_551.Radioactive = {
 	["Id"] = "P",
 	["Name"] = "Radioactive",
 	["ValueMulti"] = 55,
 	["Color"] = Color3.fromRGB(98, 255, 0),
-	["_AddFX"] = function(p610, p611, p612)
+	["_AddFX"] = function(p643, p644, p645)
 		-- upvalues: (copy) v_u_13, (copy) v_u_16
-		p610:_RemoveFX(p611, p612)
-		if p612 then
-			for _, v613 in game.ServerStorage.Mutation_FX.Radioactive:GetChildren() do
-				local v614 = v613:Clone()
-				v614.Parent = p612
-				v614.Enabled = true
-				v614:AddTag("Cleanup_Radioactive")
+		p643:_RemoveFX(p644, p645)
+		if p645 then
+			for _, v646 in game.ServerStorage.Mutation_FX.Radioactive:GetChildren() do
+				local v647 = v646:Clone()
+				v647.Parent = p645
+				v647.Enabled = true
+				v647:AddTag("Cleanup_Radioactive")
 			end
 		end
-		for _, v615 in p611:GetDescendants() do
-			if (v615:IsA("BasePart") or v615:IsA("UnionOperation")) and not v615:HasTag("Effect") then
-				v_u_13[v615] = v_u_13[v615] or v615.Color
-				v615.Color = Color3.fromRGB(65, 175, 0)
-				v_u_16[v615] = v_u_16[v615] or v615.Material
-				v615.Material = Enum.Material.Neon
-				v615:AddTag("RadioactiveVisual")
+		for _, v648 in p644:GetDescendants() do
+			if (v648:IsA("BasePart") or v648:IsA("UnionOperation")) and not v648:HasTag("Effect") then
+				v_u_13[v648] = v_u_13[v648] or v648.Color
+				v648.Color = Color3.fromRGB(65, 175, 0)
+				v_u_16[v648] = v_u_16[v648] or v648.Material
+				v648.Material = Enum.Material.Neon
+				v648:AddTag("RadioactiveVisual")
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p616, p617)
+	["_RemoveFX"] = function(_, p649, p650)
 		-- upvalues: (copy) v_u_13, (copy) v_u_16
-		local function v620(p618)
-			for _, v619 in p618:GetDescendants() do
-				if v619:HasTag("Cleanup_Radioactive") then
-					v619:Destroy()
+		local function v653(p651)
+			for _, v652 in p651:GetDescendants() do
+				if v652:HasTag("Cleanup_Radioactive") then
+					v652:Destroy()
 				end
 			end
 		end
-		if p617 then
-			v620(p617)
+		if p650 then
+			v653(p650)
 		end
-		if p616 then
-			v620(p616)
+		if p649 then
+			v653(p649)
 		end
-		for _, v621 in p616:GetDescendants() do
-			if (v621:IsA("BasePart") or v621:IsA("UnionOperation")) and v621:HasTag("RadioactiveVisual") then
-				v621.Reflectance = 0
-				v621.Color = v_u_13[v621] or v621.Color
-				v_u_13[v621] = nil
-				v621:RemoveTag("RadioactiveVisual")
-				if v_u_16[v621] then
-					v621.Material = v_u_16[v621]
-					v_u_16[v621] = nil
+		for _, v654 in p649:GetDescendants() do
+			if (v654:IsA("BasePart") or v654:IsA("UnionOperation")) and v654:HasTag("RadioactiveVisual") then
+				v654.Reflectance = 0
+				v654.Color = v_u_13[v654] or v654.Color
+				v_u_13[v654] = nil
+				v654:RemoveTag("RadioactiveVisual")
+				if v_u_16[v654] then
+					v654.Material = v_u_16[v654]
+					v_u_16[v654] = nil
 				end
 			end
 		end
 	end
 }
-v_u_518.Chakra = {
+v_u_551.Chakra = {
 	["Id"] = "R",
 	["Name"] = "Chakra",
 	["ValueMulti"] = 15,
 	["Color"] = Color3.fromRGB(255, 80, 65),
-	["_AddFX"] = function(p622, p623, p624)
-		p622:_RemoveFX(p623, p624)
-		local v625 = game.ServerStorage.Mutation_FX.Chakra:GetChildren()
-		if p624 then
-			for _, v626 in v625 do
-				local v627 = v626:Clone()
-				v627.Parent = p624
-				v627.Enabled = true
-				v627:AddTag("Cleanup_Chakra")
+	["_AddFX"] = function(p655, p656, p657)
+		p655:_RemoveFX(p656, p657)
+		local v658 = game.ServerStorage.Mutation_FX.Chakra:GetChildren()
+		if p657 then
+			for _, v659 in v658 do
+				local v660 = v659:Clone()
+				v660.Parent = p657
+				v660.Enabled = true
+				v660:AddTag("Cleanup_Chakra")
 			end
 		end
-		local v628 = 0
-		for _, v629 in p623:GetDescendants() do
-			if v629:IsA("BasePart") and v629 ~= p624 then
-				v628 = v628 + 1
-				if v628 % 3 == 0 then
-					local v630 = v625[math.random(1, #v625)]:Clone()
-					v630.Parent = v629
-					v630.Enabled = true
-					v630:AddTag("Cleanup_Chakra")
+		local v661 = 0
+		for _, v662 in p656:GetDescendants() do
+			if v662:IsA("BasePart") and v662 ~= p657 then
+				v661 = v661 + 1
+				if v661 % 3 == 0 then
+					local v663 = v658[math.random(1, #v658)]:Clone()
+					v663.Parent = v662
+					v663.Enabled = true
+					v663:AddTag("Cleanup_Chakra")
 				end
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p631, p632)
-		local function v635(p633)
-			for _, v634 in p633:GetDescendants() do
-				if v634:HasTag("Cleanup_Chakra") then
-					v634:Destroy()
+	["_RemoveFX"] = function(_, p664, p665)
+		local function v668(p666)
+			for _, v667 in p666:GetDescendants() do
+				if v667:HasTag("Cleanup_Chakra") then
+					v667:Destroy()
 				end
 			end
 		end
-		if p632 then
-			v635(p632)
+		if p665 then
+			v668(p665)
 		end
-		if p631 then
-			v635(p631)
+		if p664 then
+			v668(p664)
 		end
 	end
 }
-v_u_518.FoxfireChakra = {
+v_u_551.FoxfireChakra = {
 	["Id"] = "S",
 	["Name"] = "FoxfireChakra",
 	["ValueMulti"] = 90,
 	["Color"] = Color3.fromRGB(255, 80, 65),
-	["_AddFX"] = function(p636, p637, p638)
-		p636:_RemoveFX(p637, p638)
-		local v639 = game.ServerStorage.Mutation_FX.FoxfireChakra:GetChildren()
-		local v640 = nil
-		for _, v641 in v639 do
-			if v641.Name == "Flames" then
-				v640 = v641
+	["_AddFX"] = function(p669, p670, p671)
+		p669:_RemoveFX(p670, p671)
+		local v672 = game.ServerStorage.Mutation_FX.FoxfireChakra:GetChildren()
+		local v673 = nil
+		for _, v674 in v672 do
+			if v674.Name == "Flames" then
+				v673 = v674
 				break
 			end
 		end
-		if p638 then
-			for _, v642 in v639 do
-				local v643 = v642:Clone()
-				v643.Parent = p638
-				v643.Enabled = true
-				v643:AddTag("Cleanup_FoxfireChakra")
+		if p671 then
+			for _, v675 in v672 do
+				local v676 = v675:Clone()
+				v676.Parent = p671
+				v676.Enabled = true
+				v676:AddTag("Cleanup_FoxfireChakra")
 			end
 		end
-		local v644 = 0
-		for _, v645 in p637:GetDescendants() do
-			if v645:IsA("BasePart") and v645 ~= p638 then
-				v644 = v644 + 1
-				if v644 % 2 == 0 then
-					local v646 = v639[math.random(1, #v639)]:Clone()
-					v646.Parent = v645
-					v646.Enabled = true
-					v646:AddTag("Cleanup_FoxfireChakra")
+		local v677 = 0
+		for _, v678 in p670:GetDescendants() do
+			if v678:IsA("BasePart") and v678 ~= p671 then
+				v677 = v677 + 1
+				if v677 % 2 == 0 then
+					local v679 = v672[math.random(1, #v672)]:Clone()
+					v679.Parent = v678
+					v679.Enabled = true
+					v679:AddTag("Cleanup_FoxfireChakra")
 				end
-				if v644 % 3 == 0 and v640 then
-					local v647 = v640:Clone()
-					v647.Parent = v645
-					v647.Enabled = true
-					v647:AddTag("Cleanup_FoxfireChakra")
+				if v677 % 3 == 0 and v673 then
+					local v680 = v673:Clone()
+					v680.Parent = v678
+					v680.Enabled = true
+					v680:AddTag("Cleanup_FoxfireChakra")
 				end
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p648, p649)
-		local function v652(p650)
-			for _, v651 in p650:GetDescendants() do
-				if v651:HasTag("Cleanup_FoxfireChakra") then
-					v651:Destroy()
+	["_RemoveFX"] = function(_, p681, p682)
+		local function v685(p683)
+			for _, v684 in p683:GetDescendants() do
+				if v684:HasTag("Cleanup_FoxfireChakra") then
+					v684:Destroy()
 				end
 			end
 		end
-		if p649 then
-			v652(p649)
+		if p682 then
+			v685(p682)
 		end
-		if p648 then
-			v652(p648)
+		if p681 then
+			v685(p681)
 		end
 	end
 }
-v_u_518.CorruptChakra = {
+v_u_551.CorruptChakra = {
 	["Id"] = "T",
 	["Name"] = "CorruptChakra",
 	["ValueMulti"] = 15,
 	["Color"] = Color3.fromRGB(0, 85, 255),
-	["_AddFX"] = function(p653, p654, p655)
-		p653:_RemoveFX(p654, p655)
-		local v656 = game.ServerStorage.Mutation_FX.CorruptChakra:GetChildren()
-		if p655 then
-			for _, v657 in v656 do
-				local v658 = v657:Clone()
-				v658.Parent = p655
-				v658.Enabled = true
-				v658:AddTag("Cleanup_CorruptChakra")
+	["_AddFX"] = function(p686, p687, p688)
+		p686:_RemoveFX(p687, p688)
+		local v689 = game.ServerStorage.Mutation_FX.CorruptChakra:GetChildren()
+		if p688 then
+			for _, v690 in v689 do
+				local v691 = v690:Clone()
+				v691.Parent = p688
+				v691.Enabled = true
+				v691:AddTag("Cleanup_CorruptChakra")
 			end
 		end
-		local v659 = 0
-		for _, v660 in p654:GetDescendants() do
-			if v660:IsA("BasePart") and v660 ~= p655 then
-				v659 = v659 + 1
-				if v659 % 3 == 0 then
-					local v661 = v656[math.random(1, #v656)]:Clone()
-					v661.Parent = v660
-					v661.Enabled = true
-					v661:AddTag("Cleanup_CorruptChakra")
+		local v692 = 0
+		for _, v693 in p687:GetDescendants() do
+			if v693:IsA("BasePart") and v693 ~= p688 then
+				v692 = v692 + 1
+				if v692 % 3 == 0 then
+					local v694 = v689[math.random(1, #v689)]:Clone()
+					v694.Parent = v693
+					v694.Enabled = true
+					v694:AddTag("Cleanup_CorruptChakra")
 				end
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p662, p663)
-		local function v666(p664)
-			for _, v665 in p664:GetDescendants() do
-				if v665:HasTag("Cleanup_CorruptChakra") then
-					v665:Destroy()
+	["_RemoveFX"] = function(_, p695, p696)
+		local function v699(p697)
+			for _, v698 in p697:GetDescendants() do
+				if v698:HasTag("Cleanup_CorruptChakra") then
+					v698:Destroy()
 				end
 			end
 		end
-		if p663 then
-			v666(p663)
+		if p696 then
+			v699(p696)
 		end
-		if p662 then
-			v666(p662)
+		if p695 then
+			v699(p695)
 		end
 	end
 }
-v_u_518.CorruptFoxfireChakra = {
+v_u_551.CorruptFoxfireChakra = {
 	["Id"] = "U",
 	["Name"] = "CorruptFoxfireChakra",
 	["ValueMulti"] = 90,
 	["Color"] = Color3.fromRGB(0, 0, 255),
-	["_AddFX"] = function(p667, p668, p669)
-		p667:_RemoveFX(p668, p669)
-		local v670 = game.ServerStorage.Mutation_FX.CorruptFoxfireChakra:GetChildren()
-		local v671 = nil
-		for _, v672 in v670 do
-			if v672.Name == "Flames" then
-				v671 = v672
+	["_AddFX"] = function(p700, p701, p702)
+		p700:_RemoveFX(p701, p702)
+		local v703 = game.ServerStorage.Mutation_FX.CorruptFoxfireChakra:GetChildren()
+		local v704 = nil
+		for _, v705 in v703 do
+			if v705.Name == "Flames" then
+				v704 = v705
 				break
 			end
 		end
-		if p669 then
-			for _, v673 in v670 do
-				local v674 = v673:Clone()
-				v674.Parent = p669
-				v674.Enabled = true
-				v674:AddTag("Cleanup_CorruptFoxfireChakra")
+		if p702 then
+			for _, v706 in v703 do
+				local v707 = v706:Clone()
+				v707.Parent = p702
+				v707.Enabled = true
+				v707:AddTag("Cleanup_CorruptFoxfireChakra")
 			end
 		end
-		local v675 = 0
-		for _, v676 in p668:GetDescendants() do
-			if v676:IsA("BasePart") and v676 ~= p669 then
-				v675 = v675 + 1
-				if v675 % 2 == 0 then
-					local v677 = v670[math.random(1, #v670)]:Clone()
-					v677.Parent = v676
-					v677.Enabled = true
-					v677:AddTag("Cleanup_CorruptFoxfireChakra")
+		local v708 = 0
+		for _, v709 in p701:GetDescendants() do
+			if v709:IsA("BasePart") and v709 ~= p702 then
+				v708 = v708 + 1
+				if v708 % 2 == 0 then
+					local v710 = v703[math.random(1, #v703)]:Clone()
+					v710.Parent = v709
+					v710.Enabled = true
+					v710:AddTag("Cleanup_CorruptFoxfireChakra")
 				end
-				if v675 % 3 == 0 and v671 then
-					local v678 = v671:Clone()
-					v678.Parent = v676
-					v678.Enabled = true
-					v678:AddTag("Cleanup_CorruptFoxfireChakra")
+				if v708 % 3 == 0 and v704 then
+					local v711 = v704:Clone()
+					v711.Parent = v709
+					v711.Enabled = true
+					v711:AddTag("Cleanup_CorruptFoxfireChakra")
 				end
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p679, p680)
-		local function v683(p681)
-			for _, v682 in p681:GetDescendants() do
-				if v682:HasTag("Cleanup_CorruptFoxfireChakra") then
-					v682:Destroy()
+	["_RemoveFX"] = function(_, p712, p713)
+		local function v716(p714)
+			for _, v715 in p714:GetDescendants() do
+				if v715:HasTag("Cleanup_CorruptFoxfireChakra") then
+					v715:Destroy()
 				end
 			end
 		end
-		if p680 then
-			v683(p680)
+		if p713 then
+			v716(p713)
 		end
-		if p679 then
-			v683(p679)
+		if p712 then
+			v716(p712)
 		end
 	end
 }
-v_u_518.Static = {
+v_u_551.Static = {
 	["Id"] = "V",
 	["Name"] = "Static",
 	["ValueMulti"] = 8,
 	["Color"] = Color3.fromRGB(255, 255, 0),
-	["_AddFX"] = function(p684, p685, p686)
-		p684:_RemoveFX(p685, p686)
-		if p686 then
-			for _, v687 in game.ServerStorage.Mutation_FX.Static:GetChildren() do
-				local v688 = v687:Clone()
-				v688.Parent = p686
-				v688:AddTag("Cleanup_Static")
+	["_AddFX"] = function(p717, p718, p719)
+		p717:_RemoveFX(p718, p719)
+		if p719 then
+			for _, v720 in game.ServerStorage.Mutation_FX.Static:GetChildren() do
+				local v721 = v720:Clone()
+				v721.Parent = p719
+				v721:AddTag("Cleanup_Static")
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, _, p689)
-		if p689 then
-			for _, v690 in p689:GetChildren() do
-				if v690:HasTag("Cleanup_Static") then
-					v690:Destroy()
+	["_RemoveFX"] = function(_, _, p722)
+		if p722 then
+			for _, v723 in p722:GetChildren() do
+				if v723:HasTag("Cleanup_Static") then
+					v723:Destroy()
 				end
 			end
 		end
 	end
 }
-v_u_518.HarmonisedChakra = {
+v_u_551.HarmonisedChakra = {
 	["Id"] = "W",
 	["Name"] = "HarmonisedChakra",
 	["ValueMulti"] = 35,
 	["Color"] = Color3.fromRGB(170, 85, 255),
-	["_AddFX"] = function(p691, p692, p693)
-		p691:_RemoveFX(p692, p693)
-		local v694 = game.ServerStorage.Mutation_FX.HarmonisedChakra:GetChildren()
-		if p693 then
-			for _, v695 in v694 do
-				local v696 = v695:Clone()
-				v696.Parent = p693
-				v696.Enabled = true
-				v696:AddTag("Cleanup_HarmonisedChakra")
+	["_AddFX"] = function(p724, p725, p726)
+		p724:_RemoveFX(p725, p726)
+		local v727 = game.ServerStorage.Mutation_FX.HarmonisedChakra:GetChildren()
+		if p726 then
+			for _, v728 in v727 do
+				local v729 = v728:Clone()
+				v729.Parent = p726
+				v729.Enabled = true
+				v729:AddTag("Cleanup_HarmonisedChakra")
 			end
 		end
-		local v697 = 0
-		for _, v698 in p692:GetDescendants() do
-			if v698:IsA("BasePart") and v698 ~= p693 then
-				v697 = v697 + 1
-				if v697 % 3 == 0 then
-					local v699 = v694[math.random(1, #v694)]:Clone()
-					v699.Parent = v698
-					v699.Enabled = true
-					v699:AddTag("Cleanup_HarmonisedChakra")
+		local v730 = 0
+		for _, v731 in p725:GetDescendants() do
+			if v731:IsA("BasePart") and v731 ~= p726 then
+				v730 = v730 + 1
+				if v730 % 3 == 0 then
+					local v732 = v727[math.random(1, #v727)]:Clone()
+					v732.Parent = v731
+					v732.Enabled = true
+					v732:AddTag("Cleanup_HarmonisedChakra")
 				end
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p700, p701)
-		local function v704(p702)
-			for _, v703 in p702:GetDescendants() do
-				if v703:HasTag("Cleanup_HarmonisedChakra") then
-					v703:Destroy()
+	["_RemoveFX"] = function(_, p733, p734)
+		local function v737(p735)
+			for _, v736 in p735:GetDescendants() do
+				if v736:HasTag("Cleanup_HarmonisedChakra") then
+					v736:Destroy()
 				end
 			end
 		end
-		if p701 then
-			v704(p701)
+		if p734 then
+			v737(p734)
 		end
-		if p700 then
-			v704(p700)
+		if p733 then
+			v737(p733)
 		end
 	end
 }
-v_u_518.HarmonisedFoxfireChakra = {
+v_u_551.HarmonisedFoxfireChakra = {
 	["Id"] = "X",
 	["Name"] = "HarmonisedFoxfireChakra",
 	["ValueMulti"] = 190,
 	["Color"] = Color3.fromRGB(170, 85, 255),
-	["_AddFX"] = function(p705, p706, p707)
-		p705:_RemoveFX(p706, p707)
-		local v708 = game.ServerStorage.Mutation_FX.HarmonisedFoxfireChakra:GetChildren()
-		local v709 = nil
-		for _, v710 in v708 do
-			if v710.Name == "Flames" then
-				v709 = v710
+	["_AddFX"] = function(p738, p739, p740)
+		p738:_RemoveFX(p739, p740)
+		local v741 = game.ServerStorage.Mutation_FX.HarmonisedFoxfireChakra:GetChildren()
+		local v742 = nil
+		for _, v743 in v741 do
+			if v743.Name == "Flames" then
+				v742 = v743
 				break
 			end
 		end
-		if p707 then
-			for _, v711 in v708 do
-				local v712 = v711:Clone()
-				v712.Parent = p707
-				v712.Enabled = true
-				v712:AddTag("Cleanup_HarmonisedFoxfireChakra")
+		if p740 then
+			for _, v744 in v741 do
+				local v745 = v744:Clone()
+				v745.Parent = p740
+				v745.Enabled = true
+				v745:AddTag("Cleanup_HarmonisedFoxfireChakra")
 			end
 		end
-		local v713 = 0
-		for _, v714 in p706:GetDescendants() do
-			if v714:IsA("BasePart") and v714 ~= p707 then
-				v713 = v713 + 1
-				if v713 % 2 == 0 then
-					local v715 = v708[math.random(1, #v708)]:Clone()
-					v715.Parent = v714
-					v715.Enabled = true
-					v715:AddTag("Cleanup_HarmonisedFoxfireChakra")
+		local v746 = 0
+		for _, v747 in p739:GetDescendants() do
+			if v747:IsA("BasePart") and v747 ~= p740 then
+				v746 = v746 + 1
+				if v746 % 2 == 0 then
+					local v748 = v741[math.random(1, #v741)]:Clone()
+					v748.Parent = v747
+					v748.Enabled = true
+					v748:AddTag("Cleanup_HarmonisedFoxfireChakra")
 				end
-				if v713 % 3 == 0 and v709 then
-					local v716 = v709:Clone()
-					v716.Parent = v714
-					v716.Enabled = true
-					v716:AddTag("Cleanup_HarmonisedFoxfireChakra")
+				if v746 % 3 == 0 and v742 then
+					local v749 = v742:Clone()
+					v749.Parent = v747
+					v749.Enabled = true
+					v749:AddTag("Cleanup_HarmonisedFoxfireChakra")
 				end
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p717, p718)
-		local function v721(p719)
-			for _, v720 in p719:GetDescendants() do
-				if v720:HasTag("Cleanup_HarmonisedFoxfireChakra") then
-					v720:Destroy()
+	["_RemoveFX"] = function(_, p750, p751)
+		local function v754(p752)
+			for _, v753 in p752:GetDescendants() do
+				if v753:HasTag("Cleanup_HarmonisedFoxfireChakra") then
+					v753:Destroy()
 				end
 			end
 		end
-		if p718 then
-			v721(p718)
+		if p751 then
+			v754(p751)
 		end
-		if p717 then
-			v721(p717)
+		if p750 then
+			v754(p750)
 		end
 	end
 }
-v_u_518.Pasta = {
+v_u_551.Pasta = {
 	["Id"] = "PA",
 	["Name"] = "Pasta",
 	["ValueMulti"] = 3,
 	["Color"] = Color3.fromRGB(255, 223, 128),
-	["_AddFX"] = function(p722, p723, p724)
-		p722:_RemoveFX(p723, p724)
-		local v725 = {}
-		for _, v726 in game.ServerStorage.Mutation_FX.Spaghetti:GetChildren() do
-			if v726.Name == "Pasta" then
-				table.insert(v725, v726)
+	["_AddFX"] = function(p755, p756, p757)
+		p755:_RemoveFX(p756, p757)
+		local v758 = {}
+		for _, v759 in game.ServerStorage.Mutation_FX.Spaghetti:GetChildren() do
+			if v759.Name == "Pasta" then
+				table.insert(v758, v759)
 			end
 		end
-		if p724 then
-			for _, v727 in v725 do
-				if not p724:FindFirstChild(v727.Name) then
-					local v728 = v727:Clone()
-					v728.Parent = p724
-					v728.Enabled = true
-					v728:AddTag("Cleanup_Pasta")
+		if p757 then
+			for _, v760 in v758 do
+				if not p757:FindFirstChild(v760.Name) then
+					local v761 = v760:Clone()
+					v761.Parent = p757
+					v761.Enabled = true
+					v761:AddTag("Cleanup_Pasta")
 				end
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p729, p730)
-		local function v733(p731)
-			for _, v732 in p731:GetDescendants() do
-				if v732:HasTag("Cleanup_Pasta") then
-					v732:Destroy()
+	["_RemoveFX"] = function(_, p762, p763)
+		local function v766(p764)
+			for _, v765 in p764:GetDescendants() do
+				if v765:HasTag("Cleanup_Pasta") then
+					v765:Destroy()
 				end
 			end
 		end
-		if p730 then
-			v733(p730)
+		if p763 then
+			v766(p763)
 		end
-		if p729 then
-			v733(p729)
+		if p762 then
+			v766(p762)
 		end
 	end
 }
-v_u_518.Sauce = {
+v_u_551.Sauce = {
 	["Id"] = "SA",
 	["Name"] = "Sauce",
 	["ValueMulti"] = 3,
 	["Color"] = Color3.fromRGB(200, 45, 35),
-	["_AddFX"] = function(p734, p735, p736)
-		p734:_RemoveFX(p735, p736)
-		local v737 = {}
-		for _, v738 in game.ServerStorage.Mutation_FX.Spaghetti:GetChildren() do
-			if v738.Name == "Sauce" then
-				table.insert(v737, v738)
+	["_AddFX"] = function(p767, p768, p769)
+		p767:_RemoveFX(p768, p769)
+		local v770 = {}
+		for _, v771 in game.ServerStorage.Mutation_FX.Spaghetti:GetChildren() do
+			if v771.Name == "Sauce" then
+				table.insert(v770, v771)
 			end
 		end
-		if p736 then
-			for _, v739 in v737 do
-				if not p736:FindFirstChild(v739.Name) then
-					local v740 = v739:Clone()
-					v740.Parent = p736
-					v740.Enabled = true
-					v740:AddTag("Cleanup_Sauce")
+		if p769 then
+			for _, v772 in v770 do
+				if not p769:FindFirstChild(v772.Name) then
+					local v773 = v772:Clone()
+					v773.Parent = p769
+					v773.Enabled = true
+					v773:AddTag("Cleanup_Sauce")
 				end
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p741, p742)
-		local function v745(p743)
-			for _, v744 in p743:GetDescendants() do
-				if v744:HasTag("Cleanup_Sauce") then
-					v744:Destroy()
-				end
-			end
-		end
-		if p742 then
-			v745(p742)
-		end
-		if p741 then
-			v745(p741)
-		end
-	end
-}
-v_u_518.Meatball = {
-	["Id"] = "MB",
-	["Name"] = "Meatball",
-	["ValueMulti"] = 3,
-	["Color"] = Color3.fromRGB(139, 69, 19),
-	["_AddFX"] = function(p746, p747, p748)
-		p746:_RemoveFX(p747, p748)
-		local v749 = {}
-		for _, v750 in game.ServerStorage.Mutation_FX.Spaghetti:GetChildren() do
-			if v750.Name == "Meatball" then
-				table.insert(v749, v750)
-			end
-		end
-		if p748 then
-			for _, v751 in v749 do
-				if not p748:FindFirstChild(v751.Name) then
-					local v752 = v751:Clone()
-					v752.Parent = p748
-					v752.Enabled = true
-					v752:AddTag("Cleanup_Meatball")
-				end
-			end
-		end
-	end,
-	["_RemoveFX"] = function(_, p753, p754)
-		local function v757(p755)
-			for _, v756 in p755:GetDescendants() do
-				if v756:HasTag("Cleanup_Meatball") then
-					v756:Destroy()
-				end
-			end
-		end
-		if p754 then
-			v757(p754)
-		end
-		if p753 then
-			v757(p753)
-		end
-	end
-}
-v_u_518.Spaghetti = {
-	["Id"] = "SP",
-	["Name"] = "Spaghetti",
-	["ValueMulti"] = 15,
-	["Color"] = Color3.fromRGB(255, 140, 70),
-	["_AddFX"] = function(p758, p759, p760)
-		p758:_RemoveFX(p759, p760)
-		local v761 = game.ServerStorage.Mutation_FX.Spaghetti:GetChildren()
-		if p760 then
-			for _, v762 in v761 do
-				if not p760:FindFirstChild(v762.Name) then
-					local v763 = v762:Clone()
-					v763.Parent = p760
-					v763.Enabled = true
-					v763:AddTag("Cleanup_Spaghetti")
-				end
-			end
-		end
-	end,
-	["_RemoveFX"] = function(_, p764, p765)
-		local function v768(p766)
-			for _, v767 in p766:GetDescendants() do
-				if v767:HasTag("Cleanup_Spaghetti") then
-					v767:Destroy()
-				end
-			end
-		end
-		if p765 then
-			v768(p765)
-		end
-		if p764 then
-			v768(p764)
-		end
-	end
-}
-v_u_518.Eclipsed = {
-	["Id"] = "EC",
-	["Name"] = "Eclipsed",
-	["ValueMulti"] = 20,
-	["Color"] = Color3.fromRGB(44, 111, 162),
-	["_AddFX"] = function(p769, p770, p771)
-		-- upvalues: (copy) v_u_13
-		p769:_RemoveFX(p770, p771)
-		if p771 then
-			for _, v772 in game.ServerStorage.Mutation_FX.Eclipsed:GetChildren() do
-				local v773 = v772:Clone()
-				v773.Parent = p771
-				v773.Enabled = true
-				v773:AddTag("Cleanup_Eclipsed")
-			end
-		end
-		for _, v774 in p770:GetDescendants() do
-			if (v774:IsA("BasePart") or v774:IsA("UnionOperation")) and (not v774:HasTag("Effect") and (not v774.Transparency or v774.Transparency ~= 1)) then
-				v_u_13[v774] = v_u_13[v774] or v774.Color
-				v774.Color = v774.Color:Lerp(Color3.fromRGB(0, 0, 0), 0.45)
-				v774:AddTag("EclipsedVisual")
-			end
-		end
-	end,
-	["_RemoveFX"] = function(_, p775, p776)
-		-- upvalues: (copy) v_u_13
-		if p776 then
-			for _, v777 in p776:GetChildren() do
-				if v777:HasTag("Cleanup_Eclipsed") then
+	["_RemoveFX"] = function(_, p774, p775)
+		local function v778(p776)
+			for _, v777 in p776:GetDescendants() do
+				if v777:HasTag("Cleanup_Sauce") then
 					v777:Destroy()
 				end
 			end
 		end
-		for _, v778 in p775:GetDescendants() do
-			if (v778:IsA("BasePart") or v778:IsA("UnionOperation")) and v778:HasTag("EclipsedVisual") then
-				v778.Color = v_u_13[v778] or v778.Color
-				v_u_13[v778] = nil
-				v778:RemoveTag("EclipsedVisual")
-			end
+		if p775 then
+			v778(p775)
+		end
+		if p774 then
+			v778(p774)
 		end
 	end
 }
-v_u_518.Enlightened = {
-	["Id"] = "EN",
-	["Name"] = "Enlightened",
-	["ValueMulti"] = 35,
-	["Color"] = Color3.fromRGB(255, 255, 255),
+v_u_551.Meatball = {
+	["Id"] = "MB",
+	["Name"] = "Meatball",
+	["ValueMulti"] = 3,
+	["Color"] = Color3.fromRGB(139, 69, 19),
 	["_AddFX"] = function(p779, p780, p781)
-		-- upvalues: (copy) v_u_13, (copy) v_u_16
 		p779:_RemoveFX(p780, p781)
-		local v782 = Color3.fromRGB(218, 133, 65)
-		local v783 = {}
-		for _, v784 in p780:GetDescendants() do
-			if (v784:IsA("BasePart") or v784:IsA("UnionOperation")) and not v784:HasTag("Effect") then
-				local v785 = v784.Color
-				v783[v785] = (v783[v785] or 0) + 1
-			end
-		end
-		local v786 = 0
-		for v787, v788 in pairs(v783) do
-			if v786 <= v788 then
-				v782 = v787
-				v786 = v788
-			end
-		end
-		for _, v789 in p780:GetDescendants() do
-			if (v789:IsA("BasePart") or v789:IsA("UnionOperation")) and (not v789:HasTag("Effect") and (not v789.Transparency or v789.Transparency ~= 1) and v789.Color == v782) then
-				v_u_13[v789] = v_u_13[v789] or v789.Color
-				v789.Color = Color3.fromRGB(218, 133, 65)
-				v_u_16[v789] = v_u_16[v789] or v789.Material
-				v789.Material = Enum.Material.Neon
-				v789:AddTag("EnlightenedVisual")
+		local v782 = {}
+		for _, v783 in game.ServerStorage.Mutation_FX.Spaghetti:GetChildren() do
+			if v783.Name == "Meatball" then
+				table.insert(v782, v783)
 			end
 		end
 		if p781 then
-			for _, v790 in game.ServerStorage.Mutation_FX.Enlightened:GetChildren() do
-				local v791 = v790:Clone()
-				v791.Parent = p781
-				v791.Enabled = true
-				v791:AddTag("Cleanup_Enlightened")
+			for _, v784 in v782 do
+				if not p781:FindFirstChild(v784.Name) then
+					local v785 = v784:Clone()
+					v785.Parent = p781
+					v785.Enabled = true
+					v785:AddTag("Cleanup_Meatball")
+				end
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p792, p793)
-		-- upvalues: (copy) v_u_13, (copy) v_u_16
-		local function v796(p794)
-			for _, v795 in p794:GetDescendants() do
-				if v795:HasTag("Cleanup_Enlightened") then
-					v795:Destroy()
+	["_RemoveFX"] = function(_, p786, p787)
+		local function v790(p788)
+			for _, v789 in p788:GetDescendants() do
+				if v789:HasTag("Cleanup_Meatball") then
+					v789:Destroy()
 				end
 			end
 		end
-		if p793 then
-			v796(p793)
+		if p787 then
+			v790(p787)
 		end
-		if p792 then
-			v796(p792)
-		end
-		for _, v797 in p792:GetDescendants() do
-			if (v797:IsA("BasePart") or v797:IsA("UnionOperation")) and v797:HasTag("EnlightenedVisual") then
-				v797.Color = v_u_13[v797] or v797.Color
-				v_u_13[v797] = nil
-				v797:RemoveTag("EnlightenedVisual")
-				if v_u_16[v797] then
-					v797.Material = v_u_16[v797]
-					v_u_16[v797] = nil
-				end
-			end
+		if p786 then
+			v790(p786)
 		end
 	end
 }
-v_u_518.Tranquil = {
-	["Id"] = "TQ",
-	["Name"] = "Tranquil",
-	["ValueMulti"] = 20,
-	["Color"] = Color3.fromRGB(255, 255, 255),
-	["_AddFX"] = function(p798, p799, p800)
-		p798:_RemoveFX(p799, p800)
-		local v801 = p799:FindFirstChild("Item_Seed")
-		local v802 = not (v801 and v801:IsA("NumberValue")) and 0 or v801.Value
-		local v803 = Random.new(v802)
-		local v804 = game.ServerStorage.Mutation_FX.Tranquil:GetChildren()
-		local v805 = 0
-		for _, v806 in p799:GetDescendants() do
-			if (v806:IsA("BasePart") or v806:IsA("UnionOperation")) and not v806:HasTag("Effect") then
-				v805 = v805 + 1
-				if v805 % 5 == 0 or v805 == 1 then
-					local v807 = v804[v803:NextInteger(1, #v804)]:Clone()
-					v807.Enabled = true
-					v807.Rate = v803:NextInteger(30, 50) * 0.01
-					v807.Parent = v806
-					v807:AddTag("Cleanup_Tranquil")
+v_u_551.Spaghetti = {
+	["Id"] = "SP",
+	["Name"] = "Spaghetti",
+	["ValueMulti"] = 15,
+	["Color"] = Color3.fromRGB(255, 140, 70),
+	["_AddFX"] = function(p791, p792, p793)
+		p791:_RemoveFX(p792, p793)
+		local v794 = game.ServerStorage.Mutation_FX.Spaghetti:GetChildren()
+		if p793 then
+			for _, v795 in v794 do
+				if not p793:FindFirstChild(v795.Name) then
+					local v796 = v795:Clone()
+					v796.Parent = p793
+					v796.Enabled = true
+					v796:AddTag("Cleanup_Spaghetti")
 				end
+			end
+		end
+	end,
+	["_RemoveFX"] = function(_, p797, p798)
+		local function v801(p799)
+			for _, v800 in p799:GetDescendants() do
+				if v800:HasTag("Cleanup_Spaghetti") then
+					v800:Destroy()
+				end
+			end
+		end
+		if p798 then
+			v801(p798)
+		end
+		if p797 then
+			v801(p797)
+		end
+	end
+}
+v_u_551.Eclipsed = {
+	["Id"] = "EC",
+	["Name"] = "Eclipsed",
+	["ValueMulti"] = 20,
+	["Color"] = Color3.fromRGB(44, 111, 162),
+	["_AddFX"] = function(p802, p803, p804)
+		-- upvalues: (copy) v_u_13
+		p802:_RemoveFX(p803, p804)
+		if p804 then
+			for _, v805 in game.ServerStorage.Mutation_FX.Eclipsed:GetChildren() do
+				local v806 = v805:Clone()
+				v806.Parent = p804
+				v806.Enabled = true
+				v806:AddTag("Cleanup_Eclipsed")
+			end
+		end
+		for _, v807 in p803:GetDescendants() do
+			if (v807:IsA("BasePart") or v807:IsA("UnionOperation")) and (not v807:HasTag("Effect") and (not v807.Transparency or v807.Transparency ~= 1)) then
+				v_u_13[v807] = v_u_13[v807] or v807.Color
+				v807.Color = v807.Color:Lerp(Color3.fromRGB(0, 0, 0), 0.45)
+				v807:AddTag("EclipsedVisual")
 			end
 		end
 	end,
 	["_RemoveFX"] = function(_, p808, p809)
-		local function v812(p810)
-			for _, v811 in p810:GetDescendants() do
-				if v811:HasTag("Cleanup_Tranquil") then
-					v811:Destroy()
+		-- upvalues: (copy) v_u_13
+		if p809 then
+			for _, v810 in p809:GetChildren() do
+				if v810:HasTag("Cleanup_Eclipsed") then
+					v810:Destroy()
 				end
 			end
 		end
-		if p809 then
-			v812(p809)
-		end
-		if p808 then
-			v812(p808)
+		for _, v811 in p808:GetDescendants() do
+			if (v811:IsA("BasePart") or v811:IsA("UnionOperation")) and v811:HasTag("EclipsedVisual") then
+				v811.Color = v_u_13[v811] or v811.Color
+				v_u_13[v811] = nil
+				v811:RemoveTag("EclipsedVisual")
+			end
 		end
 	end
 }
-v_u_518.Corrupt = {
+v_u_551.Enlightened = {
+	["Id"] = "EN",
+	["Name"] = "Enlightened",
+	["ValueMulti"] = 35,
+	["Color"] = Color3.fromRGB(255, 255, 255),
+	["_AddFX"] = function(p812, p813, p814)
+		-- upvalues: (copy) v_u_13, (copy) v_u_16
+		p812:_RemoveFX(p813, p814)
+		local v815 = Color3.fromRGB(218, 133, 65)
+		local v816 = {}
+		for _, v817 in p813:GetDescendants() do
+			if (v817:IsA("BasePart") or v817:IsA("UnionOperation")) and not v817:HasTag("Effect") then
+				local v818 = v817.Color
+				v816[v818] = (v816[v818] or 0) + 1
+			end
+		end
+		local v819 = 0
+		for v820, v821 in pairs(v816) do
+			if v819 <= v821 then
+				v815 = v820
+				v819 = v821
+			end
+		end
+		for _, v822 in p813:GetDescendants() do
+			if (v822:IsA("BasePart") or v822:IsA("UnionOperation")) and (not v822:HasTag("Effect") and (not v822.Transparency or v822.Transparency ~= 1) and v822.Color == v815) then
+				v_u_13[v822] = v_u_13[v822] or v822.Color
+				v822.Color = Color3.fromRGB(218, 133, 65)
+				v_u_16[v822] = v_u_16[v822] or v822.Material
+				v822.Material = Enum.Material.Neon
+				v822:AddTag("EnlightenedVisual")
+			end
+		end
+		if p814 then
+			for _, v823 in game.ServerStorage.Mutation_FX.Enlightened:GetChildren() do
+				local v824 = v823:Clone()
+				v824.Parent = p814
+				v824.Enabled = true
+				v824:AddTag("Cleanup_Enlightened")
+			end
+		end
+	end,
+	["_RemoveFX"] = function(_, p825, p826)
+		-- upvalues: (copy) v_u_13, (copy) v_u_16
+		local function v829(p827)
+			for _, v828 in p827:GetDescendants() do
+				if v828:HasTag("Cleanup_Enlightened") then
+					v828:Destroy()
+				end
+			end
+		end
+		if p826 then
+			v829(p826)
+		end
+		if p825 then
+			v829(p825)
+		end
+		for _, v830 in p825:GetDescendants() do
+			if (v830:IsA("BasePart") or v830:IsA("UnionOperation")) and v830:HasTag("EnlightenedVisual") then
+				v830.Color = v_u_13[v830] or v830.Color
+				v_u_13[v830] = nil
+				v830:RemoveTag("EnlightenedVisual")
+				if v_u_16[v830] then
+					v830.Material = v_u_16[v830]
+					v_u_16[v830] = nil
+				end
+			end
+		end
+	end
+}
+v_u_551.Tranquil = {
+	["Id"] = "TQ",
+	["Name"] = "Tranquil",
+	["ValueMulti"] = 20,
+	["Color"] = Color3.fromRGB(255, 255, 255),
+	["_AddFX"] = function(p831, p832, p833)
+		p831:_RemoveFX(p832, p833)
+		local v834 = p832:FindFirstChild("Item_Seed")
+		local v835 = not (v834 and v834:IsA("NumberValue")) and 0 or v834.Value
+		local v836 = Random.new(v835)
+		local v837 = game.ServerStorage.Mutation_FX.Tranquil:GetChildren()
+		local v838 = 0
+		for _, v839 in p832:GetDescendants() do
+			if (v839:IsA("BasePart") or v839:IsA("UnionOperation")) and not v839:HasTag("Effect") then
+				v838 = v838 + 1
+				if v838 % 5 == 0 or v838 == 1 then
+					local v840 = v837[v836:NextInteger(1, #v837)]:Clone()
+					v840.Enabled = true
+					v840.Rate = v836:NextInteger(30, 50) * 0.01
+					v840.Parent = v839
+					v840:AddTag("Cleanup_Tranquil")
+				end
+			end
+		end
+	end,
+	["_RemoveFX"] = function(_, p841, p842)
+		local function v845(p843)
+			for _, v844 in p843:GetDescendants() do
+				if v844:HasTag("Cleanup_Tranquil") then
+					v844:Destroy()
+				end
+			end
+		end
+		if p842 then
+			v845(p842)
+		end
+		if p841 then
+			v845(p841)
+		end
+	end
+}
+v_u_551.Corrupt = {
 	["Id"] = "CR",
 	["Name"] = "Corrupt",
 	["ValueMulti"] = 20,
 	["Color"] = Color3.fromRGB(176, 23, 26),
-	["_AddFX"] = function(p813, p814, p815)
-		-- upvalues: (copy) v_u_13
-		p813:_RemoveFX(p814, p815)
-		if p815 then
-			for _, v816 in game.ServerStorage.Mutation_FX.Corrupt:GetChildren() do
-				local v817 = v816:Clone()
-				v817.Parent = p815
-				v817:AddTag("Cleanup_Infected")
-				if v817:IsA("ParticleEmitter") then
-					v817.Enabled = true
+	["_AddFX"] = function(p846, p847, p848)
+		p846:_RemoveFX(p847, p848)
+		if p848 then
+			for _, v849 in game.ServerStorage.Mutation_FX.Corrupt:GetChildren() do
+				local v850 = v849:Clone()
+				v850.Parent = p848
+				v850:AddTag("Cleanup_Infected")
+				if v850:IsA("ParticleEmitter") then
+					v850.Enabled = true
 				end
 			end
 		end
-		for _, v818 in p814:GetDescendants() do
-			if (v818:IsA("BasePart") or v818:IsA("UnionOperation")) and (not v818:HasTag("Effect") and (not v818.Transparency or v818.Transparency ~= 1)) then
-				v_u_13[v818] = v_u_13[v818] or v818.Color
-				v818.Color = v818.Color:Lerp(Color3.fromRGB(176, 23, 26), 0.5)
-				v818:AddTag("CorruptVisual")
+		for _, v851 in p847:GetDescendants() do
+			if (v851:IsA("BasePart") or v851:IsA("UnionOperation")) and (not v851:HasTag("Effect") and (not v851.Transparency or v851.Transparency ~= 1)) then
+				v851.Color = v851.Color:Lerp(Color3.fromRGB(176, 23, 26), 0.5)
+				v851:AddTag("CorruptVisual")
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p819, p820)
+	["_RemoveFX"] = function(_, p852, p853)
 		-- upvalues: (copy) v_u_13, (copy) v_u_16
-		local function v823(p821)
-			for _, v822 in p821:GetDescendants() do
-				if v822:HasTag("Cleanup_Corrupt") then
-					v822:Destroy()
+		local function v856(p854)
+			for _, v855 in p854:GetDescendants() do
+				if v855:HasTag("Cleanup_Corrupt") then
+					v855:Destroy()
 				end
 			end
 		end
-		if p820 then
-			v823(p820)
+		if p853 then
+			v856(p853)
 		end
-		for _, v824 in p819:GetDescendants() do
-			if (v824:IsA("BasePart") or v824:IsA("UnionOperation")) and v824:HasTag("CorruptVisual") then
-				v824.Color = v_u_13[v824] or v824.Color
-				v_u_13[v824] = nil
-				v824:RemoveTag("CorruptVisual")
-				if v_u_16[v824] then
-					v824.Material = v_u_16[v824]
-					v_u_16[v824] = nil
+		for _, v857 in p852:GetDescendants() do
+			if (v857:IsA("BasePart") or v857:IsA("UnionOperation")) and v857:HasTag("CorruptVisual") then
+				v857.Color = v_u_13[v857] or v857.Color
+				v_u_13[v857] = nil
+				v857:RemoveTag("CorruptVisual")
+				if v_u_16[v857] then
+					v857.Material = v_u_16[v857]
+					v_u_16[v857] = nil
 				end
 			end
 		end
 	end
 }
-v_u_518.Toxic = {
+v_u_551.Toxic = {
 	["Id"] = "TX",
 	["Name"] = "Toxic",
-	["ValueMulti"] = 12,
+	["ValueMulti"] = 15,
 	["Color"] = Color3.fromRGB(85, 255, 0),
-	["_AddFX"] = function(p825, p826, p827)
-		p825:_RemoveFX(p826, p827)
-		if p827 then
-			for _, v828 in game.ServerStorage.Mutation_FX.Toxic:GetChildren() do
-				local v829 = v828:Clone()
-				v829.Parent = p827
-				v829.Enabled = true
-				v829:AddTag("Cleanup_Toxic")
+	["_AddFX"] = function(p858, p859, p860)
+		p858:_RemoveFX(p859, p860)
+		if p860 then
+			for _, v861 in game.ServerStorage.Mutation_FX.Toxic:GetChildren() do
+				local v862 = v861:Clone()
+				v862.Parent = p860
+				v862.Enabled = true
+				v862:AddTag("Cleanup_Toxic")
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p830, p831)
-		local function v834(p832)
-			for _, v833 in p832:GetDescendants() do
-				if v833:HasTag("Cleanup_Toxic") then
-					v833:Destroy()
+	["_RemoveFX"] = function(_, p863, p864)
+		local function v867(p865)
+			for _, v866 in p865:GetDescendants() do
+				if v866:HasTag("Cleanup_Toxic") then
+					v866:Destroy()
 				end
 			end
 		end
-		if p831 then
-			v834(p831)
+		if p864 then
+			v867(p864)
 		end
-		if p830 then
-			v834(p830)
+		if p863 then
+			v867(p863)
 		end
 	end
 }
-v_u_518.Acidic = {
+v_u_551.Acidic = {
 	["Id"] = "AC",
 	["Name"] = "Acidic",
 	["ValueMulti"] = 15,
 	["Color"] = Color3.fromRGB(224, 245, 129),
-	["_AddFX"] = function(p835, p836, p837)
-		p835:_RemoveFX(p836, p837)
-		if p837 then
-			for _, v838 in game.ServerStorage.Mutation_FX.Acidic:GetChildren() do
-				local v839 = v838:Clone()
-				v839.Parent = p837
-				v839.Enabled = true
-				v839:AddTag("Cleanup_Acidic")
+	["_AddFX"] = function(p868, p869, p870)
+		p868:_RemoveFX(p869, p870)
+		if p870 then
+			for _, v871 in game.ServerStorage.Mutation_FX.Acidic:GetChildren() do
+				local v872 = v871:Clone()
+				v872.Parent = p870
+				v872.Enabled = true
+				v872:AddTag("Cleanup_Acidic")
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p840, p841)
-		local function v844(p842)
-			for _, v843 in p842:GetDescendants() do
-				if v843:HasTag("Cleanup_Acidic") then
-					v843:Destroy()
+	["_RemoveFX"] = function(_, p873, p874)
+		local function v877(p875)
+			for _, v876 in p875:GetDescendants() do
+				if v876:HasTag("Cleanup_Acidic") then
+					v876:Destroy()
 				end
 			end
 		end
-		if p841 then
-			v844(p841)
+		if p874 then
+			v877(p874)
 		end
-		if p840 then
-			v844(p840)
+		if p873 then
+			v877(p873)
 		end
 	end
 }
-v_u_518.Oil = {
+v_u_551.Corrosive = {
+	["Id"] = "CV",
+	["Name"] = "Corrosive",
+	["ValueMulti"] = 40,
+	["Color"] = Color3.fromRGB(0, 255, 0),
+	["_AddFX"] = function(p878, p879, p880)
+		-- upvalues: (copy) v_u_13, (copy) v_u_16
+		p878:_RemoveFX(p879, p880)
+		local v881 = {}
+		for _, v882 in { "Acidic", "Toxic" } do
+			for _, v883 in game.ServerStorage.Mutation_FX[v882]:GetChildren() do
+				table.insert(v881, v883)
+			end
+		end
+		if p880 then
+			for _, v884 in v881 do
+				local v885 = v884:Clone()
+				v885.Parent = p880
+				v885.Enabled = true
+				v885:AddTag("Cleanup_Corrosive")
+			end
+		end
+		local v886 = 0
+		for _, v887 in p879:GetDescendants() do
+			if v887:IsA("BasePart") and v887 ~= p880 then
+				v886 = v886 + 1
+				if v886 % 2 == 0 and #v881 > 0 then
+					local v888 = v881[math.random(1, #v881)]:Clone()
+					v888.Parent = v887
+					v888.Enabled = true
+					v888:AddTag("Cleanup_Corrosive")
+				end
+				if Random.new():NextNumber() < 0.5 then
+					v887:AddTag("CorrosiveVisual")
+					v_u_13[v887] = v_u_13[v887] or v887.Color
+					v_u_16[v887] = v_u_16[v887] or v887.Material
+					v887.Color = Color3.fromRGB(0, 255, 0)
+					v887.Material = Enum.Material.Neon
+				end
+			end
+		end
+	end,
+	["_RemoveFX"] = function(_, p889, p890)
+		-- upvalues: (copy) v_u_13, (copy) v_u_16
+		local function v893(p891)
+			-- upvalues: (ref) v_u_13, (ref) v_u_16
+			for _, v892 in p891:GetDescendants() do
+				if v892:HasTag("Cleanup_Corrosive") then
+					v892:Destroy()
+				elseif v892:HasTag("CorrosiveVisual") then
+					v892.Color = v_u_13[v892] or v892.Color
+					v892.Material = v_u_16[v892] or v892.Material
+					v_u_13[v892] = nil
+					v_u_16[v892] = nil
+					v892:RemoveTag("CorrosiveVisual")
+				end
+			end
+		end
+		if p890 then
+			v893(p890)
+		end
+		if p889 then
+			v893(p889)
+		end
+	end
+}
+v_u_551.Oil = {
 	["Id"] = "OL",
 	["Name"] = "Oil",
 	["ValueMulti"] = 15,
 	["Color"] = Color3.fromRGB(52, 52, 77),
-	["_AddFX"] = function(p845, p846, p847)
-		p845:_RemoveFX(p846, p847)
-		if p847 then
-			for _, v848 in game.ServerStorage.Mutation_FX.Oil:GetChildren() do
-				local v849 = v848:Clone()
-				v849.Parent = p847
-				v849.Enabled = true
-				v849:AddTag("Cleanup_Oil")
-				v849:AddTag("Effect")
+	["_AddFX"] = function(p894, p895, p896)
+		p894:_RemoveFX(p895, p896)
+		if p896 then
+			for _, v897 in game.ServerStorage.Mutation_FX.Oil:GetChildren() do
+				local v898 = v897:Clone()
+				v898.Parent = p896
+				v898.Enabled = true
+				v898:AddTag("Cleanup_Oil")
+				v898:AddTag("Effect")
 			end
 		end
-		for _, v850 in p846:GetDescendants() do
-			if (v850:IsA("BasePart") or v850:IsA("UnionOperation")) and not v850:HasTag("Effect") then
-				v850:AddTag("OilVisual")
+		for _, v899 in p895:GetDescendants() do
+			if (v899:IsA("BasePart") or v899:IsA("UnionOperation")) and not v899:HasTag("Effect") then
+				v899:AddTag("OilVisual")
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p851, p852)
+	["_RemoveFX"] = function(_, p900, p901)
 		-- upvalues: (copy) v_u_16
-		if p852 then
-			for _, v853 in p852:GetChildren() do
-				if v853:HasTag("Cleanup_Oil") then
-					v853:Destroy()
+		if p901 then
+			for _, v902 in p901:GetChildren() do
+				if v902:HasTag("Cleanup_Oil") then
+					v902:Destroy()
 				end
 			end
 		end
-		for _, v854 in p851:GetDescendants() do
-			if (v854:IsA("BasePart") or v854:IsA("UnionOperation")) and v854:HasTag("OilVisual") then
-				v854:RemoveTag("OilVisual")
-				local v855 = v_u_16[v854]
-				if v855 then
-					v854.Material = v855
-					v_u_16[v854] = nil
+		for _, v903 in p900:GetDescendants() do
+			if (v903:IsA("BasePart") or v903:IsA("UnionOperation")) and v903:HasTag("OilVisual") then
+				v903:RemoveTag("OilVisual")
+				local v904 = v_u_16[v903]
+				if v904 then
+					v903.Material = v904
+					v_u_16[v903] = nil
 				end
 			end
 		end
 	end
 }
-v_u_518.Boil = {
+v_u_551.Boil = {
 	["Id"] = "BOL",
 	["Name"] = "Boil",
 	["ValueMulti"] = 15,
 	["Color"] = Color3.fromRGB(150, 178, 225),
-	["_AddFX"] = function(p856, p857, p858)
-		p856:_RemoveFX(p857, p858)
-		if p858 then
-			for _, v859 in game.ServerStorage.Mutation_FX.Boil:GetChildren() do
-				local v860 = v859:Clone()
-				v860.Parent = p858
-				v860.Enabled = true
-				v860:AddTag("Cleanup_Boil")
-				v860:AddTag("Effect")
+	["_AddFX"] = function(p905, p906, p907)
+		p905:_RemoveFX(p906, p907)
+		if p907 then
+			for _, v908 in game.ServerStorage.Mutation_FX.Boil:GetChildren() do
+				local v909 = v908:Clone()
+				v909.Parent = p907
+				v909.Enabled = true
+				v909:AddTag("Cleanup_Boil")
+				v909:AddTag("Effect")
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, _, p861)
-		if p861 then
-			for _, v862 in p861:GetChildren() do
-				if v862:HasTag("Cleanup_Boil") then
-					v862:Destroy()
+	["_RemoveFX"] = function(_, _, p910)
+		if p910 then
+			for _, v911 in p910:GetChildren() do
+				if v911:HasTag("Cleanup_Boil") then
+					v911:Destroy()
 				end
 			end
 		end
 	end
 }
-v_u_518.Fortune = {
+v_u_551.Fortune = {
 	["Id"] = "FR",
 	["Name"] = "Fortune",
 	["ValueMulti"] = 50,
 	["Color"] = Color3.fromRGB(255, 192, 5),
-	["_AddFX"] = function(p863, p864, p865)
-		p863:_RemoveFX(p864, p865)
-		if p865 then
-			for _, v866 in game.ServerStorage.Mutation_FX.Fortune:GetChildren() do
-				local v867 = v866:Clone()
-				v867.Parent = p865
-				v867.Enabled = true
-				v867:AddTag("Cleanup_Fortune")
-				v867:AddTag("Effect")
+	["_AddFX"] = function(p912, p913, p914)
+		p912:_RemoveFX(p913, p914)
+		if p914 then
+			for _, v915 in game.ServerStorage.Mutation_FX.Fortune:GetChildren() do
+				local v916 = v915:Clone()
+				v916.Parent = p914
+				v916.Enabled = true
+				v916:AddTag("Cleanup_Fortune")
+				v916:AddTag("Effect")
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, _, p868)
-		if p868 then
-			for _, v869 in p868:GetChildren() do
-				if v869:HasTag("Cleanup_Fortune") then
-					v869:Destroy()
+	["_RemoveFX"] = function(_, _, p917)
+		if p917 then
+			for _, v918 in p917:GetChildren() do
+				if v918:HasTag("Cleanup_Fortune") then
+					v918:Destroy()
 				end
 			end
 		end
 	end
 }
-v_u_518.Bloom = {
+v_u_551.Bloom = {
 	["Id"] = "BL",
 	["Name"] = "Bloom",
 	["ValueMulti"] = 8,
 	["Color"] = Color3.fromRGB(170, 255, 0),
-	["_AddFX"] = function(p870, p871, p872)
-		p870:_RemoveFX(p871, p872)
-		local v873 = game.ServerStorage.Mutation_FX.Bloom:GetChildren()
-		if p872 then
-			for _, v874 in v873 do
-				if not p872:FindFirstChild(v874.Name) then
-					local v875 = v874:Clone()
-					v875.Parent = p872
-					v875.Enabled = true
-					v875:AddTag("Cleanup_Bloom")
-					v875:AddTag("Effect")
+	["_AddFX"] = function(p919, p920, p921)
+		p919:_RemoveFX(p920, p921)
+		local v922 = game.ServerStorage.Mutation_FX.Bloom:GetChildren()
+		if p921 then
+			for _, v923 in v922 do
+				if not p921:FindFirstChild(v923.Name) then
+					local v924 = v923:Clone()
+					v924.Parent = p921
+					v924.Enabled = true
+					v924:AddTag("Cleanup_Bloom")
+					v924:AddTag("Effect")
 				end
 			end
 		end
-		local v876 = {}
-		for _, v877 in p871:GetDescendants() do
-			if v877:IsA("BasePart") and v877 ~= p872 then
-				table.insert(v876, v877)
+		local v925 = {}
+		for _, v926 in p920:GetDescendants() do
+			if v926:IsA("BasePart") and v926 ~= p921 then
+				table.insert(v925, v926)
 			end
 		end
-		(function(p878)
-			for v879 = #p878, 2, -1 do
-				local v880 = math.random(1, v879)
-				local v881 = p878[v880]
-				local v882 = p878[v879]
-				p878[v879] = v881
-				p878[v880] = v882
+		(function(p927)
+			for v928 = #p927, 2, -1 do
+				local v929 = math.random(1, v928)
+				local v930 = p927[v929]
+				local v931 = p927[v928]
+				p927[v928] = v930
+				p927[v929] = v931
 			end
-			return p878
-		end)(v876)
-		local v883 = #v876 * 0.25 + 0.5
-		for v884 = 1, math.floor(v883) do
-			local v885 = v876[v884]
-			local v886 = v873[math.random(1, #v873)]:Clone()
-			v886.Parent = v885
-			v886.Enabled = true
-			v886:AddTag("Cleanup_Bloom")
-			v886:AddTag("Effect")
+			return p927
+		end)(v925)
+		local v932 = #v925 * 0.25 + 0.5
+		for v933 = 1, math.floor(v932) do
+			local v934 = v925[v933]
+			local v935 = v922[math.random(1, #v922)]:Clone()
+			v935.Parent = v934
+			v935.Enabled = true
+			v935:AddTag("Cleanup_Bloom")
+			v935:AddTag("Effect")
 		end
 	end,
-	["_RemoveFX"] = function(_, p887, p888)
-		local function v891(p889)
-			for _, v890 in p889:GetDescendants() do
-				if v890:HasTag("Cleanup_Bloom") then
-					v890:Destroy()
+	["_RemoveFX"] = function(_, p936, p937)
+		local function v940(p938)
+			for _, v939 in p938:GetDescendants() do
+				if v939:HasTag("Cleanup_Bloom") then
+					v939:Destroy()
 				end
 			end
 		end
-		if p888 then
-			v891(p888)
+		if p937 then
+			v940(p937)
 		end
-		if p887 then
-			v891(p887)
+		if p936 then
+			v940(p936)
 		end
 	end
 }
-v_u_518.Rot = {
+v_u_551.Rot = {
 	["Id"] = "RO",
 	["Name"] = "Rot",
 	["ValueMulti"] = 8,
 	["Color"] = Color3.fromRGB(85, 0, 127),
-	["_AddFX"] = function(p892, p893, p894)
-		p892:_RemoveFX(p893, p894)
-		local v895 = game.ServerStorage.Mutation_FX.Rot:GetChildren()
-		if p894 then
-			for _, v896 in v895 do
-				if not p894:FindFirstChild(v896.Name) then
-					local v897 = v896:Clone()
-					v897.Parent = p894
-					v897.Enabled = true
-					v897:AddTag("Cleanup_Rot")
-					v897:AddTag("Effect")
+	["_AddFX"] = function(p941, p942, p943)
+		p941:_RemoveFX(p942, p943)
+		local v944 = game.ServerStorage.Mutation_FX.Rot:GetChildren()
+		if p943 then
+			for _, v945 in v944 do
+				if not p943:FindFirstChild(v945.Name) then
+					local v946 = v945:Clone()
+					v946.Parent = p943
+					v946.Enabled = true
+					v946:AddTag("Cleanup_Rot")
+					v946:AddTag("Effect")
 				end
 			end
 		end
-		local v898 = {}
-		for _, v899 in p893:GetDescendants() do
-			if v899:IsA("BasePart") and v899 ~= p894 then
-				table.insert(v898, v899)
+		local v947 = {}
+		for _, v948 in p942:GetDescendants() do
+			if v948:IsA("BasePart") and v948 ~= p943 then
+				table.insert(v947, v948)
 			end
 		end
-		(function(p900)
-			for v901 = #p900, 2, -1 do
-				local v902 = math.random(1, v901)
-				local v903 = p900[v902]
-				local v904 = p900[v901]
-				p900[v901] = v903
-				p900[v902] = v904
+		(function(p949)
+			for v950 = #p949, 2, -1 do
+				local v951 = math.random(1, v950)
+				local v952 = p949[v951]
+				local v953 = p949[v950]
+				p949[v950] = v952
+				p949[v951] = v953
 			end
-			return p900
-		end)(v898)
-		local v905 = #v898 * 0.25 + 0.5
-		for v906 = 1, math.floor(v905) do
-			local v907 = v898[v906]
-			local v908 = v895[math.random(1, #v895)]:Clone()
-			v908.Parent = v907
-			v908.Enabled = true
-			v908:AddTag("Cleanup_Rot")
-			v908:AddTag("Effect")
+			return p949
+		end)(v947)
+		local v954 = #v947 * 0.25 + 0.5
+		for v955 = 1, math.floor(v954) do
+			local v956 = v947[v955]
+			local v957 = v944[math.random(1, #v944)]:Clone()
+			v957.Parent = v956
+			v957.Enabled = true
+			v957:AddTag("Cleanup_Rot")
+			v957:AddTag("Effect")
 		end
 	end,
-	["_RemoveFX"] = function(_, p909, p910)
-		local function v913(p911)
-			for _, v912 in p911:GetDescendants() do
-				if v912:HasTag("Cleanup_Rot") then
-					v912:Destroy()
+	["_RemoveFX"] = function(_, p958, p959)
+		local function v962(p960)
+			for _, v961 in p960:GetDescendants() do
+				if v961:HasTag("Cleanup_Rot") then
+					v961:Destroy()
 				end
 			end
 		end
-		if p910 then
-			v913(p910)
+		if p959 then
+			v962(p959)
 		end
-		if p909 then
-			v913(p909)
+		if p958 then
+			v962(p958)
 		end
 	end
 }
-v_u_518.Gloom = {
+v_u_551.Gloom = {
 	["Id"] = "GL",
 	["Name"] = "Gloom",
 	["ValueMulti"] = 30,
 	["Color"] = Color3.fromRGB(85, 85, 127),
-	["_AddFX"] = function(p914, p915, p916)
-		p914:_RemoveFX(p915, p916)
-		local v917 = game.ServerStorage.Mutation_FX.Gloom:GetChildren()
-		if p916 then
-			for _, v918 in v917 do
-				if not p916:FindFirstChild(v918.Name) then
-					local v919 = v918:Clone()
-					v919.Parent = p916
-					v919.Enabled = true
-					v919:AddTag("Cleanup_Gloom")
-					v919:AddTag("Effect")
+	["_AddFX"] = function(p963, p964, p965)
+		p963:_RemoveFX(p964, p965)
+		local v966 = game.ServerStorage.Mutation_FX.Gloom:GetChildren()
+		if p965 then
+			for _, v967 in v966 do
+				if not p965:FindFirstChild(v967.Name) then
+					local v968 = v967:Clone()
+					v968.Parent = p965
+					v968.Enabled = true
+					v968:AddTag("Cleanup_Gloom")
+					v968:AddTag("Effect")
 				end
 			end
 		end
-		local v920 = {}
-		for _, v921 in p915:GetDescendants() do
-			if v921:IsA("BasePart") and v921 ~= p916 then
-				table.insert(v920, v921)
+		local v969 = {}
+		for _, v970 in p964:GetDescendants() do
+			if v970:IsA("BasePart") and v970 ~= p965 then
+				table.insert(v969, v970)
 			end
 		end
-		(function(p922)
-			for v923 = #p922, 2, -1 do
-				local v924 = math.random(1, v923)
-				local v925 = p922[v924]
-				local v926 = p922[v923]
-				p922[v923] = v925
-				p922[v924] = v926
+		(function(p971)
+			for v972 = #p971, 2, -1 do
+				local v973 = math.random(1, v972)
+				local v974 = p971[v973]
+				local v975 = p971[v972]
+				p971[v972] = v974
+				p971[v973] = v975
 			end
-			return p922
-		end)(v920)
-		local v927 = #v920 * 0.25 + 0.5
-		for v928 = 1, math.floor(v927) do
-			local v929 = v920[v928]
-			local v930 = v917[math.random(1, #v917)]:Clone()
-			v930.Parent = v929
-			v930.Enabled = true
-			v930:AddTag("Cleanup_Gloom")
-			v930:AddTag("Effect")
+			return p971
+		end)(v969)
+		local v976 = #v969 * 0.25 + 0.5
+		for v977 = 1, math.floor(v976) do
+			local v978 = v969[v977]
+			local v979 = v966[math.random(1, #v966)]:Clone()
+			v979.Parent = v978
+			v979.Enabled = true
+			v979:AddTag("Cleanup_Gloom")
+			v979:AddTag("Effect")
 		end
 	end,
-	["_RemoveFX"] = function(_, p931, p932)
-		local function v935(p933)
-			for _, v934 in p933:GetDescendants() do
-				if v934:HasTag("Cleanup_Gloom") then
-					v934:Destroy()
+	["_RemoveFX"] = function(_, p980, p981)
+		local function v984(p982)
+			for _, v983 in p982:GetDescendants() do
+				if v983:HasTag("Cleanup_Gloom") then
+					v983:Destroy()
 				end
 			end
 		end
-		if p932 then
-			v935(p932)
+		if p981 then
+			v984(p981)
 		end
-		if p931 then
-			v935(p931)
+		if p980 then
+			v984(p980)
 		end
 	end
 }
-v_u_518.Cyclonic = {
+v_u_551.Cyclonic = {
 	["Id"] = "CY",
 	["Name"] = "Cyclonic",
 	["ValueMulti"] = 50,
 	["Color"] = Color3.fromRGB(130, 230, 255),
-	["_AddFX"] = function(p936, p937, p938)
-		p936:_RemoveFX(p937, p938)
-		local v939 = game.ServerStorage.Mutation_FX.Cyclonic:GetChildren()
-		if p938 then
-			for _, v940 in v939 do
-				if not p938:FindFirstChild(v940.Name) then
-					local v941 = v940:Clone()
-					v941.Parent = p938
-					v941.Enabled = true
-					v941:AddTag("Cleanup_Cyclonic")
+	["_AddFX"] = function(p985, p986, p987)
+		p985:_RemoveFX(p986, p987)
+		local v988 = game.ServerStorage.Mutation_FX.Cyclonic:GetChildren()
+		if p987 then
+			for _, v989 in v988 do
+				if not p987:FindFirstChild(v989.Name) then
+					local v990 = v989:Clone()
+					v990.Parent = p987
+					v990.Enabled = true
+					v990:AddTag("Cleanup_Cyclonic")
 				end
 			end
 		end
-		local v942 = 0
-		for _, v943 in p937:GetDescendants() do
-			if v943:IsA("BasePart") and v943 ~= p938 then
-				v942 = v942 + 1
-				if v942 % 2 == 0 then
-					local v944 = v939[math.random(1, #v939)]:Clone()
-					v944.Parent = v943
-					v944.Enabled = true
-					v944:AddTag("Cleanup_Cyclonic")
+		local v991 = 0
+		for _, v992 in p986:GetDescendants() do
+			if v992:IsA("BasePart") and v992 ~= p987 then
+				v991 = v991 + 1
+				if v991 % 2 == 0 then
+					local v993 = v988[math.random(1, #v988)]:Clone()
+					v993.Parent = v992
+					v993.Enabled = true
+					v993:AddTag("Cleanup_Cyclonic")
 				end
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p945, p946)
-		local function v949(p947)
-			for _, v948 in p947:GetDescendants() do
-				if v948:HasTag("Cleanup_Cyclonic") then
-					v948:Destroy()
+	["_RemoveFX"] = function(_, p994, p995)
+		local function v998(p996)
+			for _, v997 in p996:GetDescendants() do
+				if v997:HasTag("Cleanup_Cyclonic") then
+					v997:Destroy()
 				end
 			end
 		end
-		if p946 then
-			v949(p946)
+		if p995 then
+			v998(p995)
 		end
-		if p945 then
-			v949(p945)
+		if p994 then
+			v998(p994)
 		end
 	end
 }
-v_u_518.Maelstrom = {
+v_u_551.Maelstrom = {
 	["Id"] = "MS",
 	["Name"] = "Maelstrom",
 	["ValueMulti"] = 100,
 	["Color"] = Color3.fromRGB(0, 60, 255),
-	["_AddFX"] = function(p950, p951, p952)
+	["_AddFX"] = function(p999, p1000, p1001)
 		-- upvalues: (copy) v_u_13, (copy) v_u_16
-		p950:_RemoveFX(p951, p952)
-		local v953 = game.ServerStorage.Mutation_FX.Maelstrom:GetChildren()
-		local v954 = {
+		p999:_RemoveFX(p1000, p1001)
+		local v1002 = game.ServerStorage.Mutation_FX.Maelstrom:GetChildren()
+		local v1003 = {
 			["Stars1"] = true
 		}
-		if p952 then
-			for _, v955 in v953 do
-				if not p952:FindFirstChild(v955.Name) then
-					local v956 = v955:Clone()
-					v956.Parent = p952
-					v956.Enabled = true
-					v956:AddTag("Cleanup_Maelstrom")
+		if p1001 then
+			for _, v1004 in v1002 do
+				if not p1001:FindFirstChild(v1004.Name) then
+					local v1005 = v1004:Clone()
+					v1005.Parent = p1001
+					v1005.Enabled = true
+					v1005:AddTag("Cleanup_Maelstrom")
 				end
 			end
 		end
-		local v957 = {}
-		for _, v958 in p951:GetDescendants() do
-			if v958:IsA("BasePart") and v958 ~= p952 then
-				table.insert(v957, v958)
-				for _, v959 in v953 do
-					if v954[v959.Name] then
-						local v960 = v959:Clone()
-						v960.Parent = v958
-						v960.Enabled = true
-						v960:AddTag("Cleanup_Maelstrom")
+		local v1006 = {}
+		for _, v1007 in p1000:GetDescendants() do
+			if v1007:IsA("BasePart") and v1007 ~= p1001 then
+				table.insert(v1006, v1007)
+				for _, v1008 in v1002 do
+					if v1003[v1008.Name] then
+						local v1009 = v1008:Clone()
+						v1009.Parent = v1007
+						v1009.Enabled = true
+						v1009:AddTag("Cleanup_Maelstrom")
 					end
 				end
 			end
 		end
-		for _, v961 in v957 do
+		for _, v1010 in v1006 do
 			if Random.new():NextNumber() < 0.5 then
-				v_u_13[v961] = v_u_13[v961] or v961.Color
-				v_u_16[v961] = v_u_16[v961] or v961.Material
-				v961.Color = Color3.fromRGB(0, 186, 186)
-				v961.Material = Enum.Material.Neon
-				v961:AddTag("MaelstromVisual")
+				v_u_13[v1010] = v_u_13[v1010] or v1010.Color
+				v_u_16[v1010] = v_u_16[v1010] or v1010.Material
+				v1010.Color = Color3.fromRGB(0, 186, 186)
+				v1010.Material = Enum.Material.Neon
+				v1010:AddTag("MaelstromVisual")
 			end
 		end
-		local v962 = {}
-		for _, v963 in v953 do
-			if not v954[v963.Name] then
-				table.insert(v962, v963)
+		local v1011 = {}
+		for _, v1012 in v1002 do
+			if not v1003[v1012.Name] then
+				table.insert(v1011, v1012)
 			end
 		end
-		for v964, v965 in v957 do
-			if v964 % 2 == 0 and #v962 > 0 then
-				local v966 = v962[math.random(1, #v962)]:Clone()
-				v966.Parent = v965
-				v966.Enabled = true
-				v966:AddTag("Cleanup_Maelstrom")
+		for v1013, v1014 in v1006 do
+			if v1013 % 2 == 0 and #v1011 > 0 then
+				local v1015 = v1011[math.random(1, #v1011)]:Clone()
+				v1015.Parent = v1014
+				v1015.Enabled = true
+				v1015:AddTag("Cleanup_Maelstrom")
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p967, p968)
+	["_RemoveFX"] = function(_, p1016, p1017)
 		-- upvalues: (copy) v_u_13, (copy) v_u_16
-		local function v971(p969)
+		local function v1020(p1018)
 			-- upvalues: (ref) v_u_13, (ref) v_u_16
-			for _, v970 in p969:GetDescendants() do
-				if v970:HasTag("Cleanup_Maelstrom") then
-					v970:Destroy()
+			for _, v1019 in p1018:GetDescendants() do
+				if v1019:HasTag("Cleanup_Maelstrom") then
+					v1019:Destroy()
 				end
-				if v970:HasTag("MaelstromVisual") then
-					v970.Color = v_u_13[v970] or v970.Color
-					v_u_13[v970] = nil
-					if v_u_16[v970] then
-						v970.Material = v_u_16[v970]
-						v_u_16[v970] = nil
+				if v1019:HasTag("MaelstromVisual") then
+					v1019.Color = v_u_13[v1019] or v1019.Color
+					v_u_13[v1019] = nil
+					if v_u_16[v1019] then
+						v1019.Material = v_u_16[v1019]
+						v_u_16[v1019] = nil
 					end
-					v970:RemoveTag("MaelstromVisual")
+					v1019:RemoveTag("MaelstromVisual")
 				end
 			end
 		end
-		if p968 then
-			v971(p968)
-		end
-		if p967 then
-			v971(p967)
-		end
-	end
-}
-v_u_518.Jackpot = {
-	["Id"] = "JA",
-	["Name"] = "Jackpot",
-	["ValueMulti"] = 15,
-	["Color"] = Color3.fromRGB(132, 245, 112),
-	["_AddFX"] = function(p972, p973, p974)
-		p972:_RemoveFX(p973, p974)
-		if p974 then
-			for _, v975 in game.ServerStorage.Mutation_FX.Jackpot:GetChildren() do
-				local v976 = v975:Clone()
-				v976.Parent = p974
-				v976:AddTag("Cleanup_Jackpot")
-				if v976:IsA("ParticleEmitter") then
-					v976.Enabled = true
-				end
-			end
-		end
-	end,
-	["_RemoveFX"] = function(_, _, p977)
-		local function v980(p978)
-			for _, v979 in p978:GetDescendants() do
-				if v979:HasTag("Cleanup_Jackpot") then
-					v979:Destroy()
-				end
-			end
-		end
-		if p977 then
-			v980(p977)
-		end
-	end
-}
-v_u_518.Blitzshock = {
-	["Id"] = "BS",
-	["Name"] = "Blitzshock",
-	["ValueMulti"] = 50,
-	["Color"] = Color3.fromRGB(0, 192, 245),
-	["_AddFX"] = function(p981, p982, p983)
-		-- upvalues: (copy) v_u_16, (copy) v_u_13
-		p981:_RemoveFX(p982, p983)
-		if p983 then
-			for _, v984 in game.ServerStorage.Mutation_FX.Blitzshock:GetChildren() do
-				local v985 = v984:Clone()
-				v985.Parent = p983
-				v985:AddTag("Cleanup_Blitzshock")
-				if v985:IsA("ParticleEmitter") then
-					v985.Enabled = true
-				end
-			end
-		end
-		for _, v986 in p982:GetDescendants() do
-			if (v986:IsA("BasePart") or v986:IsA("UnionOperation")) and (not v986:HasTag("Effect") and (not v986.Transparency or v986.Transparency ~= 1)) then
-				v_u_16[v986] = v_u_16[v986] or v986.Material
-				v986.Material = Enum.Material.Neon
-				v_u_13[v986] = v_u_13[v986] or v986.Color
-				v986.Color = v986.Color:Lerp(Color3.fromRGB(0, 170, 255), 0.5)
-				v986:AddTag("BlitzshockVisual")
-			end
-		end
-	end,
-	["_RemoveFX"] = function(_, p987, p988)
-		-- upvalues: (copy) v_u_13, (copy) v_u_16
-		local function v991(p989)
-			for _, v990 in p989:GetDescendants() do
-				if v990:HasTag("Cleanup_Blitzshock") then
-					v990:Destroy()
-				end
-			end
-		end
-		if p988 then
-			v991(p988)
-		end
-		if p987 then
-			v991(p987)
-		end
-		for _, v992 in p987:GetDescendants() do
-			if (v992:IsA("BasePart") or v992:IsA("UnionOperation")) and v992:HasTag("BlitzshockVisual") then
-				v992.Color = v_u_13[v992] or v992.Color
-				v_u_13[v992] = nil
-				v992:RemoveTag("BlitzshockVisual")
-				if v_u_16[v992] then
-					v992.Material = v_u_16[v992]
-					v_u_16[v992] = nil
-				end
-			end
-		end
-	end
-}
-v_u_518.Junkshock = {
-	["Id"] = "JS",
-	["Name"] = "Junkshock",
-	["ValueMulti"] = 45,
-	["Color"] = Color3.fromRGB(147, 247, 0),
-	["_AddFX"] = function(p993, p994, p995)
-		-- upvalues: (copy) v_u_16, (copy) v_u_13
-		p993:_RemoveFX(p994, p995)
-		if p995 then
-			for _, v996 in game.ServerStorage.Mutation_FX.Junkshock:GetChildren() do
-				local v997 = v996:Clone()
-				v997.Parent = p995
-				v997:AddTag("Cleanup_Junkshock")
-				if v997:IsA("ParticleEmitter") then
-					v997.Enabled = true
-				end
-			end
-		end
-		for _, v998 in p994:GetDescendants() do
-			if (v998:IsA("BasePart") or v998:IsA("UnionOperation")) and (not v998:HasTag("Effect") and (not v998.Transparency or v998.Transparency ~= 1)) then
-				v_u_16[v998] = v_u_16[v998] or v998.Material
-				v998.Material = Enum.Material.Neon
-				v_u_13[v998] = v_u_13[v998] or v998.Color
-				v998.Color = v998.Color:Lerp(Color3.fromRGB(0, 255, 36), 0.5)
-				v998:AddTag("JunkshockVisual")
-			end
-		end
-	end,
-	["_RemoveFX"] = function(_, p999, p1000)
-		-- upvalues: (copy) v_u_13, (copy) v_u_16
-		local function v1003(p1001)
-			for _, v1002 in p1001:GetDescendants() do
-				if v1002:HasTag("Cleanup_Junkshock") then
-					v1002:Destroy()
-				end
-			end
-		end
-		if p1000 then
-			v1003(p1000)
-		end
-		if p999 then
-			v1003(p999)
-		end
-		for _, v1004 in p999:GetDescendants() do
-			if (v1004:IsA("BasePart") or v1004:IsA("UnionOperation")) and v1004:HasTag("JunkshockVisual") then
-				v1004.Color = v_u_13[v1004] or v1004.Color
-				v_u_13[v1004] = nil
-				v1004:RemoveTag("JunkshockVisual")
-				if v_u_16[v1004] then
-					v1004.Material = v_u_16[v1004]
-					v_u_16[v1004] = nil
-				end
-			end
-		end
-	end
-}
-v_u_518.Touchdown = {
-	["Id"] = "TD",
-	["Name"] = "Touchdown",
-	["ValueMulti"] = 105,
-	["Color"] = Color3.fromRGB(203, 95, 0),
-	["_AddFX"] = function(p1005, p1006, p1007)
-		p1005:_RemoveFX(p1006, p1007)
-		if p1007 then
-			for _, v1008 in game.ServerStorage.Mutation_FX.Touchdown:GetChildren() do
-				local v1009 = v1008:Clone()
-				v1009.Parent = p1007
-				v1009.Enabled = true
-				v1009:AddTag("Cleanup_Touchdown")
-			end
-		end
-	end,
-	["_RemoveFX"] = function(_, p1010, p1011)
-		local function v1014(p1012)
-			for _, v1013 in p1012:GetDescendants() do
-				if v1013:HasTag("Cleanup_Touchdown") then
-					v1013:Destroy()
-				end
-			end
-		end
-		if p1011 then
-			v1014(p1011)
-		end
-		if p1010 then
-			v1014(p1010)
-		end
-	end
-}
-v_u_518.Subzero = {
-	["Id"] = "SZ",
-	["Name"] = "Subzero",
-	["ValueMulti"] = 40,
-	["Color"] = Color3.fromRGB(0, 255, 255),
-	["_AddFX"] = function(p1015, p1016, p1017)
-		-- upvalues: (copy) v_u_96, (copy) v_u_16, (copy) v_u_17, (copy) v_u_13
-		p1015:_RemoveFX(p1016, p1017)
-		v_u_96(p1015, p1016, p1017, 0.4)
 		if p1017 then
-			for _, v1018 in game.ServerStorage.Mutation_FX.Subzero:GetChildren() do
-				local v1019 = v1018:Clone()
-				v1019.Parent = p1017
-				v1019:AddTag("Cleanup_Subzero")
-				if v1019:IsA("ParticleEmitter") then
-					v1019.Enabled = true
-				end
-			end
+			v1020(p1017)
 		end
-		for _, v1020 in p1016:GetChildren() do
-			if v1020:IsA("BasePart") or v1020:IsA("UnionOperation") then
-				v1020.Reflectance = 0.35
-			end
+		if p1016 then
+			v1020(p1016)
 		end
-		for _, v1021 in p1016:GetDescendants() do
-			if (v1021:IsA("BasePart") or v1021:IsA("UnionOperation")) and (not v1021:HasTag("Effect") and (not v1021.Transparency or v1021.Transparency ~= 1)) then
-				v_u_16[v1021] = v_u_16[v1021] or v1021.Material
-				v1021.Material = Enum.Material.Plastic
-				v_u_17[v1021] = v_u_17[v1021] or v1021.MaterialVariant
-				v1021.MaterialVariant = "Studs 2x2 Plastic Metal"
-				v_u_13[v1021] = v_u_13[v1021] or v1021.Color
-				v1021.Color = v1021.Color:Lerp(Color3.fromRGB(0, 255, 255), 0.5)
-				v1021:AddTag("SubzeroVisual")
+	end
+}
+v_u_551.Stormcharged = {
+	["Id"] = "SC",
+	["Name"] = "Stormcharged",
+	["ValueMulti"] = 220,
+	["Color"] = Color3.fromRGB(148, 226, 255),
+	["_AddFX"] = function(p1021, p1022, p1023)
+		p1021:_RemoveFX(p1022, p1023)
+		local v1024 = {}
+		for _, v1025 in { game.ServerStorage.Mutation_FX.Shocked:GetChildren(), game.ServerStorage.Mutation_FX.Static:GetChildren(), game.ServerStorage.Mutation_FX.Tempestuous:GetChildren() } do
+			for _, v1026 in v1025 do
+				table.insert(v1024, v1026)
 			end
-		end
-	end,
-	["_RemoveFX"] = function(p1022, p1023, p1024)
-		-- upvalues: (copy) v_u_105, (copy) v_u_13, (copy) v_u_17, (copy) v_u_16
-		v_u_105(p1022, p1023, p1024)
-		local function v1027(p1025)
-			for _, v1026 in p1025:GetDescendants() do
-				if v1026:HasTag("Cleanup_Subzero") then
-					v1026:Destroy()
-				end
-			end
-		end
-		if p1024 then
-			v1027(p1024)
 		end
 		if p1023 then
-			v1027(p1023)
+			for _, v1027 in v1024 do
+				if not p1023:FindFirstChild(v1027.Name) then
+					local v1028 = v1027:Clone()
+					v1028.Color = ColorSequence.new(Color3.fromRGB(148, 226, 255))
+					v1028.Parent = p1023
+					v1028.Enabled = true
+					v1028:AddTag("Cleanup_Stormcharged")
+				end
+			end
 		end
-		for _, v1028 in p1023:GetDescendants() do
-			if v1028:IsA("BasePart") or v1028:IsA("UnionOperation") then
-				v1028.Reflectance = 0
-				if v1028:HasTag("SubzeroVisual") then
-					v1028.Color = v_u_13[v1028] or v1028.Color
-					v_u_13[v1028] = nil
-					v1028:RemoveTag("SubzeroVisual")
-					v1028.MaterialVariant = v_u_17[v1028] or v1028.MaterialVariant
-					v_u_17[v1028] = nil
-					if v_u_16[v1028] then
-						v1028.Material = v_u_16[v1028]
-						v_u_16[v1028] = nil
+		local v1029 = {}
+		for _, v1030 in p1022:GetDescendants() do
+			if v1030:IsA("BasePart") and v1030 ~= p1023 then
+				table.insert(v1029, v1030)
+			end
+		end
+		local v1031 = Random.new()
+		local v1032 = Color3.fromRGB(255, 255, 100)
+		local v1033 = Color3.fromRGB(0, 60, 255)
+		for _, v1034 in v1029 do
+			if #v1024 > 0 then
+				local v1035 = v1024[v1031:NextInteger(1, #v1024)]:Clone()
+				v1035.Color = ColorSequence.new(Color3.fromRGB(148, 226, 255))
+				v1035.Parent = v1034
+				v1035.Enabled = true
+				v1035:AddTag("Cleanup_Stormcharged")
+			end
+			v1034.Color = v1031:NextNumber() < 0.5 and v1032 and v1032 or v1033
+			v1034.Material = Enum.Material.Neon
+			v1034:AddTag("StormchargedVisual")
+		end
+	end,
+	["_RemoveFX"] = function(_, p1036, p1037)
+		local function v1040(p1038)
+			for _, v1039 in p1038:GetDescendants() do
+				if v1039:HasTag("Cleanup_Stormcharged") then
+					v1039:Destroy()
+				end
+				if v1039:HasTag("StormchargedVisual") then
+					v1039:RemoveTag("StormchargedVisual")
+					v1039.Material = Enum.Material.Plastic
+				end
+			end
+		end
+		if p1037 then
+			v1040(p1037)
+		end
+		if p1036 then
+			v1040(p1036)
+		end
+	end
+}
+v_u_551.Cosmic = {
+	["Id"] = "CS",
+	["Name"] = "Cosmic",
+	["ValueMulti"] = 210,
+	["Color"] = Color3.fromRGB(171, 171, 255),
+	["_AddFX"] = function(p1041, p1042, p1043)
+		-- upvalues: (copy) v_u_13, (copy) v_u_16
+		p1041:_RemoveFX(p1042, p1043)
+		local v1044 = game.ServerStorage.Mutation_FX.Cosmic:GetChildren()
+		local v1045 = #v1044
+		if p1043 then
+			for _, v1046 in v1044 do
+				if not p1043:FindFirstChild(v1046.Name) then
+					local v1047 = v1046:Clone()
+					v1047.Parent = p1043
+					v1047.Enabled = true
+					v1047:AddTag("Cleanup_Cosmic")
+				end
+			end
+		end
+		local v1048 = 0
+		for _, v1049 in p1042:GetDescendants() do
+			if v1049:IsA("BasePart") and v1049 ~= p1043 then
+				v1048 = v1048 + 1
+				if v1045 > 0 then
+					local v1050 = v1044[math.random(1, v1045)]:Clone()
+					v1050.Parent = v1049
+					v1050.Enabled = true
+					v1050:AddTag("Cleanup_Cosmic")
+				end
+				if not v1049:HasTag("Effect") then
+					v_u_13[v1049] = v_u_13[v1049] or v1049.Color
+					v_u_16[v1049] = v_u_16[v1049] or v1049.Material
+					if math.random() < 0.5 then
+						v1049.Color = Color3.fromRGB(255, 255, 100)
+					else
+						v1049.Color = Color3.fromRGB(171, 171, 255)
 					end
+					v1049.Material = Enum.Material.Neon
+					v1049:AddTag("CosmicVisual")
 				end
-			end
-		end
-	end
-}
-v_u_518.Lightcycle = {
-	["Id"] = "lc",
-	["Name"] = "Lightcycle",
-	["ValueMulti"] = 50,
-	["Color"] = Color3.fromRGB(255, 255, 255),
-	["_AddFX"] = function(p1029, p1030, p1031)
-		-- upvalues: (copy) v_u_13
-		p1029:_RemoveFX(p1030, p1031)
-		p1030:AddTag("Lightcycle_Mutation")
-		for _, v1032 in p1030:GetDescendants() do
-			if (v1032:IsA("BasePart") or v1032:IsA("UnionOperation")) and not v1032:HasTag("Effect") then
-				local _ = v1032.Color
-				v_u_13[v1032] = v_u_13[v1032] or v1032.Color
-				v1032:AddTag("StoplightVisual")
-			end
-		end
-	end,
-	["_RemoveFX"] = function(_, p1033, _)
-		-- upvalues: (copy) v_u_13
-		p1033:RemoveTag("Lightcycle_Mutation")
-		for _, v1034 in p1033:GetDescendants() do
-			if (v1034:IsA("BasePart") or v1034:IsA("UnionOperation")) and v1034:HasTag("StoplightVisual") then
-				local v1035 = v_u_13[v1034]
-				if v1035 then
-					v1034.Color = v1035
-				end
-				v1034:RemoveTag("StoplightVisual")
-			end
-		end
-	end
-}
-v_u_518.Brainrot = {
-	["Id"] = "lca",
-	["Name"] = "Brainrot",
-	["ValueMulti"] = 100,
-	["Color"] = Color3.fromRGB(255, 108, 110),
-	["_AddFX"] = function(p1036, p1037, p1038)
-		p1036:_RemoveFX(p1037, p1038)
-		if p1038 then
-			for _, v1039 in game.ServerStorage.Mutation_FX.Brainrot:GetChildren() do
-				local v1040 = v1039:Clone()
-				v1040.Parent = p1038
-				v1040.Enabled = true
-				v1040:AddTag("Cleanup_Brainrot")
-			end
-		end
-	end,
-	["_RemoveFX"] = function(_, p1041, p1042)
-		local function v1045(p1043)
-			for _, v1044 in p1043:GetDescendants() do
-				if v1044:HasTag("Cleanup_Brainrot") then
-					v1044:Destroy()
-				end
-			end
-		end
-		if p1042 then
-			v1045(p1042)
-		end
-		if p1041 then
-			v1045(p1041)
-		end
-	end
-}
-v_u_518.Warped = {
-	["Id"] = "wpa",
-	["Name"] = "Warped",
-	["ValueMulti"] = 75,
-	["Color"] = Color3.fromRGB(192, 52, 255),
-	["_AddFX"] = function(p1046, p1047, p1048)
-		p1046:_RemoveFX(p1047, p1048)
-		if p1048 then
-			for _, v1049 in game.ServerStorage.Mutation_FX.Warped:GetChildren() do
-				local v1050 = v1049:Clone()
-				v1050.Parent = p1048
-				v1050.Enabled = true
-				v1050:AddTag("Cleanup_Warped")
 			end
 		end
 	end,
 	["_RemoveFX"] = function(_, p1051, p1052)
+		-- upvalues: (copy) v_u_13, (copy) v_u_16
 		local function v1055(p1053)
 			for _, v1054 in p1053:GetDescendants() do
-				if v1054:HasTag("Cleanup_Warped") then
+				if v1054:HasTag("Cleanup_Cosmic") then
 					v1054:Destroy()
 				end
 			end
@@ -3785,436 +3770,789 @@ v_u_518.Warped = {
 		if p1051 then
 			v1055(p1051)
 		end
+		for _, v1056 in p1051:GetDescendants() do
+			if (v1056:IsA("BasePart") or v1056:IsA("UnionOperation")) and v1056:HasTag("CosmicVisual") then
+				v1056.Color = v_u_13[v1056] or v1056.Color
+				v_u_13[v1056] = nil
+				v1056.Material = v_u_16[v1056] or v1056.Material
+				v_u_16[v1056] = nil
+				v1056:RemoveTag("CosmicVisual")
+			end
+		end
 	end
 }
-v_u_518.Aromatic = {
+v_u_551.Jackpot = {
+	["Id"] = "JA",
+	["Name"] = "Jackpot",
+	["ValueMulti"] = 15,
+	["Color"] = Color3.fromRGB(132, 245, 112),
+	["_AddFX"] = function(p1057, p1058, p1059)
+		p1057:_RemoveFX(p1058, p1059)
+		if p1059 then
+			for _, v1060 in game.ServerStorage.Mutation_FX.Jackpot:GetChildren() do
+				local v1061 = v1060:Clone()
+				v1061.Parent = p1059
+				v1061:AddTag("Cleanup_Jackpot")
+				if v1061:IsA("ParticleEmitter") then
+					v1061.Enabled = true
+				end
+			end
+		end
+	end,
+	["_RemoveFX"] = function(_, _, p1062)
+		local function v1065(p1063)
+			for _, v1064 in p1063:GetDescendants() do
+				if v1064:HasTag("Cleanup_Jackpot") then
+					v1064:Destroy()
+				end
+			end
+		end
+		if p1062 then
+			v1065(p1062)
+		end
+	end
+}
+v_u_551.Blitzshock = {
+	["Id"] = "BS",
+	["Name"] = "Blitzshock",
+	["ValueMulti"] = 50,
+	["Color"] = Color3.fromRGB(0, 192, 245),
+	["_AddFX"] = function(p1066, p1067, p1068)
+		-- upvalues: (copy) v_u_16, (copy) v_u_13
+		p1066:_RemoveFX(p1067, p1068)
+		if p1068 then
+			for _, v1069 in game.ServerStorage.Mutation_FX.Blitzshock:GetChildren() do
+				local v1070 = v1069:Clone()
+				v1070.Parent = p1068
+				v1070:AddTag("Cleanup_Blitzshock")
+				if v1070:IsA("ParticleEmitter") then
+					v1070.Enabled = true
+				end
+			end
+		end
+		for _, v1071 in p1067:GetDescendants() do
+			if (v1071:IsA("BasePart") or v1071:IsA("UnionOperation")) and (not v1071:HasTag("Effect") and (not v1071.Transparency or v1071.Transparency ~= 1)) then
+				v_u_16[v1071] = v_u_16[v1071] or v1071.Material
+				v1071.Material = Enum.Material.Neon
+				v_u_13[v1071] = v_u_13[v1071] or v1071.Color
+				v1071.Color = v1071.Color:Lerp(Color3.fromRGB(0, 170, 255), 0.5)
+				v1071:AddTag("BlitzshockVisual")
+			end
+		end
+	end,
+	["_RemoveFX"] = function(_, p1072, p1073)
+		-- upvalues: (copy) v_u_13, (copy) v_u_16
+		local function v1076(p1074)
+			for _, v1075 in p1074:GetDescendants() do
+				if v1075:HasTag("Cleanup_Blitzshock") then
+					v1075:Destroy()
+				end
+			end
+		end
+		if p1073 then
+			v1076(p1073)
+		end
+		if p1072 then
+			v1076(p1072)
+		end
+		for _, v1077 in p1072:GetDescendants() do
+			if (v1077:IsA("BasePart") or v1077:IsA("UnionOperation")) and v1077:HasTag("BlitzshockVisual") then
+				v1077.Color = v_u_13[v1077] or v1077.Color
+				v_u_13[v1077] = nil
+				v1077:RemoveTag("BlitzshockVisual")
+				if v_u_16[v1077] then
+					v1077.Material = v_u_16[v1077]
+					v_u_16[v1077] = nil
+				end
+			end
+		end
+	end
+}
+v_u_551.Junkshock = {
+	["Id"] = "JS",
+	["Name"] = "Junkshock",
+	["ValueMulti"] = 45,
+	["Color"] = Color3.fromRGB(147, 247, 0),
+	["_AddFX"] = function(p1078, p1079, p1080)
+		-- upvalues: (copy) v_u_16, (copy) v_u_13
+		p1078:_RemoveFX(p1079, p1080)
+		if p1080 then
+			for _, v1081 in game.ServerStorage.Mutation_FX.Junkshock:GetChildren() do
+				local v1082 = v1081:Clone()
+				v1082.Parent = p1080
+				v1082:AddTag("Cleanup_Junkshock")
+				if v1082:IsA("ParticleEmitter") then
+					v1082.Enabled = true
+				end
+			end
+		end
+		for _, v1083 in p1079:GetDescendants() do
+			if (v1083:IsA("BasePart") or v1083:IsA("UnionOperation")) and (not v1083:HasTag("Effect") and (not v1083.Transparency or v1083.Transparency ~= 1)) then
+				v_u_16[v1083] = v_u_16[v1083] or v1083.Material
+				v1083.Material = Enum.Material.Neon
+				v_u_13[v1083] = v_u_13[v1083] or v1083.Color
+				v1083.Color = v1083.Color:Lerp(Color3.fromRGB(0, 255, 36), 0.5)
+				v1083:AddTag("JunkshockVisual")
+			end
+		end
+	end,
+	["_RemoveFX"] = function(_, p1084, p1085)
+		-- upvalues: (copy) v_u_13, (copy) v_u_16
+		local function v1088(p1086)
+			for _, v1087 in p1086:GetDescendants() do
+				if v1087:HasTag("Cleanup_Junkshock") then
+					v1087:Destroy()
+				end
+			end
+		end
+		if p1085 then
+			v1088(p1085)
+		end
+		if p1084 then
+			v1088(p1084)
+		end
+		for _, v1089 in p1084:GetDescendants() do
+			if (v1089:IsA("BasePart") or v1089:IsA("UnionOperation")) and v1089:HasTag("JunkshockVisual") then
+				v1089.Color = v_u_13[v1089] or v1089.Color
+				v_u_13[v1089] = nil
+				v1089:RemoveTag("JunkshockVisual")
+				if v_u_16[v1089] then
+					v1089.Material = v_u_16[v1089]
+					v_u_16[v1089] = nil
+				end
+			end
+		end
+	end
+}
+v_u_551.Touchdown = {
+	["Id"] = "TD",
+	["Name"] = "Touchdown",
+	["ValueMulti"] = 105,
+	["Color"] = Color3.fromRGB(203, 95, 0),
+	["_AddFX"] = function(p1090, p1091, p1092)
+		p1090:_RemoveFX(p1091, p1092)
+		if p1092 then
+			for _, v1093 in game.ServerStorage.Mutation_FX.Touchdown:GetChildren() do
+				local v1094 = v1093:Clone()
+				v1094.Parent = p1092
+				v1094.Enabled = true
+				v1094:AddTag("Cleanup_Touchdown")
+			end
+		end
+	end,
+	["_RemoveFX"] = function(_, p1095, p1096)
+		local function v1099(p1097)
+			for _, v1098 in p1097:GetDescendants() do
+				if v1098:HasTag("Cleanup_Touchdown") then
+					v1098:Destroy()
+				end
+			end
+		end
+		if p1096 then
+			v1099(p1096)
+		end
+		if p1095 then
+			v1099(p1095)
+		end
+	end
+}
+v_u_551.Subzero = {
+	["Id"] = "SZ",
+	["Name"] = "Subzero",
+	["ValueMulti"] = 40,
+	["Color"] = Color3.fromRGB(0, 255, 255),
+	["_AddFX"] = function(p1100, p1101, p1102)
+		-- upvalues: (copy) v_u_96, (copy) v_u_16, (copy) v_u_17, (copy) v_u_13
+		p1100:_RemoveFX(p1101, p1102)
+		v_u_96(p1100, p1101, p1102, 0.4)
+		if p1102 then
+			for _, v1103 in game.ServerStorage.Mutation_FX.Subzero:GetChildren() do
+				local v1104 = v1103:Clone()
+				v1104.Parent = p1102
+				v1104:AddTag("Cleanup_Subzero")
+				if v1104:IsA("ParticleEmitter") then
+					v1104.Enabled = true
+				end
+			end
+		end
+		for _, v1105 in p1101:GetChildren() do
+			if v1105:IsA("BasePart") or v1105:IsA("UnionOperation") then
+				v1105.Reflectance = 0.35
+			end
+		end
+		for _, v1106 in p1101:GetDescendants() do
+			if (v1106:IsA("BasePart") or v1106:IsA("UnionOperation")) and (not v1106:HasTag("Effect") and (not v1106.Transparency or v1106.Transparency ~= 1)) then
+				v_u_16[v1106] = v_u_16[v1106] or v1106.Material
+				v1106.Material = Enum.Material.Plastic
+				v_u_17[v1106] = v_u_17[v1106] or v1106.MaterialVariant
+				v1106.MaterialVariant = "Studs 2x2 Plastic Metal"
+				v_u_13[v1106] = v_u_13[v1106] or v1106.Color
+				v1106.Color = v1106.Color:Lerp(Color3.fromRGB(0, 255, 255), 0.5)
+				v1106:AddTag("SubzeroVisual")
+			end
+		end
+	end,
+	["_RemoveFX"] = function(p1107, p1108, p1109)
+		-- upvalues: (copy) v_u_105, (copy) v_u_13, (copy) v_u_17, (copy) v_u_16
+		v_u_105(p1107, p1108, p1109)
+		local function v1112(p1110)
+			for _, v1111 in p1110:GetDescendants() do
+				if v1111:HasTag("Cleanup_Subzero") then
+					v1111:Destroy()
+				end
+			end
+		end
+		if p1109 then
+			v1112(p1109)
+		end
+		if p1108 then
+			v1112(p1108)
+		end
+		for _, v1113 in p1108:GetDescendants() do
+			if v1113:IsA("BasePart") or v1113:IsA("UnionOperation") then
+				v1113.Reflectance = 0
+				if v1113:HasTag("SubzeroVisual") then
+					v1113.Color = v_u_13[v1113] or v1113.Color
+					v_u_13[v1113] = nil
+					v1113:RemoveTag("SubzeroVisual")
+					v1113.MaterialVariant = v_u_17[v1113] or v1113.MaterialVariant
+					v_u_17[v1113] = nil
+					if v_u_16[v1113] then
+						v1113.Material = v_u_16[v1113]
+						v_u_16[v1113] = nil
+					end
+				end
+			end
+		end
+	end
+}
+v_u_551.Lightcycle = {
+	["Id"] = "lc",
+	["Name"] = "Lightcycle",
+	["ValueMulti"] = 50,
+	["Color"] = Color3.fromRGB(255, 255, 255),
+	["_AddFX"] = function(p1114, p1115, p1116)
+		-- upvalues: (copy) v_u_13
+		p1114:_RemoveFX(p1115, p1116)
+		p1115:AddTag("Lightcycle_Mutation")
+		for _, v1117 in p1115:GetDescendants() do
+			if (v1117:IsA("BasePart") or v1117:IsA("UnionOperation")) and not v1117:HasTag("Effect") then
+				local _ = v1117.Color
+				v_u_13[v1117] = v_u_13[v1117] or v1117.Color
+				v1117:AddTag("StoplightVisual")
+			end
+		end
+	end,
+	["_RemoveFX"] = function(_, p1118, _)
+		-- upvalues: (copy) v_u_13
+		p1118:RemoveTag("Lightcycle_Mutation")
+		for _, v1119 in p1118:GetDescendants() do
+			if (v1119:IsA("BasePart") or v1119:IsA("UnionOperation")) and v1119:HasTag("StoplightVisual") then
+				local v1120 = v_u_13[v1119]
+				if v1120 then
+					v1119.Color = v1120
+				end
+				v1119:RemoveTag("StoplightVisual")
+			end
+		end
+	end
+}
+v_u_551.Brainrot = {
+	["Id"] = "lca",
+	["Name"] = "Brainrot",
+	["ValueMulti"] = 100,
+	["Color"] = Color3.fromRGB(255, 108, 110),
+	["_AddFX"] = function(p1121, p1122, p1123)
+		p1121:_RemoveFX(p1122, p1123)
+		if p1123 then
+			for _, v1124 in game.ServerStorage.Mutation_FX.Brainrot:GetChildren() do
+				local v1125 = v1124:Clone()
+				v1125.Parent = p1123
+				v1125.Enabled = true
+				v1125:AddTag("Cleanup_Brainrot")
+			end
+		end
+	end,
+	["_RemoveFX"] = function(_, p1126, p1127)
+		local function v1130(p1128)
+			for _, v1129 in p1128:GetDescendants() do
+				if v1129:HasTag("Cleanup_Brainrot") then
+					v1129:Destroy()
+				end
+			end
+		end
+		if p1127 then
+			v1130(p1127)
+		end
+		if p1126 then
+			v1130(p1126)
+		end
+	end
+}
+v_u_551.Warped = {
+	["Id"] = "wpa",
+	["Name"] = "Warped",
+	["ValueMulti"] = 75,
+	["Color"] = Color3.fromRGB(192, 52, 255),
+	["_AddFX"] = function(p1131, p1132, p1133)
+		p1131:_RemoveFX(p1132, p1133)
+		if p1133 then
+			for _, v1134 in game.ServerStorage.Mutation_FX.Warped:GetChildren() do
+				local v1135 = v1134:Clone()
+				v1135.Parent = p1133
+				v1135.Enabled = true
+				v1135:AddTag("Cleanup_Warped")
+			end
+		end
+	end,
+	["_RemoveFX"] = function(_, p1136, p1137)
+		local function v1140(p1138)
+			for _, v1139 in p1138:GetDescendants() do
+				if v1139:HasTag("Cleanup_Warped") then
+					v1139:Destroy()
+				end
+			end
+		end
+		if p1137 then
+			v1140(p1137)
+		end
+		if p1136 then
+			v1140(p1136)
+		end
+	end
+}
+v_u_551.Aromatic = {
 	["Id"] = "ar",
 	["Name"] = "Aromatic",
 	["ValueMulti"] = 3,
 	["Color"] = Color3.fromRGB(162, 145, 57),
-	["_AddFX"] = function(p1056, p1057, p1058)
+	["_AddFX"] = function(p1141, p1142, p1143)
 		-- upvalues: (copy) v_u_13
-		p1056:_RemoveFX(p1057, p1058)
-		if p1058 then
-			for _, v1059 in game.ServerStorage.Mutation_FX.Aromatic:GetChildren() do
-				local v1060 = v1059:Clone()
-				v1060.Parent = p1058
-				v1060:AddTag("Cleanup_Aromatic")
-				if v1060:IsA("ParticleEmitter") then
-					v1060.Enabled = true
+		p1141:_RemoveFX(p1142, p1143)
+		if p1143 then
+			for _, v1144 in game.ServerStorage.Mutation_FX.Aromatic:GetChildren() do
+				local v1145 = v1144:Clone()
+				v1145.Parent = p1143
+				v1145:AddTag("Cleanup_Aromatic")
+				if v1145:IsA("ParticleEmitter") then
+					v1145.Enabled = true
 				end
 			end
 		end
-		for _, v1061 in p1057:GetDescendants() do
-			if (v1061:IsA("BasePart") or v1061:IsA("UnionOperation")) and (not v1061:HasTag("Effect") and (not v1061.Transparency or v1061.Transparency ~= 1)) then
-				v_u_13[v1061] = v_u_13[v1061] or v1061.Color
-				v1061.Color = v1061.Color:Lerp(Color3.fromRGB(162, 145, 57), 0.3)
-				v1061:AddTag("AromaticVisual")
+		for _, v1146 in p1142:GetDescendants() do
+			if (v1146:IsA("BasePart") or v1146:IsA("UnionOperation")) and (not v1146:HasTag("Effect") and (not v1146.Transparency or v1146.Transparency ~= 1)) then
+				v_u_13[v1146] = v_u_13[v1146] or v1146.Color
+				v1146.Color = v1146.Color:Lerp(Color3.fromRGB(162, 145, 57), 0.3)
+				v1146:AddTag("AromaticVisual")
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p1062, p1063)
+	["_RemoveFX"] = function(_, p1147, p1148)
 		-- upvalues: (copy) v_u_13, (copy) v_u_16
-		local function v1066(p1064)
-			for _, v1065 in p1064:GetDescendants() do
-				if v1065:HasTag("Cleanup_Aromatic") then
-					v1065:Destroy()
+		local function v1151(p1149)
+			for _, v1150 in p1149:GetDescendants() do
+				if v1150:HasTag("Cleanup_Aromatic") then
+					v1150:Destroy()
 				end
 			end
 		end
-		if p1063 then
-			v1066(p1063)
+		if p1148 then
+			v1151(p1148)
 		end
-		if p1062 then
-			v1066(p1062)
+		if p1147 then
+			v1151(p1147)
 		end
-		for _, v1067 in p1062:GetDescendants() do
-			if (v1067:IsA("BasePart") or v1067:IsA("UnionOperation")) and v1067:HasTag("AromaticVisual") then
-				v1067.Color = v_u_13[v1067] or v1067.Color
-				v_u_13[v1067] = nil
-				v1067:RemoveTag("AromaticVisual")
-				if v_u_16[v1067] then
-					v1067.Material = v_u_16[v1067]
-					v_u_16[v1067] = nil
+		for _, v1152 in p1147:GetDescendants() do
+			if (v1152:IsA("BasePart") or v1152:IsA("UnionOperation")) and v1152:HasTag("AromaticVisual") then
+				v1152.Color = v_u_13[v1152] or v1152.Color
+				v_u_13[v1152] = nil
+				v1152:RemoveTag("AromaticVisual")
+				if v_u_16[v1152] then
+					v1152.Material = v_u_16[v1152]
+					v_u_16[v1152] = nil
 				end
 			end
 		end
 	end
 }
-v_u_518.Gnomed = {
+v_u_551.Gnomed = {
 	["Id"] = "gn",
 	["Name"] = "Gnomed",
 	["ValueMulti"] = 15,
 	["Color"] = Color3.fromRGB(0, 173, 239),
-	["_AddFX"] = function(p1068, p1069, p1070)
-		p1068:_RemoveFX(p1069, p1070)
-		if p1070 then
-			for _, v1071 in game.ServerStorage.Mutation_FX.Gnomed:GetChildren() do
-				local v1072 = v1071:Clone()
-				v1072.Parent = p1070
-				v1072.Enabled = true
-				v1072:AddTag("Cleanup_Gnomed")
+	["_AddFX"] = function(p1153, p1154, p1155)
+		p1153:_RemoveFX(p1154, p1155)
+		if p1155 then
+			for _, v1156 in game.ServerStorage.Mutation_FX.Gnomed:GetChildren() do
+				local v1157 = v1156:Clone()
+				v1157.Parent = p1155
+				v1157.Enabled = true
+				v1157:AddTag("Cleanup_Gnomed")
 			end
 		end
-		for _, v1073 in p1069:GetChildren() do
-			if v1073:IsA("BasePart") or v1073:IsA("UnionOperation") then
-				v1073.Reflectance = 0.1
+		for _, v1158 in p1154:GetChildren() do
+			if v1158:IsA("BasePart") or v1158:IsA("UnionOperation") then
+				v1158.Reflectance = 0.1
 			end
 		end
 	end,
-	["_RemoveFX"] = function(_, p1074, p1075)
-		if p1075 then
-			for _, v1076 in p1075:GetChildren() do
-				if v1076:HasTag("Cleanup_Gnomed") then
-					v1076:Destroy()
+	["_RemoveFX"] = function(_, p1159, p1160)
+		if p1160 then
+			for _, v1161 in p1160:GetChildren() do
+				if v1161:HasTag("Cleanup_Gnomed") then
+					v1161:Destroy()
 				end
 			end
 		end
-		for _, v1077 in p1074:GetChildren() do
-			if v1077:IsA("BasePart") or v1077:IsA("UnionOperation") then
-				v1077.Reflectance = 0
+		for _, v1162 in p1159:GetChildren() do
+			if v1162:IsA("BasePart") or v1162:IsA("UnionOperation") then
+				v1162.Reflectance = 0
 			end
 		end
 	end
 }
-local v_u_1078 = {}
-local v_u_1079 = {}
-for v1080, v1081 in v_u_518 do
-	v_u_1078[v1080] = v1081.Id
+local v_u_1163 = {}
+local v_u_1164 = {}
+for v1165, v1166 in v_u_551 do
+	v_u_1163[v1165] = v1166.Id
 end
-for v1082, v1083 in v_u_518 do
-	if v_u_1079[v1083.Id] then
-		error((("MutationHandler | Duplicate Enum for %* and %*"):format(v1082, v_u_1079[v1083.Id])))
+for v1167, v1168 in v_u_551 do
+	if v_u_1164[v1168.Id] then
+		error((("MutationHandler | Duplicate Enum for %* and %*"):format(v1167, v_u_1164[v1168.Id])))
 	end
-	v_u_1079[v1083.Id] = v1082
+	v_u_1164[v1168.Id] = v1167
 end
-table.freeze(v_u_1078)
-table.freeze(v_u_1079)
+table.freeze(v_u_1163)
+table.freeze(v_u_1164)
 function v_u_11.GetMutationsToEnums(_)
-	-- upvalues: (copy) v_u_1078
-	return v_u_1078
+	-- upvalues: (copy) v_u_1163
+	return v_u_1163
 end
 function v_u_11.GetEnumsToMutations(_)
-	-- upvalues: (copy) v_u_1079
-	return v_u_1079
+	-- upvalues: (copy) v_u_1164
+	return v_u_1164
 end
 function v_u_11.GetMutations(_)
-	-- upvalues: (copy) v_u_6, (copy) v_u_518
-	return v_u_6:DeepCopy(v_u_518)
+	-- upvalues: (copy) v_u_6, (copy) v_u_551
+	return v_u_6:DeepCopy(v_u_551)
 end
-function v_u_11.AddMutation(_, p1084, p1085)
-	if p1084 then
-		p1084:SetAttribute(p1085.Name, true)
+function v_u_11.AddMutation(_, p1169, p1170)
+	if p1169 then
+		p1169:SetAttribute(p1170.Name, true)
 	else
 		warn("MutationHandler:AddMutation | No plant")
 	end
 end
-function v_u_11.RemoveMutation(_, p1086, p1087)
-	if p1086 then
-		p1086:SetAttribute(p1087.Name, nil)
+function v_u_11.RemoveMutation(_, p1171, p1172)
+	if p1171 then
+		p1171:SetAttribute(p1172.Name, nil)
 	else
 		warn("MutationHandler:RemoveMutation | No plant")
 	end
 end
-function v_u_11.GetPlantMutations(_, p1088)
-	-- upvalues: (copy) v_u_518
-	local v1089 = {}
-	for _, v1090 in v_u_518 do
-		if p1088:GetAttribute(v1090.Name) then
-			table.insert(v1089, v1090)
+function v_u_11.GetPlantMutations(_, p1173)
+	-- upvalues: (copy) v_u_551
+	local v1174 = {}
+	for _, v1175 in v_u_551 do
+		if p1173:GetAttribute(v1175.Name) then
+			table.insert(v1174, v1175)
 		end
 	end
-	return v1089
+	return v1174
 end
-function v_u_11.GetPlantMutationsAsEnums(_, p1091)
+function v_u_11.GetPlantMutationsAsEnums(_, p1176)
 	-- upvalues: (copy) v_u_11
-	local v1092 = {}
-	for _, v1093 in v_u_11:GetPlantMutations(p1091) do
-		local v1094 = v1093.Id
-		table.insert(v1092, v1094)
+	local v1177 = {}
+	for _, v1178 in v_u_11:GetPlantMutations(p1176) do
+		local v1179 = v1178.Id
+		table.insert(v1177, v1179)
 	end
-	return v1092
+	return v1177
 end
-function v_u_11.GetMutationsAsString(_, p1095, p1096)
-	-- upvalues: (copy) v_u_518
-	local v1097 = ""
-	for _, v1098 in v_u_518 do
-		local v1099 = v1098.Name
-		if p1095:GetAttribute(v1099) then
-			if v1097 ~= "" then
-				v1097 = v1097 .. ", "
+function v_u_11.GetMutationsAsString(_, p1180, p1181)
+	-- upvalues: (copy) v_u_551
+	local v1182 = ""
+	for _, v1183 in v_u_551 do
+		local v1184 = v1183.Name
+		if p1180:GetAttribute(v1184) then
+			if v1182 ~= "" then
+				v1182 = v1182 .. ", "
 			end
-			v1097 = v1097 .. v1099
+			v1182 = v1182 .. v1184
 		end
 	end
-	if v1097 ~= "" and p1096 then
-		v1097 = "[" .. v1097 .. "]"
+	if v1182 ~= "" and p1181 then
+		v1182 = "[" .. v1182 .. "]"
 	end
-	return v1097
+	return v1182
 end
-function v_u_11.ExtractMutationsFromEnumArray(_, p1100)
-	-- upvalues: (copy) v_u_1079, (copy) v_u_518
-	local v1101 = {}
-	for _, v1102 in p1100 do
-		local v1103 = v_u_1079[v1102]
-		if v1103 then
-			local v1104 = v_u_518[v1103]
-			table.insert(v1101, v1104)
+function v_u_11.ExtractMutationsFromEnumArray(_, p1185)
+	-- upvalues: (copy) v_u_1164, (copy) v_u_551
+	local v1186 = {}
+	for _, v1187 in p1185 do
+		local v1188 = v_u_1164[v1187]
+		if v1188 then
+			local v1189 = v_u_551[v1188]
+			table.insert(v1186, v1189)
 		else
-			warn((("MutationHandler:ExtractMutationsFromEnumArray | Mutation does not exist for %*"):format(v1102)))
+			warn((("MutationHandler:ExtractMutationsFromEnumArray | Mutation does not exist for %*"):format(v1187)))
 		end
 	end
-	return v1101
+	return v1186
 end
-function v_u_11.ExtractMutationsFromString(_, p1105)
+function v_u_11.ExtractMutationsFromString(_, p1190)
 	-- upvalues: (copy) v_u_11
-	local v1106 = {}
-	if not p1105 or p1105 == "" then
-		return v1106
+	local v1191 = {}
+	if not p1190 or p1190 == "" then
+		return v1191
 	end
-	local v1107 = p1105:gsub("%[", ""):gsub("%]", ""):gsub("%s+", "")
-	for v1108 in string.gmatch(v1107, "([^,]+)") do
-		local v1109 = false
-		for _, v1110 in v_u_11:GetMutations() do
-			if v1110.Name == v1108 then
-				table.insert(v1106, v1110)
-				v1109 = true
+	local v1192 = p1190:gsub("%[", ""):gsub("%]", ""):gsub("%s+", "")
+	for v1193 in string.gmatch(v1192, "([^,]+)") do
+		local v1194 = false
+		for _, v1195 in v_u_11:GetMutations() do
+			if v1195.Name == v1193 then
+				table.insert(v1191, v1195)
+				v1194 = true
 			end
 		end
-		if not v1109 then
-			warn((("MutationHandler:ExtractMutationsFromString | Mutation name: %* does not exist"):format(v1108)))
+		if not v1194 then
+			warn((("MutationHandler:ExtractMutationsFromString | Mutation name: %* does not exist"):format(v1193)))
 		end
 	end
-	return v1106
+	return v1191
 end
-function v_u_11.TransferMutations(_, p1111, p1112)
+function v_u_11.TransferMutations(_, p1196, p1197)
 	-- upvalues: (copy) v_u_11
-	for _, v1113 in v_u_11:GetMutations() do
-		if p1111:GetAttribute(v1113.Name) then
-			v_u_11:AddMutation(p1112, v1113)
-			v_u_11:RemoveMutation(p1111, v1113)
+	for _, v1198 in v_u_11:GetMutations() do
+		if p1196:GetAttribute(v1198.Name) then
+			v_u_11:AddMutation(p1197, v1198)
+			v_u_11:RemoveMutation(p1196, v1198)
 		end
 	end
-	p1112:SetAttribute("WeightMulti", p1111:GetAttribute("WeightMulti") or 1)
+	p1197:SetAttribute("WeightMulti", p1196:GetAttribute("WeightMulti") or 1)
 end
-function v_u_11.CalcValueMultiFromMuts(_, p1114)
-	local v1115 = 1
-	for _, v1116 in p1114 do
-		v1115 = v1115 + (v1116.ValueMulti - 1)
+function v_u_11.CalcValueMultiFromMuts(_, p1199)
+	local v1200 = 1
+	for _, v1201 in p1199 do
+		v1200 = v1200 + (v1201.ValueMulti - 1)
 	end
-	return math.max(1, v1115)
+	return math.max(1, v1200)
 end
-function v_u_11.CalcValueMulti(_, p1117)
+function v_u_11.CalcValueMulti(_, p1202)
 	-- upvalues: (copy) v_u_11
-	return v_u_11:CalcValueMultiFromMuts((v_u_11:GetPlantMutations(p1117)))
+	return v_u_11:CalcValueMultiFromMuts((v_u_11:GetPlantMutations(p1202)))
 end
-function v_u_11.SetToolName(_, p_u_1118)
+function v_u_11.SetToolName(_, p_u_1203)
 	-- upvalues: (copy) v_u_2, (copy) v_u_7, (copy) v_u_11
-	if p_u_1118:IsA("Tool") then
+	if p_u_1203:IsA("Tool") then
 		task.spawn(function()
-			-- upvalues: (ref) v_u_2, (copy) p_u_1118, (ref) v_u_7, (ref) v_u_11
-			local v1119 = game:GetService("ServerScriptService")
-			local v1120 = require(v1119.Modules.InventoryService)
-			local v1121 = require(v_u_2.Data.EnumRegistry.InventoryServiceEnums)
-			local v1122
-			if p_u_1118:FindFirstChild("Item_String") then
-				v1122 = p_u_1118.Item_String.Value
+			-- upvalues: (ref) v_u_2, (copy) p_u_1203, (ref) v_u_7, (ref) v_u_11
+			local v1204 = game:GetService("ServerScriptService")
+			local v1205 = require(v1204.Modules.InventoryService)
+			local v1206 = require(v_u_2.Data.EnumRegistry.InventoryServiceEnums)
+			local v1207
+			if p_u_1203:FindFirstChild("Item_String") then
+				v1207 = p_u_1203.Item_String.Value
 			else
-				v1122 = nil
+				v1207 = nil
 			end
-			local v1123, v1124
-			if p_u_1118:GetAttribute(v1121.OWNER) then
-				local v1125 = v1120:GetToolData(p_u_1118)
-				v1122 = v1122 or v1125.ItemName
-				v1123 = v1125.Variant or "Normal"
-				v1124 = v1125.Seed
+			local v1208, v1209
+			if p_u_1203:GetAttribute(v1206.OWNER) then
+				local v1210 = v1205:GetToolData(p_u_1203)
+				v1207 = v1207 or v1210.ItemName
+				v1208 = v1210.Variant or "Normal"
+				v1209 = v1210.Seed
 			else
-				local v1126 = p_u_1118:WaitForChild("Variant", 0.3)
-				if not v1126 then
+				local v1211 = p_u_1203:WaitForChild("Variant", 0.3)
+				if not v1211 then
 					return
 				end
-				local v1127 = p_u_1118:WaitForChild("Item_Seed", 0.3)
-				if not v1127 then
+				local v1212 = p_u_1203:WaitForChild("Item_Seed", 0.3)
+				if not v1212 then
 					return
 				end
-				v1123 = v1126.Value
-				v1124 = v1127.Value
+				v1208 = v1211.Value
+				v1209 = v1212.Value
 			end
-			if v1123 and (v1124 and v1122) then
-				local v1128 = v_u_7.Calculate_Weight(v1124, v1122) * (p_u_1118:GetAttribute("WeightMulti") or 1)
-				local v1129 = v_u_11:GetMutationsAsString(p_u_1118)
-				if v1123 and (v1123 ~= "" and v1123 ~= "Normal") then
-					v1129 = v1129 .. (#v1129 > 0 and ", " or "") .. v1123
+			if v1208 and (v1209 and v1207) then
+				local v1213 = v_u_7.Calculate_Weight(v1209, v1207) * (p_u_1203:GetAttribute("WeightMulti") or 1)
+				local v1214 = v_u_11:GetMutationsAsString(p_u_1203)
+				if v1208 and (v1208 ~= "" and v1208 ~= "Normal") then
+					v1214 = v1214 .. (#v1214 > 0 and ", " or "") .. v1208
 				end
-				p_u_1118.Name = (v1129 == "" and "" or (("[%*] "):format(v1129) or "")) .. v1122 .. " [" .. string.format("%.2f", v1128) .. "kg]"
+				p_u_1203.Name = (v1214 == "" and "" or (("[%*] "):format(v1214) or "")) .. v1207 .. " [" .. string.format("%.2f", v1213) .. "kg]"
 			end
 		end)
 	end
 end
-local v_u_1130 = {}
-for _, v1131 in v_u_518 do
-	v_u_1130[v1131.Name] = v1131.Name
+local v_u_1215 = {}
+for _, v1216 in v_u_551 do
+	v_u_1215[v1216.Name] = v1216.Name
 end
-v_u_11.MutationNames = v_u_1130
-local v_u_1132 = {}
+v_u_11.MutationNames = v_u_1215
+local v_u_1217 = {}
 function v_u_11.CheckTimedPlants(_)
-	-- upvalues: (copy) v_u_1132, (copy) v_u_8, (copy) v_u_9, (copy) v_u_10, (copy) v_u_11, (copy) v_u_518
-	local v1133 = require(game.ServerStorage.Data_Module)
-	local v1134 = workspace:GetServerTimeNow()
-	for v1135, _ in v_u_1132 do
-		local v1136 = v_u_8(v1135)
-		if v1136 then
-			local v1137 = v1133.GetFruitData(v1136, v1135)
-			local v1138 = v_u_9.MutationTimes
-			if not v1137 then
-				v1137 = v1133.GetPlantData(v1136, v1135)
-				v1138 = v_u_10.MutationTimes
+	-- upvalues: (copy) v_u_1217, (copy) v_u_8, (copy) v_u_9, (copy) v_u_10, (copy) v_u_11, (copy) v_u_551
+	local v1218 = require(game.ServerStorage.Data_Module)
+	local v1219 = workspace:GetServerTimeNow()
+	for v1220, _ in v_u_1217 do
+		local v1221 = v_u_8(v1220)
+		if v1221 then
+			local v1222 = v1218.GetFruitData(v1221, v1220)
+			local v1223 = v_u_9.MutationTimes
+			if not v1222 then
+				v1222 = v1218.GetPlantData(v1221, v1220)
+				v1223 = v_u_10.MutationTimes
 			end
-			if v1137 then
-				if v1137[v1138] then
-					local v1139 = 0
-					for v1140, v1141 in v1137[v1138] do
-						local v1142 = v_u_11:GetEnumsToMutations()[v1140]
-						local v1143 = v_u_518[v1142]
-						if v1143 then
-							local v1144 = v1143.TimeData
-							if v1144 and (v1144.TimeToChange and v1144.AddMutationName) then
-								v1139 = v1139 + 1
-								if v1134 - v1141 >= v1144.TimeToChange then
-									v1135:SetAttribute(v1144.AddMutationName, true)
+			if v1222 then
+				if v1222[v1223] then
+					local v1224 = 0
+					for v1225, v1226 in v1222[v1223] do
+						local v1227 = v_u_11:GetEnumsToMutations()[v1225]
+						local v1228 = v_u_551[v1227]
+						if v1228 then
+							local v1229 = v1228.TimeData
+							if v1229 and (v1229.TimeToChange and v1229.AddMutationName) then
+								v1224 = v1224 + 1
+								if v1219 - v1226 >= v1229.TimeToChange then
+									v1220:SetAttribute(v1229.AddMutationName, true)
 								end
 							else
-								warn((("Invalid or nil TimeData for %*, despite being in mutaionTimes"):format(v1142)))
+								warn((("Invalid or nil TimeData for %*, despite being in mutaionTimes"):format(v1227)))
 							end
 						else
-							warn((("No mutation for %*:%*"):format(v1140, v1142)))
+							warn((("No mutation for %*:%*"):format(v1225, v1227)))
 						end
 					end
-					if v1139 <= 0 then
-						warn((("%* in timedPlants, but no valid muts!"):format(v1135.Name)))
+					if v1224 <= 0 then
+						warn((("%* in timedPlants, but no valid muts!"):format(v1220.Name)))
 					end
 				else
-					warn(("No Mutation Times for %* >"):format(v1135.Name), v1135)
+					warn(("No Mutation Times for %* >"):format(v1220.Name), v1220)
 				end
 			else
-				warn(("No Plant Data for %* >"):format((v1135:GetFullName())), v1135)
+				warn(("No Plant Data for %* >"):format((v1220:GetFullName())), v1220)
 			end
 		end
 	end
 end
-local function v_u_1158(p1145)
-	-- upvalues: (copy) v_u_8, (copy) v_u_9, (copy) v_u_10, (copy) v_u_11, (copy) v_u_518, (copy) v_u_1132
-	if p1145:IsA("Tool") then
+local function v_u_1243(p1230)
+	-- upvalues: (copy) v_u_8, (copy) v_u_9, (copy) v_u_10, (copy) v_u_11, (copy) v_u_551, (copy) v_u_1217
+	if p1230:IsA("Tool") then
 		return
-	elseif p1145:HasTag("FoodModel") then
+	elseif p1230:HasTag("FoodModel") then
 		return
-	elseif p1145:HasTag("TESTING") then
+	elseif p1230:HasTag("TESTING") then
 		return
 	else
-		local v1146 = require(game.ServerStorage.Data_Module)
-		local v1147 = v_u_8(p1145)
-		if v1147 then
-			local v1148 = v1146.GetFruitData(v1147, p1145)
-			local v1149 = v_u_9.MutationTimes
-			if not v1148 then
-				v1148 = v1146.GetPlantData(v1147, p1145)
-				v1149 = v_u_10.MutationTimes
+		local v1231 = require(game.ServerStorage.Data_Module)
+		local v1232 = v_u_8(p1230)
+		if v1232 then
+			local v1233 = v1231.GetFruitData(v1232, p1230)
+			local v1234 = v_u_9.MutationTimes
+			if not v1233 then
+				v1233 = v1231.GetPlantData(v1232, p1230)
+				v1234 = v_u_10.MutationTimes
 			end
-			if v1148 then
-				local v1150 = workspace:GetServerTimeNow()
-				local v1151 = math.floor(v1150)
-				v1148[v1149] = v1148[v1149] or {}
-				for v1152, _ in v1148[v1149] do
-					local v1153 = v_u_11:GetEnumsToMutations()[v1152]
-					local v1154 = v_u_518[v1153]
-					if not (p1145:GetAttribute(v1153) and v1154.TimeData) then
-						v1148[v1149][v1152] = nil
+			if v1233 then
+				local v1235 = workspace:GetServerTimeNow()
+				local v1236 = math.floor(v1235)
+				v1233[v1234] = v1233[v1234] or {}
+				for v1237, _ in v1233[v1234] do
+					local v1238 = v_u_11:GetEnumsToMutations()[v1237]
+					local v1239 = v_u_551[v1238]
+					if not (p1230:GetAttribute(v1238) and v1239.TimeData) then
+						v1233[v1234][v1237] = nil
 					end
 				end
-				for v1155, _ in p1145:GetAttributes() do
-					local v1156 = v_u_518[v1155]
-					if v1156 and v1156.TimeData then
-						local v1157 = v_u_11:GetMutationsToEnums()[v1155]
-						if not v1148[v1149][v1157] then
-							v1148[v1149][v1157] = v1151
+				for v1240, _ in p1230:GetAttributes() do
+					local v1241 = v_u_551[v1240]
+					if v1241 and v1241.TimeData then
+						local v1242 = v_u_11:GetMutationsToEnums()[v1240]
+						if not v1233[v1234][v1242] then
+							v1233[v1234][v1242] = v1236
 						end
 					end
 				end
-				if next(v1148[v1149]) == nil then
-					v1148[v1149] = nil
-					if v_u_1132[p1145] then
-						v_u_1132[p1145] = nil
+				if next(v1233[v1234]) == nil then
+					v1233[v1234] = nil
+					if v_u_1217[p1230] then
+						v_u_1217[p1230] = nil
 						return
 					end
-				elseif not v_u_1132[p1145] then
-					v_u_1132[p1145] = true
+				elseif not v_u_1217[p1230] then
+					v_u_1217[p1230] = true
 				end
 			else
-				warn(("No Plant Data for %* >"):format((p1145:GetFullName())), p1145)
+				warn(("No Plant Data for %* >"):format((p1230:GetFullName())), p1230)
 			end
 		else
-			warn("No player for plant >", p1145)
+			warn("No player for plant >", p1230)
 			return
 		end
 	end
 end
-local v_u_1159 = {}
-local function v1165(p_u_1160)
-	-- upvalues: (copy) v_u_1130, (copy) v_u_1159, (copy) v_u_1158, (copy) v_u_129, (copy) v_u_11, (copy) v_u_1132, (copy) v_u_13, (copy) v_u_16
-	local v_u_1161 = require(script.MutationCombos)
-	if p_u_1160 then
-		p_u_1160.AttributeChanged:Connect(function(p1162)
-			-- upvalues: (ref) v_u_1130, (ref) v_u_1159, (copy) p_u_1160, (ref) v_u_1158, (copy) v_u_1161, (ref) v_u_129, (ref) v_u_11
-			if v_u_1130[p1162] then
-				if not v_u_1159[p_u_1160] then
-					v_u_1159[p_u_1160] = true
-					v_u_1158(p_u_1160)
+local v_u_1244 = {}
+local function v1250(p_u_1245)
+	-- upvalues: (copy) v_u_1215, (copy) v_u_1244, (copy) v_u_1243, (copy) v_u_129, (copy) v_u_11, (copy) v_u_1217, (copy) v_u_13, (copy) v_u_16
+	local v_u_1246 = require(script.MutationCombos)
+	if p_u_1245 then
+		p_u_1245.AttributeChanged:Connect(function(p1247)
+			-- upvalues: (ref) v_u_1215, (ref) v_u_1244, (copy) p_u_1245, (ref) v_u_1243, (copy) v_u_1246, (ref) v_u_129, (ref) v_u_11
+			if v_u_1215[p1247] then
+				if not v_u_1244[p_u_1245] then
+					v_u_1244[p_u_1245] = true
+					v_u_1243(p_u_1245)
 					task.defer(function()
-						-- upvalues: (ref) v_u_1161, (ref) p_u_1160, (ref) v_u_129, (ref) v_u_11, (ref) v_u_1159
-						v_u_1161:HandleCombos(p_u_1160)
-						v_u_129(p_u_1160)
-						v_u_11:SetToolName(p_u_1160)
-						v_u_1159[p_u_1160] = nil
+						-- upvalues: (ref) v_u_1246, (ref) p_u_1245, (ref) v_u_129, (ref) v_u_11, (ref) v_u_1244
+						v_u_1246:HandleCombos(p_u_1245)
+						v_u_129(p_u_1245)
+						if p_u_1245:HasTag("PlantGenerated") then
+							v_u_11:SetToolName(p_u_1245)
+						end
+						v_u_1244[p_u_1245] = nil
 					end)
 				end
 			else
 				return
 			end
 		end)
-		v_u_1158(p_u_1160)
-		v_u_1161:HandleCombos(p_u_1160)
-		v_u_129(p_u_1160)
-		v_u_11:SetToolName(p_u_1160)
-		p_u_1160.Destroying:Once(function()
-			-- upvalues: (ref) v_u_1159, (copy) p_u_1160, (ref) v_u_1132, (ref) v_u_13, (ref) v_u_16
-			v_u_1159[p_u_1160] = nil
-			v_u_1132[p_u_1160] = nil
-			for _, v1163 in p_u_1160:GetDescendants() do
-				if v1163:IsA("BasePart") then
-					v_u_13[v1163] = nil
-					v_u_16[v1163] = nil
+		v_u_1243(p_u_1245)
+		v_u_1246:HandleCombos(p_u_1245)
+		v_u_129(p_u_1245)
+		if p_u_1245:HasTag("PlantGenerated") then
+			v_u_11:SetToolName(p_u_1245)
+		end
+		p_u_1245.Destroying:Once(function()
+			-- upvalues: (ref) v_u_1244, (copy) p_u_1245, (ref) v_u_1217, (ref) v_u_13, (ref) v_u_16
+			v_u_1244[p_u_1245] = nil
+			v_u_1217[p_u_1245] = nil
+			for _, v1248 in p_u_1245:GetDescendants() do
+				if v1248:IsA("BasePart") then
+					v_u_13[v1248] = nil
+					v_u_16[v1248] = nil
 				end
 			end
 		end)
-		p_u_1160.DescendantRemoving:Connect(function(p1164)
+		p_u_1245.DescendantRemoving:Connect(function(p1249)
 			-- upvalues: (ref) v_u_13, (ref) v_u_16
-			v_u_13[p1164] = nil
-			v_u_16[p1164] = nil
+			v_u_13[p1249] = nil
+			v_u_16[p1249] = nil
 		end)
 	else
 		warn("MutationHandler.MutatableAdded | No plant")
 	end
 end
 if v_u_3:IsServer() then
-	v1:GetInstanceAddedSignal("Harvestable"):Connect(v1165)
-	v1:GetInstanceAddedSignal("FruitTool"):Connect(v1165)
-	v1:GetInstanceAddedSignal("FoodGenerated"):Connect(v1165)
-	v1:GetInstanceAddedSignal("PlantScaled"):Connect(function(p1166)
+	v1:GetInstanceAddedSignal("Harvestable"):Connect(v1250)
+	v1:GetInstanceAddedSignal("FruitTool"):Connect(v1250)
+	v1:GetInstanceAddedSignal("FoodGenerated"):Connect(v1250)
+	v1:GetInstanceAddedSignal("PlantScaled"):Connect(function(p1251)
 		-- upvalues: (copy) v_u_11, (copy) v_u_129
-		if v_u_11:CanBeMutated(p1166) then
-			if p1166:IsA("Model") or p1166:IsA("Tool") then
-				v_u_129(p1166)
-				v_u_11:SetToolName(p1166)
+		if v_u_11:CanBeMutated(p1251) then
+			if p1251:IsA("Model") or p1251:IsA("Tool") then
+				v_u_129(p1251)
+				v_u_11:SetToolName(p1251)
 			end
 		else
 			return

@@ -58,7 +58,7 @@ class GrowCalculatorUI:
         rules.place(relx=1.0, x=-15, y=10, anchor="ne")
 
         tk.Label(self.main, text="Plant:", font=("Segoe UI", 10, "bold"),
-                 bg="#2b2b2b", fg="white").grid(row=1, column=0, sticky="w", pady=0, padx=(0,5))
+                 bg="#2b2b2b", fg="white").grid(row=1, column=0, sticky="w", pady=0, padx=(0,2))
         self.plant_var = tk.StringVar(value="Carrot")
         plant_combo = ttk.Combobox(self.main, textvariable=self.plant_var,
                                    values=self._safe_get_plant_names(),
